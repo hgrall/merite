@@ -1,29 +1,48 @@
 * Configuration
 
-cf. http://blog.wolksoftware.com/setting-up-your-typescript-vs-code-development-environment
+** node : cf. https://nodejs.org/en/
 
-- Visual studio code
-  - version : cf. preferences/fichier de config pour l'espace de travail
-- node js
+- choisir la version LTS (Long Term Support) 6.11.4,
+- l'installer dans un répertoire X (nom sans espace),
+- rajouter à la fin de $HOME/.bashrc :
 
-- install extensions : tslint
-- npm install -g tslint
+export PATH="X/node-v6.11.4-linux-x64/bin":$PATH
 
-* Projet
+- tester dans un nouveau shell :
+    - > whereis node
+    - > whereis npm
 
-> npm init
+vous devez obtenir "X/node-v6.11.4-linux-x64/bin/node ou npm"
 
-> npm install  --save-dev browser-sync
-> npm install  --save-dev browserify
-> npm install  --save-dev gulp
-> npm install  --save-dev gulp-sourcemaps
-> npm install  --save-dev gulp-tslint
-> npm install  --save-dev gulp-typescript
-> npm install  --save-dev run-sequence
-> npm install  --save-dev tslint
-> npm install  --save-dev typescript
-> npm install  --save-dev vinyl-buffer
-> npm install  --save-dev vinyl-source-stream
+** visual studio code : version 1.17
+
+
+- installer code : cf. https://code.visualstudio.com/Download
+
+- configurer code  pour Typescript : cf. https://code.visualstudio.com/docs/languages/typescript
+
+   - > npm install -g typescript
+
+- ouvrir code dans le répertoire du projet (par exemple v1m0) puis un fichier .ts : la version de typescript 2.5 apparaît en bas à droite.
+
+- vérifier l'accès en ligne de commande :
+    - > tsc --version
+
+
+** Configuration du projet
+
+- Dans le répertoire du projet :
+    - > npm install
+
+** Compilation
+
+- > npm run build
+
+- Attention : bug récent - cf. https://github.com/DefinitelyTyped/DefinitelyTyped/issues/18708 .
+
+- Solution : passer React en version 16. Voir le package.json de v1m0.
+
+
 
 
 

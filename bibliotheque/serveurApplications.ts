@@ -9,7 +9,6 @@ import {
 Serveur utilisant Express
 http://expressjs.com/en/api.html
 */
-
 /*
 Classe à développer
 */

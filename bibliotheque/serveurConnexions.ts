@@ -1,4 +1,8 @@
-// Serveur établissant les connexions par Web Socket
+// servuer permettant la communication entre les différents clients
+
+
+
+//Serveur établissant les connexions par Web Socket
 // - Configuration à la connexion
 // - Communication entre clients
 // - Déconnexion
@@ -44,9 +48,11 @@ export class LienWebSocket<
         console.log("- pathname: " + this._url.pathname);
         */
     }
+    // getteur adresse du client
     adresseClient(): string {
         return this._adresseIPClient;
     }
+    //enregistre un message, renvoie une erreur s'il n'y a eu de message envoyé
     enregistrerTraitementMessages(
         traitementMessages: (l: LienWebSocket<FEIN, FEOUT, EE, FCIN, FCOUT, EC, FMIN, FMOUT, EM>, m: FMIN) => void): void {
         let ceLien = this;
@@ -60,6 +66,7 @@ export class LienWebSocket<
         });
         console.log("- Enregistrement du traitement des messages.")
     }
+    //enregistre fermeture d'une connexion par websocket
     enregistrerTraitementFermeture(
         traitementFermeture: (l: LienWebSocket<FEIN, FEOUT, EE, FCIN, FCOUT, EC, FMIN, FMOUT, EM>, r: number, desc: string) => void): void {
         let ceLien = this;
@@ -69,23 +76,24 @@ export class LienWebSocket<
         console.log("- Enregistrement du traitement de la fermeture de la connexion par Web socket.")
     }
 
+    //envoie du message
     envoyerAuClientDestinataire(m: Message<FMIN, FMOUT, EM>) {
         this._connexion.sendUTF(m.brut());
     }
-
+    //envoie de la configuration
     envoyerConfiguration(c: Configuration<FCIN, FCOUT, EC>) {
         this._connexion.sendUTF(c.brut());
         this._config = c;
     }
-
+    //verifie que la configuration a bien été effectuée
     estConfigure(): boolean {
         return this._config !== undefined;
     }
-
+    //renvoie la configuration
     configuration(): Configuration<FCIN, FCOUT, EC> {
         return this._config;
     }
-
+    //envoie un message en cas d'erreur
     envoyerMessageErreur(e: ErreurRedhibitoire<FEIN, FEOUT, EE>) {
         this._connexion.sendUTF(e.brut());
     }
@@ -120,7 +128,7 @@ export class ServeurLiensWebSocket<
         this.traiterFermeture = traitementFermeture;
     }
 
-
+    //enregistre un message, renvoie une erreur s'il n'y a eu de message envoyé
     enregistrerTraitementMessages(traitementMessages: (l: LienWebSocket<FEIN, FEOUT, EE, FCIN, FCOUT, EC, FMIN, FMOUT, EM>, m: FMIN) => void): void {
         this.traiterMessages = traitementMessages;
     }
@@ -130,6 +138,7 @@ export class ServeurLiensWebSocket<
         let ceServeur = this;
         let p = this.port;
         let h = this.hote;
+        //debut de l'ecoute par le serveur
         serveurHTTP.listen(p, h, function () {
             console.log("* " + creerDateMaintenant().representationLog() + " - Le serveur écoute le port " + p + " de l'hôte " + h + ".");
         });

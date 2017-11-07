@@ -18,7 +18,10 @@ Le répertoire de travail est "v1m0" (qui contient ce readme).
 
 ** Installation des paquets
 
-Utilisation de "package.json"
+Utilisation de "package.json" qui déclare les modules utilisables dans
+le code (via les directives "import")
+- Remarque : les paquets installés globalement fournissent les outils
+  utilisables à partir d'un shell.
 
 > npm install
 

@@ -138,7 +138,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienTchat, m: FormatMessageTchat
             if (!reseauConnecte.sontVoisins(ID_emetteurMsg, ID_destinataireMsg)) {
                 let msgErreur = "communication interdite : le noeud émetteur "
                     + ID_emetteurMsg.val
-                    + " n'est pas vosin du noeud destinataire " + ID_destinataireMsg.val + ".";
+                    + " n'est pas voisin du noeud destinataire " + ID_destinataireMsg.val + ".";
                 console.log("- " + msgErreur);
                 l.envoyerAuClientDestinataire(creerMessageRetourErreur(msg, TypeMessageTchat.INTERDICTION, msgErreur));
             }

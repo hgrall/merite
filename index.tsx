@@ -9,11 +9,14 @@ import {
 
 import {MuiThemeProvider} from 'material-ui/styles';
 import {Menu} from "./menu/menu";
+import {RenduTchat} from './chat/client/renduTchat';
 const App = () => (
   <MuiThemeProvider>
     <Router>
         <div>
-        {/* <Menu/> */}
+            <Route exact path="/" component={Menu}/>
+            <Route path="/chat" component={RenduTchat}/>
+            <Route path="/topics" component={Menu}/>
         </div>
     </Router>
   </MuiThemeProvider>

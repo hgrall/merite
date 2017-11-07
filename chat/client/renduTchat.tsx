@@ -18,8 +18,15 @@ injectGlobal`
     }
 `;
 
-ReactDOM.render(
-    <Corps />,
-    document.getElementById("conteneur")
-);
 
+export class RenduTchat extends React.Component<any, any> {
+  constructor(props: any){
+      super(props);
+  }
+
+  public render() {
+    return (
+        <Corps />
+    );
+  }
+}

@@ -14,8 +14,8 @@ const App = () => (
   <MuiThemeProvider>
     <Router>
         <div>
-            <Route exact path="/" component={Menu}/>
-            <Route path="/chat" component={RenduTchat}/>
+            <Route exact={true} path="/" component={Menu}/>
+            <Route path="/chat/" component={RenduTchat}/>
         </div>
     </Router>
   </MuiThemeProvider>

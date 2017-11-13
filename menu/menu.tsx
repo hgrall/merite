@@ -14,7 +14,7 @@ export class Menu extends React.Component<any, any> {
       {
         nom :"Chat", 
         disabled: false, 
-        link: "/Chat/"
+        link: "/chat/"
       },
       {
         nom: "Adressage et Routage",

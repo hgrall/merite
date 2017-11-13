@@ -18,8 +18,8 @@ export class Menu extends React.Component<any, any> {
       },
       {
         nom: "Adressage et Routage",
-        disabled: true, 
-        link: ""
+        disabled: false, 
+        link: "/routage/"
       },
       {
         nom: "Jeu 3",

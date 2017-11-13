@@ -16,7 +16,6 @@ const App = () => (
         <div>
             <Route exact path="/" component={Menu}/>
             <Route path="/chat" component={RenduTchat}/>
-            <Route path="/topics" component={Menu}/>
         </div>
     </Router>
   </MuiThemeProvider>

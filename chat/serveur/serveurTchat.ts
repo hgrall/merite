@@ -59,7 +59,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
 
 {
     let racine = "/";
-    let ressource = "interfaceChat.html";
+    let ressource = "index.html";
 
     serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
         console.log("* " + creerDateMaintenant().representationLog() + " - Service de " + ressource + " en " + racine);
@@ -67,7 +67,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
     });
 }
 
-//Demarrage du serveur
+// //Demarrage du serveur
 serveurAppli.demarrer();
 
 const serveurCanaux = new ServeurChat(port2, hote);

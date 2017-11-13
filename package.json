@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "tsc",
     "webpack": "webpack",
-    "build": "npm run tsc && npm run verif && npm run webpack && webpack-dev-server",
+    "build": "npm run tsc && npm run verif && npm run webpack && node build/chat/serveur/serveurTchat",
     "test": "mocha -r ts-node/register test/general.ts",
     "verif": "tslint --exclude bibiliotheque/js **/*.ts"
   },

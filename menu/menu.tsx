@@ -14,11 +14,11 @@ export class Menu extends React.Component<any, any> {
       {
         nom :"Chat", 
         disabled: false, 
-        link: ""
+        link: "/Chat/"
       },
       {
         nom: "Adressage et Routage",
-        disabled: false, 
+        disabled: true, 
         link: ""
       },
       {

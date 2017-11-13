@@ -18,7 +18,6 @@ injectGlobal`
     }
 `;
 
-
 export class RenduTchat extends React.Component<any, any> {
   constructor(props: any){
       super(props);

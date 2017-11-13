@@ -14,6 +14,7 @@ export class BoutonJeu extends React.Component<any, any> {
             disabled={this.props.disabled}
             fullWidth={true}
             primary={true}
+            containerElement={<Link to={this.props.link}/>}
           >
           </RaisedButton>
         </div>

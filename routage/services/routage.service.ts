@@ -1,25 +1,37 @@
-import { Individu } from '../../chat/client/typesInterface';
+import { Individu, Message } from '../../chat/client/typesInterface';
 import { Domaine } from '../../chat/serveur/domaine'
 
 export class RoutageService {
 
     public utilisateur: Individu;
 
-    // getDomainesVoisins(Utilisateur | Domaine): Domaine[]
-    // getUtilisateursVoisins(Utilisateurs): Utilisateur[] #sûrement déjà fait
-    // transmettreMessageADomaine(Message, Domaine): void
-    // transmettreMessageAVoisin(Message, Utilisateur): void
-    // creerMessage(contenu, idUtilisateur, Domaine(idUtilisateur)): void
-    // decoderMessage(Message): contenu
-    // jeterMessage(Message): void
 
-    /**
-     * getDomainesVoisins
-     */
     public getDomainesVoisins(): Domaine[] {
         return [];
     }
 
+    public getUtilisateursVoisins(): Individu[] {
+        return [];
+    }
+
+    public transmettreMessageADomaine(message: Message, domaine: Domaine) {
+        console.log("Transmission du message au domaine :", domaine.name);
+    }
     
+    public transmettreMessageAUtilisateur(message: Message, utilisateur: Individu) {
+        console.log("Transmission du message à l'utilisateur :", utilisateur.nom);
+    }
+
+    public creerMessage(contenu: string, domaineDestinataire: Domaine, utilisateurDestinataire: string) {
+        return null;
+    }
+
+    public decoderMessage(message: Message): string[] {
+        return [message.destinataire.nom, message.contenu]
+    }
+
+    public jeterMessage(message: Message): void {
+        console.log('Destruction du message');
+    }
 
 }

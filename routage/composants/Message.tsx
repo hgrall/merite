@@ -26,7 +26,6 @@ export class Message extends React.Component<any, any> {
           <GridList
           cellHeight={'auto'}
           cols={8}
-          padding={0}
           style={styles.root}
         >
             <CaseMessage/>

@@ -13,12 +13,19 @@ const styles = {
     width: 60,
     height: 60,
   },
-
+  container: {
+    display: "flex" as 'flex',
+    flexDirection: "column" as 'column'
+  },
   large: {
     width: 120,
     height: 120,
     padding: 30,
   },
+  title: {
+    display: "flex" as 'flex',
+    justifyContent: "center" as 'center'
+  }
 };
 
 export class Routage extends React.Component<any, any> {
@@ -28,8 +35,9 @@ export class Routage extends React.Component<any, any> {
 
   public render() {
     return (
-      <div>
+      <div style={styles.container}>
          <Regles/>
+         <h1 style={styles.title}>Adressage et routage</h1>
          <Message/>
          <IconButton
           tooltip="Send"
@@ -43,7 +51,7 @@ export class Routage extends React.Component<any, any> {
             iconStyle={styles.largeIcon}
             style={styles.large}
           >
-            <ArrowForward/> 
+            <ArrowForward/>
           </IconButton> 
       </div>
     );

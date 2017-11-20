@@ -1,35 +1,38 @@
 import * as url from 'url';
 import * as shell from "shelljs";
 
+//IMPORT BIBLIOTHEQUE
+import { creerReseauVide } from "../../bibliotheque/communication/creerReseau";
 import { TableMutable } from "../../bibliotheque/types/table";
-import { Identifiant } from "../../bibliotheque/types/identifiant";
-import { TableIdentificationMutable, creerTableIdentificationMutableVide } from "../../bibliotheque/types/tableIdentification";
+import { Identifiant,creerIdentifiant, egaliteIdentifiant, Identification,creerIdentificationParCompteur } from "../../bibliotheque/types/identifiant";
+import { TableIdentificationMutable, creerTableIdentificationMutableVide ,creerTableIdentificationImmutable} from "../../bibliotheque/types/tableIdentification";
+import { ServeurLiensWebSocket, LienWebSocket } from "../../bibliotheque/serveurConnexions";
+import { ServeurApplications, Interaction } from "../../bibliotheque/serveurApplications";
+import { creerDateMaintenant,creerDateEnveloppe } from "../../bibliotheque/types/date"
 
-
-
+//IMPORT COMMUN CHAT
 import {hote, port1, port2, ReseauChat, creerAnneauChat} from '../commun/reseauChat';
 import {SommetChat} from '../commun/sommetChat';
 import {FormatNoeudChatImmutable} from '../commun/noeudChat';
 import {composerConfigurationChat, FormatConfigurationChat, EtiquetteConfigurationChat} from '../commun/configurationChat';
+import {composerErreurChat, FormatErreurChat, EtiquetteErreurChat} from '../commun/erreurChat';
 import {
-    composerErreurChat, FormatErreurChat, EtiquetteErreurChat
-} from '../commun/erreurChat';
+    creerMessageErreurConnexion, creerMessageRetourErreur,TypeMessageChat, FormatMessageChat,
+    EtiquetteMessageChat,MessageChat
+} from '../commun/messageChat'
 
-import { creerReseauVide } from "../../bibliotheque/communication/creerReseau";
 
+//IMPORT COMMUN JEU1 -- Grall
 import {
-    creerMessageErreurConnexion, creerMessageRetourErreur,
-
-    TypeMessageChat, FormatMessageChat, EtiquetteMessageChat,
-    MessageChat
-} from '../commun/messageChat';
-
-
-
-import { ServeurLiensWebSocket, LienWebSocket } from "../../bibliotheque/serveurConnexions";
-import { ServeurApplications, Interaction } from "../../bibliotheque/serveurApplications";
-
-import { creerDateMaintenant } from "../../bibliotheque/types/date"
+    //hote, port1, port2, //DONE
+    ReseauJeu1, creerAnneauJeu1, // DONE
+    PopulationParDomaineMutable, assemblerPopulationParDomaine, // DONE
+    composerErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
+    composerConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
+    FormatSommetJeu1, EtiquetteSommetJeu1, SommetJeu1,
+    creerMessageEnveloppe, TypeMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1, MessageJeu1,
+    TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine
+} from '../commun/jeu1_commun';
 
 class ServeurChat extends ServeurLiensWebSocket<
     FormatErreurChat, FormatErreurChat, EtiquetteErreurChat,
@@ -43,16 +46,31 @@ class LienChat extends LienWebSocket<
     FormatMessageChat, FormatMessageChat, EtiquetteMessageChat
     > { }
 
+class ServeurJeu1
+    extends
+    ServeurLiensWebSocket<
+    FormatErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
+    FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
+    FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> { }
+
+class LienJeu1
+    extends LienWebSocket<
+    FormatErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
+    FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
+    FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> { }
 
 
-const anneau: ReseauChat = creerAnneauChat(["Morgane", "Elisa", "Loïc", "Jules"]);
+    //creation d'un anneau --> besoin de passer a 4 anneaux --> plus tard a X anneaux a specifier par un admin
+const pseudo: string[] = ["Morgane", "Elisa", "Loïc", "Jules"];
+const anneau: ReseauChat = creerAnneauChat(pseudo);
 const reseauConnecte: ReseauChat = creerReseauVide();
 const connexions: TableIdentificationMutable<'sommet', LienChat, LienChat>
     = creerTableIdentificationMutableVide<'sommet', LienChat, LienChat>('sommet', (x) => x);
 
 
-const repertoireHtml: string = shell.pwd() + "/build";
+const repertoiregit : string = shell.pwd() + "/build";
 
+//creation du serveur d'application
 const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 serveurAppli.specifierRepertoireScriptsEmbarques("build");
@@ -63,7 +81,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
 
     serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
         console.log("* " + creerDateMaintenant().representationLog() + " - Service de " + ressource + " en " + racine);
-        i.servirFichier(repertoireHtml, ressource);
+        i.servirFichier(repertoiregit, ressource);
     });
 }
 
@@ -109,6 +127,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienChat) => {
         //ajout du sommet à la liste de connexions
     connexions.ajouter(ID_sommet, l);
 
+    //methode noeud retourne la valeur de ID_sommet (etatVersVal)
     let n = anneau.noeud(ID_sommet);
     let config = composerConfigurationChat(n, d.val());
     console.log("- envoi au client d'adresse " + l.adresseClient());
@@ -132,7 +151,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienChat, m: FormatMessageChat) 
             let ID_emetteurUrl = l.configuration().val().centre.ID;
             let ID_emetteurMsg = m.ID_emetteur;
             let ID_destinataireMsg = m.ID_destinataire;
-            // Contrôle de l'émetteur et du destinataire
+            // Contrôle de l'émetteur et du destinataire --> recherche d'anomalies
             if (!(ID_emetteurUrl.val === ID_emetteurMsg.val)) {
                 let msgErreur = "Problème d'identité pour l'émetteur : le client utilisant l'adresse "
                     + l.adresseClient()
@@ -154,15 +173,15 @@ serveurCanaux.enregistrerTraitementMessages((l: LienChat, m: FormatMessageChat) 
                 l.envoyerAuClientDestinataire(creerMessageRetourErreur(msg, TypeMessageChat.ERREUR_DEST, msgErreur));
                 break;
             }
-            // Contrôle des communications 
+            // Contrôle des communications --> recherche d'anomalies
             if (!reseauConnecte.sontVoisins(ID_emetteurMsg, ID_destinataireMsg)) {
                 let msgErreur = "communication interdite : le noeud émetteur "
                     + ID_emetteurMsg.val
-                    + " n'est pas vosin du noeud destinataire " + ID_destinataireMsg.val + ".";
+                    + " n'est pas voi sin du noeud destinataire " + ID_destinataireMsg.val + ".";
                 console.log("- " + msgErreur);
                 l.envoyerAuClientDestinataire(creerMessageRetourErreur(msg, TypeMessageChat.INTERDICTION, msgErreur));
             }
-            // Fonctionnement normal
+            // Fonctionnement normal --> si aucune anomalie detectee
             let lienDestinaire: LienChat = connexions.valeur(ID_destinataireMsg);
             let lienEmetteur: LienChat = connexions.valeur(ID_emetteurMsg);
             let msgTransit = msg.transit();

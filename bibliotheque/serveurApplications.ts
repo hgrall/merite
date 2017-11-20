@@ -6,8 +6,16 @@ import {
 } from "./types/date"
 
 /*
+
+SERVEUR REPONDANT AUX PREMIERES REQUETES
+
+
 Serveur utilisant Express
 http://expressjs.com/en/api.html
+
+can creates the scaffolding for a full app with numerous JavaScript files, 
+Jade templates, and sub-directories for various purposes
+
 */
 /*
 Classe à développer
@@ -49,6 +57,7 @@ export class ServeurApplications {
         this.port = port;
     }
 
+    //pour commencer la communication
     demarrer(): void {
         let ceServeur = this;
         this.appli.listen(this.port, this.hote, () => {
@@ -59,6 +68,7 @@ export class ServeurApplications {
     Les pages se terminant par suffixe sont paramétrées.
     Attention : le typage de la paramétrisation n'est pas vérifié.
     */
+
     definirParametrisationVuesDynamique(suffixe: string, rep: string, cles: string[]): void {
         this.appli.engine(suffixe,
             (chemin: string,

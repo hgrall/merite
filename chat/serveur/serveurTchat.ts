@@ -22,18 +22,6 @@ import {
 } from '../commun/messageChat'
 
 
-//IMPORT COMMUN JEU1 -- Grall
-import {
-    //hote, port1, port2, //DONE
-    ReseauJeu1, creerAnneauJeu1, // DONE
-    PopulationParDomaineMutable, assemblerPopulationParDomaine, // DONE
-    composerErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
-    composerConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
-    FormatSommetJeu1, EtiquetteSommetJeu1, SommetJeu1,
-    creerMessageEnveloppe, TypeMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1, MessageJeu1,
-    TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine
-} from '../commun/jeu1_commun';
-
 class ServeurChat extends ServeurLiensWebSocket<
     FormatErreurChat, FormatErreurChat, EtiquetteErreurChat,
     FormatConfigurationChat, FormatConfigurationChat, EtiquetteConfigurationChat,
@@ -45,20 +33,6 @@ class LienChat extends LienWebSocket<
     FormatConfigurationChat, FormatConfigurationChat, EtiquetteConfigurationChat,
     FormatMessageChat, FormatMessageChat, EtiquetteMessageChat
     > { }
-
-class ServeurJeu1
-    extends
-    ServeurLiensWebSocket<
-    FormatErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
-    FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
-    FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> { }
-
-class LienJeu1
-    extends LienWebSocket<
-    FormatErreurJeu1, FormatErreurJeu1, EtiquetteErreurJeu1,
-    FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1,
-    FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> { }
-
 
     //creation d'un anneau --> besoin de passer a 4 anneaux --> plus tard a X anneaux a specifier par un admin
 const pseudo: string[] = ["Morgane", "Elisa", "Loïc", "Jules"];
@@ -77,7 +51,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
 
 {
     let racine = "/";
-    let ressource = "interfaceChat.html";
+    let ressource = "index.html";
 
     serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
         console.log("* " + creerDateMaintenant().representationLog() + " - Service de " + ressource + " en " + racine);
@@ -85,7 +59,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
     });
 }
 
-//Demarrage du serveur
+// //Demarrage du serveur
 serveurAppli.demarrer();
 
 const serveurCanaux = new ServeurChat(port2, hote);

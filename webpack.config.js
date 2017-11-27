@@ -1,11 +1,10 @@
 var config = {
     entry: {
-        tchatReact: "./build/chat/client/renduTchat.js",
-       // jeu1React: "./build/jeu1_adressageRoutage/client/renduJeu1.js"
+        menu: "./index.tsx",
     }, // Les clés remplacent name ci-dessous.
     output: {
-        path: __dirname + "/build",
-        filename: "[name].client.js"
+        path: __dirname+ '/build',
+        filename: "index.bundle.js"
     },
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",

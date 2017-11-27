@@ -49,11 +49,16 @@ const domaines: Mot[] = [binaire(0), binaire(1), binaire(2), binaire(3)];
 const anneau: ReseauJeu1= creerAnneauJeu1(domaines);
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
 
+
+//Gestion de 4 utilisateurs
+const utilisateurs: Mot[] = [binaire(0), binaire(1), binaire(2), binaire(3)];
+
+
 const utilisateursParDomaine: PopulationParDomaineMutable
-    = assemblerPopulationParDomaine(anneau, [binaire(0), binaire(1)]);
+    = assemblerPopulationParDomaine(anneau, utilisateurs);
 
 const utilisateursAConnecterParDomaine: PopulationParDomaineMutable
-    = assemblerPopulationParDomaine(anneau, [binaire(0), binaire(1)]);
+    = assemblerPopulationParDomaine(anneau, utilisateurs);
 
 const utilisateursConnectesParDomaine: PopulationParDomaineMutable
     = assemblerPopulationParDomaine(anneau, []);
@@ -78,6 +83,7 @@ serveurAppli.specifierRepertoireScriptsEmbarques("build");
 
 {
     let racine = "/";
+    //PROBLABLEMENT A CHANGER
     let ressource = "interfaceJeu1.html";
 
     serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
@@ -97,8 +103,10 @@ serveurAppli.demarrer();
 * Config 1 - Traitement des connexions
 */
 
+//ajoute utilisateur dans UtilisateurConnectes
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
     let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+    //si reseau deja complet
     try {
         ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
     } catch (e) {
@@ -113,6 +121,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
     let ID_dom = ids[0];
     let ID_util = ids[1];
 
+    //si utilisateur est deja connecte
     if (connexions.contient(ID_util)
         || utilisateursConnectesParDomaine
         .contientUtilisateur(ID_dom, ID_util)) {
@@ -233,7 +242,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 
 //Deconnexion des individus
 serveurCanaux.enregistrerTraitementFermeture((l: LienJeu1, r: number, desc: string) => {
-    console.log('TODO traitement fermeture');
+   /* console.log('TODO traitement fermeture');
     
     //identifiant du sommet
     let id_util : Identifiant<"Utilisateur">= ids[0];
@@ -246,7 +255,7 @@ serveurCanaux.enregistrerTraitementFermeture((l: LienJeu1, r: number, desc: stri
         connexions[id] = l;
         return;
     }
-    /*if ((connexions.valeur(ID_centre) === undefined) || (!reseauConnecte.possedeNoeud(ID_centre))) {
+    if ((connexions.valeur(ID_centre) === undefined) || (!reseauConnecte.possedeNoeud(ID_centre))) {
         console.log("* Impossibilité de fermer la connexion par Web socket : " + ID_centre.val + " est déjà déconnecté.");
         connexions.ajouter(ID_centre, l);
         return;

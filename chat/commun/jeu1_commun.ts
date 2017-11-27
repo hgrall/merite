@@ -28,8 +28,8 @@ import { Mot, creerMot } from "../../bibliotheque/binaire";
 
 
 export const hote: string = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3001; // port de la essource 1 (serveur d'applications)
-export const port2: number = 1111; // port de la ressouce 2 (serveur de connexions)
+export const port1 = 3001; // port de la ressource 1 (serveur d'applications)
+export const port2: number = 1111; // port de la ressource 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
 export const sommetInconnu: Identifiant<'sommet'> = { val: "*", sorte: 'sommet' };
@@ -117,6 +117,8 @@ export class NoeudJeu1EnveloppeImmutable extends NoeudEnveloppeImmutable<FormatS
 export function creerNoeudJeu1Immutable(n: FormatNoeudJeu1Immutable): NoeudJeu1Immutable {
     return new NoeudJeu1EnveloppeImmutable(n);
 }
+
+//SEPARATION JUSQUICI
 
 export type ReseauJeu1 = ReseauImmutable<FormatSommetJeu1>;
 
@@ -420,7 +422,7 @@ export function peuplerPopulationLocale(
     let pop = creerPopulationLocaleVide();
     noms.forEach((nom: Mot, i: number, tab: Mot[]) => {
         let u: FormatUtilisateur
-            = { ID: identification.identifier('utilisateur'), pseudo: tab[i].tableauBinaire() };
+            = { ID: identification.identifier('utilisateur'), pseudo: tab[i].valeur };
         pop.ajouter(u.ID, u);
     });
     return pop;

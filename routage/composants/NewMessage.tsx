@@ -4,6 +4,9 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import {MessageCases} from './MessageCases';
+import {DialogDecoderMessage} from './DialogDecoderMessage';
+import {DialogTransmettreMessage} from './DialogTransmettreMessage';
+
 /**
  * A modal dialog can only be closed by selecting one of the actions.
  */
@@ -22,16 +25,8 @@ export class NewMessage extends React.Component {
 
   render() {
     const actions = [
-      <FlatButton
-        label="Decoder"
-        primary={true}
-        onClick={this.handleClose}
-      />,
-      <FlatButton
-        label="Transmettre"
-        primary={true}
-        onClick={this.handleClose}
-      />,
+      <DialogDecoderMessage validation={this.handleClose}/>,
+      <DialogTransmettreMessage validation={this.handleClose}/>,
       <FlatButton
       label="Jeter"
       primary={true}

@@ -16,7 +16,7 @@ const caseNoire = {
     background: 'black'
 };
   
-export class CaseMessage extends React.Component<any, any> {
+export class Case extends React.Component<any, any> {
     state = {
         colored: false,
     };

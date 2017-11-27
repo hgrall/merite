@@ -1,16 +1,15 @@
 import * as React from 'react';
 import GridList from 'material-ui/GridList';
-import {CaseMessage} from './CaseMessage';
-
+import {Card, CardHeader} from 'material-ui/Card';
+import {MessageCases} from './MessageCases';
 const styles = {
     root: {
       display: "flex" as 'flex',
       flexWrap: "wrap" as 'wrap',
-      justifyContent: "center" as 'center'
+      justifyContent: "center" as 'center',
+      margin: '30px'
     },
     gridList: {
-      width: 41,
-      height: 45,
       overflowY: 'auto' as 'auto',
     }
   };
@@ -23,38 +22,13 @@ export class Message extends React.Component<any, any> {
     public render() {
       return (
         <div style={styles.root}>
-          <GridList
-          cellHeight={'auto'}
-          cols={8}
-          style={styles.root}
-        >
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-            <CaseMessage/>
-        </GridList>
+          <Card>
+            <CardHeader
+              title="Code ton message en cliquant sur les cases !"
+            />
+            <MessageCases/>
+          </Card>
+          
         </div>
       );
     }

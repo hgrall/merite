@@ -12,7 +12,12 @@ import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 
 const styles = {
     root: {
-        justifyContent: "space-between" as "space-between"
+        display: "flex",
+        justifyContent: "space-around" as "space-around"
+    },
+    arrowContainer: {
+      display: "flex",
+      flexDirection: "column" as "column"
     },
     largeIcon: {
         width: 60,
@@ -29,20 +34,28 @@ export class BarreEnvoi extends React.Component<any, any> {
   render() {
     return (
       <div style={styles.root}>
-       <IconButton
-       tooltip="Send"
-         iconStyle={styles.largeIcon}
-         style={styles.large}
-       >
+        <div style={styles.arrowContainer}>
+          Envoyer a : 
+          Jules
+          <IconButton
+          tooltip="Envoyer"
+            iconStyle={styles.largeIcon}
+            style={styles.large}
+          >
          <ArrowBack/> 
-       </IconButton> 
-       <IconButton
-       tooltip="Send"
-         iconStyle={styles.largeIcon}
-         style={styles.large}
-       >
-         <ArrowForward/>
        </IconButton>
+       </div> 
+       <div style={styles.arrowContainer}>
+          Envoyer a : 
+          Elisa
+          <IconButton
+            tooltip="Envoyer"
+            iconStyle={styles.largeIcon}
+            style={styles.large}
+          >
+            <ArrowForward/>
+          </IconButton>
+        </div>
       </div>
     );
   }

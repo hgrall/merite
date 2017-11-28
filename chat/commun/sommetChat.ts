@@ -2,9 +2,11 @@
 import { FormatIdentifiableImmutable } from "../../bibliotheque/types/identifiant";
 import {Sommet} from "../../bibliotheque/communication/communication";
 import { jamais } from "../../bibliotheque/outils";
-
+import { Deux } from "../../bibliotheque/types/mutable"
+import { creerMot, Mot } from "../../bibliotheque/binaire"; 
 export interface FormatSommetChat extends FormatIdentifiableImmutable<'sommet'> {
     readonly pseudo: string,
+    readonly binId: Mot
 }
 
 export type EtiquetteSommetChat = 'ID' | 'nom';

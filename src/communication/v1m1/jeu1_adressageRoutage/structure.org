@@ -88,7 +88,7 @@ interactions avec l'utilisateur
 
 // L'utilisateur demande au serveur de vérifier que son interprétation du message est correcte.
 - Actif(id, idUtil, origine, dest, contenu) & EntreeEssai(id, interpretation)  
-  - & !Utilisateur(idUtil, dest) // inutile car invariant de Transit
+  - & !Utilisateur(idUtil, dest) // inutile car invariant de Actif
   - > verifier(id, idUtil, dest, interpretation)
 
 // L'utilisateur gagne la partie après vérification de l'interprétation

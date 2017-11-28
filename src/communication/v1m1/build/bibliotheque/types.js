@@ -512,7 +512,7 @@ var TableMutable = /** @class */ (function (_super) {
             case 'taille': return this.taille().toString();
             case 'domaine': return this.domaine().toString();
             case 'image': return this.image().map(function (v, i) { return JSON.stringify(v); }).toString();
-            case 'graphe': return this.brut();
+            case 'graphe': return JSON.stringify(this.val().table);
         }
         return outils_1.jamais(e);
     };
@@ -615,6 +615,10 @@ function creerIdentifiant(s, cle) {
     };
 }
 exports.creerIdentifiant = creerIdentifiant;
+function egaliteIdentifiant(id1, id2) {
+    return id1.val === id2.val;
+}
+exports.egaliteIdentifiant = egaliteIdentifiant;
 /*
 * Table utilisant des identificateurs comme clé.
 * Remarque : les tables précédentes fondées sur les tables en JSON utilisent nécessairement le type string pour les clés.

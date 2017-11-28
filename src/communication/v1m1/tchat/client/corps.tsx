@@ -129,7 +129,6 @@ class CorpsBrut extends React.Component<ProprietesCorps, EtatCorps> {
       encre: COUPLE_FOND_ENCRE_INCONNU.encre
     };
 
-
     this.state = {
       selection: this.toutIndividu,
       messages: [],

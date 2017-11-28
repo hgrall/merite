@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 69);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3999,66 +3999,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var BLEU_TURQUIN = "rgb(66, 91, 138)";
-var BLANC = "rgb(255, 255, 255)";
-var NOIR = "rgb(0,0,0)";
-var NOIR_CARBONE = "rgb(19, 14, 10)";
-var ANTHRACITE = "rgb(48, 48, 48)";
-var FRAISE = "rgb(191, 48, 48)";
-var JAUNE_OR = "rgb(239, 216, 7)";
-var ZINZOLIN = "rgb(108, 2, 119)";
-var BLEU_CANARD = "rgb(0, 128, 128)";
-var BLEU_CIEL = "rgb(119, 181, 254)";
-var VERT_PRINTEMPS = "rgb(0, 255, 127)";
-var GRIS_FER = "rgb(127, 127, 127)";
-var LIN = "rgb(250, 240, 230)";
-var ROUGE_FEU = "rgb(254, 27, 0)";
-var FUMEE = "rgb(187, 210, 225)";
-exports.FOND = LIN;
-exports.CADRE = BLEU_CIEL;
-exports.SELECTION = BLEU_TURQUIN;
-exports.SEPARATION_CADRE = BLANC;
-exports.TEXTE = NOIR;
-exports.TEXTE_PALE = ANTHRACITE;
-exports.TEXTE_INV = BLANC;
-exports.TEXTE_ERREUR = ROUGE_FEU;
-exports.FOND_TEXTE = BLANC;
-exports.FOND_TEXTE_INV = NOIR_CARBONE;
-var SuiteCouplesFondEncre = /** @class */ (function () {
-    function SuiteCouplesFondEncre() {
-        this.fonds = [JAUNE_OR, BLEU_CANARD, ZINZOLIN, VERT_PRINTEMPS]; /* TODO etendre ! */
-        this.encres = [NOIR, BLANC, BLANC, NOIR]; /* TODO etendre ! */
-        this.pos = 0;
-    }
-    SuiteCouplesFondEncre.prototype.courant = function () {
-        var r = { fond: this.fonds[this.pos], encre: this.encres[this.pos] };
-        this.pos = (this.pos + 1) % (this.encres.length);
-        return r;
-    };
-    return SuiteCouplesFondEncre;
-}());
-exports.SuiteCouplesFondEncre = SuiteCouplesFondEncre;
-exports.COUPLE_FOND_ENCRE_TOUS = {
-    fond: GRIS_FER,
-    encre: BLANC
-};
-exports.COUPLE_FOND_ENCRE_SUJET = {
-    fond: FRAISE,
-    encre: BLANC
-};
-exports.COUPLE_FOND_ENCRE_INCONNU = {
-    fond: FUMEE,
-    encre: NOIR
-};
-
-
-/***/ }),
+/* 18 */,
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -26134,95 +26075,34 @@ exports.creerAssemblageReseauEnAnneau = creerAssemblageReseauEnAnneau;
 
 
 /***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Scrollbars = undefined;
-
-var _Scrollbars = __webpack_require__(47);
-
-var _Scrollbars2 = _interopRequireDefault(_Scrollbars);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-exports["default"] = _Scrollbars2["default"];
-exports.Scrollbars = _Scrollbars2["default"];
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var prefix = __webpack_require__(51)
-var toCamelCase = __webpack_require__(52)
-var cache = { 'float': 'cssFloat' }
-var addPxToStyle = __webpack_require__(55)
-
-function style (element, property, value) {
-  var camel = cache[property]
-  if (typeof camel === 'undefined') {
-    camel = detect(property)
-  }
-
-  // may be false if CSS prop is unsupported
-  if (camel) {
-    if (value === undefined) {
-      return element.style[camel]
-    }
-
-    element.style[camel] = addPxToStyle(camel, value)
-  }
-}
-
-function each (element, properties) {
-  for (var k in properties) {
-    if (properties.hasOwnProperty(k)) {
-      style(element, k, properties[k])
-    }
-  }
-}
-
-function detect (cssProp) {
-  var camel = toCamelCase(cssProp)
-  var result = prefix(camel)
-  cache[camel] = cache[cssProp] = cache[result] = result
-  return result
-}
-
-function set () {
-  if (arguments.length === 2) {
-    if (typeof arguments[1] === 'string') {
-      arguments[0].style.cssText = arguments[1]
-    } else {
-      each(arguments[0], arguments[1])
-    }
-  } else {
-    style(arguments[0], arguments[1], arguments[2])
-  }
-}
-
-module.exports = set
-module.exports.set = set
-
-module.exports.get = function (element, properties) {
-  if (Array.isArray(properties)) {
-    return properties.reduce(function (obj, prop) {
-      obj[prop] = style(element, prop || '')
-      return obj
-    }, {})
-  } else {
-    return style(element, properties || '')
-  }
-}
-
-
-/***/ }),
-/* 44 */
+/* 42 */,
+/* 43 */,
+/* 44 */,
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */,
+/* 51 */,
+/* 52 */,
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26231,14 +26111,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(22);
 var styled_components_1 = __webpack_require__(5);
-var corps_1 = __webpack_require__(45);
+var corps_1 = __webpack_require__(70);
 (_a = ["\n    * { \n        margin: 0; \n        padding: 0; \n        box-sizing: border-box;\n        font-family: Verdana, Geneva, sans serif;\n    }\n"], _a.raw = ["\n    * { \n        margin: 0; \n        padding: 0; \n        box-sizing: border-box;\n        font-family: Verdana, Geneva, sans serif;\n    }\n"], styled_components_1.injectGlobal(_a));
 ReactDOM.render(React.createElement(corps_1.Corps, null), document.getElementById("conteneur"));
 var _a;
 
 
 /***/ }),
-/* 45 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26256,20 +26136,15 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var styled_components_1 = __webpack_require__(5);
-var admin_1 = __webpack_require__(46);
-var action_1 = __webpack_require__(64);
-var couleur_1 = __webpack_require__(18);
-var types_1 = __webpack_require__(8);
+var couleur_1 = __webpack_require__(71);
 var client_1 = __webpack_require__(40);
-var tchat_1 = __webpack_require__(68);
-var ApresAdmin = (_a = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    left: 24vw;\n    width: calc(1vw);\n    height: calc(100vh);\n    border-style: solid;\n    border-width: 0 0.33vw;\n    border-color: ", ";\n"], _a.raw = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    left: 24vw;\n    width: calc(1vw);\n    height: calc(100vh);\n    border-style: solid;\n    border-width: 0 0.33vw;\n    border-color: ", ";\n"], styled_components_1.default.div(_a, couleur_1.CADRE, couleur_1.SEPARATION_CADRE));
-var ApresAction = (_b = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    right: 0;\n    width: 1vw;\n    height: 100vh;\n    border-style: solid;\n    border-width: 0 0.33vw;\n    border-color: ", ";\n"], _b.raw = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    right: 0;\n    width: 1vw;\n    height: 100vh;\n    border-style: solid;\n    border-width: 0 0.33vw;\n    border-color: ", ";\n"], styled_components_1.default.div(_b, couleur_1.CADRE, couleur_1.SEPARATION_CADRE));
-var EtatInterfaceTchat;
-(function (EtatInterfaceTchat) {
-    EtatInterfaceTchat[EtatInterfaceTchat["INITIAL"] = 0] = "INITIAL";
-    EtatInterfaceTchat[EtatInterfaceTchat["NORMAL"] = 1] = "NORMAL";
-    EtatInterfaceTchat[EtatInterfaceTchat["ERRONE"] = 2] = "ERRONE";
-})(EtatInterfaceTchat || (EtatInterfaceTchat = {}));
+var jeu1_adressageRoutage_1 = __webpack_require__(72);
+var EtatInterfaceJeu1;
+(function (EtatInterfaceJeu1) {
+    EtatInterfaceJeu1[EtatInterfaceJeu1["INITIAL"] = 0] = "INITIAL";
+    EtatInterfaceJeu1[EtatInterfaceJeu1["NORMAL"] = 1] = "NORMAL";
+    EtatInterfaceJeu1[EtatInterfaceJeu1["ERRONE"] = 2] = "ERRONE";
+})(EtatInterfaceJeu1 || (EtatInterfaceJeu1 = {}));
 ;
 var ID_TOUS = "TOUS";
 var ID_INCONNU = "?";
@@ -26280,95 +26155,24 @@ var CorpsBrut = /** @class */ (function (_super) {
     __extends(CorpsBrut, _super);
     function CorpsBrut(props) {
         var _this = _super.call(this, props) || this;
-        _this.adresseServeur = tchat_1.hote + ":" + tchat_1.port2;
+        _this.adresseServeur = jeu1_adressageRoutage_1.hote + ":" + jeu1_adressageRoutage_1.port2;
         _this.messageErreur = "Aucune erreur";
-        _this.toutIndividu = {
-            ID: types_1.creerIdentifiant('sommet', ID_TOUS),
-            nom: "tous",
-            fond: couleur_1.COUPLE_FOND_ENCRE_TOUS.fond,
-            encre: couleur_1.COUPLE_FOND_ENCRE_TOUS.encre
-        };
-        _this.individuInconnu = {
-            ID: types_1.creerIdentifiant('sommet', ID_INCONNU),
-            nom: "inconnu",
-            fond: couleur_1.COUPLE_FOND_ENCRE_INCONNU.fond,
-            encre: couleur_1.COUPLE_FOND_ENCRE_INCONNU.encre
-        };
         _this.state = {
-            selection: _this.toutIndividu,
-            messages: [],
-            etatInterface: EtatInterfaceTchat.INITIAL,
+            etatInterface: EtatInterfaceJeu1.INITIAL,
         };
-        _this.envoyerMessage = _this.envoyerMessage.bind(_this);
-        _this.modifierSelection = _this.modifierSelection.bind(_this);
         return _this;
     }
-    CorpsBrut.prototype.modifierSelection = function (i) {
-        this.setState({ selection: i });
-    };
-    CorpsBrut.prototype.ajouterMessage = function (m) {
-        this.setState(function (etatAvant) { return ({
-            messages: etatAvant.messages.concat([m])
-        }); });
-    };
-    CorpsBrut.prototype.individu = function (id) {
-        if (id.val === this.individuSujet.ID.val) {
-            return this.individuSujet;
-        }
-        if (this.individusObjets.contient(id)) {
-            return this.individusObjets.valeur(id);
-        }
-        return this.individuInconnu;
-    };
-    CorpsBrut.prototype.mettreAJourMessageEnvoye = function (id, destinataire) {
-        this.setState(function (etatAvant) { return ({
-            messages: etatAvant.messages.map(function (v, i, tab) {
-                if (v.ID.val === id.val) {
-                    return {
-                        ID: v.ID,
-                        emetteur: v.emetteur,
-                        destinataire: v.destinataire,
-                        contenu: v.contenu,
-                        cachet: v.cachet,
-                        accuses: v.accuses.concat([destinataire.fond])
-                    };
-                }
-                else {
-                    return v;
-                }
-            })
-        }); });
-    };
-    CorpsBrut.prototype.envoyerMessage = function (m, d) {
-        var _this = this;
-        this.ajouterMessage(m);
-        if (m.destinataire.ID.val === ID_TOUS) {
-            console.log("* Diffusion du message");
-            this.individusObjets.iterer(function (c, v) {
-                var msg = tchat_1.creerMessageCommunication(m.ID, m.emetteur.ID, v.ID, m.contenu, d.val());
-                console.log("- brut : " + msg.brut());
-                console.log("- net : " + msg.representation());
-                _this.canal.envoyerMessage(msg);
-            });
-            return;
-        }
-        var msg = tchat_1.creerMessageCommunication(m.ID, m.emetteur.ID, m.destinataire.ID, m.contenu, d.val());
-        console.log("* Envoi du message");
-        console.log("- brut : " + msg.brut());
-        console.log("- net : " + msg.representation());
-        this.canal.envoyerMessage(msg);
-    };
     CorpsBrut.prototype.render = function () {
         switch (this.state.etatInterface) {
-            case EtatInterfaceTchat.NORMAL:
+            case EtatInterfaceJeu1.NORMAL:
                 return (React.createElement("div", { className: this.props.className },
-                    React.createElement(admin_1.Admin, { sujet: this.individuSujet, objets: this.individusObjets.image(), tous: this.toutIndividu, selection: this.state.selection, modifSelection: this.modifierSelection }),
-                    React.createElement(ApresAdmin, null),
-                    React.createElement(action_1.Action, { sujet: this.individuSujet, messages: this.state.messages, selection: this.state.selection, envoiMessage: this.envoyerMessage }),
-                    React.createElement(ApresAction, null)));
-            case EtatInterfaceTchat.INITIAL:
+                    React.createElement("h1", null, "Configuration termin\u00E9e"),
+                    this.config.brut(),
+                    React.createElement("br", null),
+                    this.config.representation()));
+            case EtatInterfaceJeu1.INITIAL:
                 return (React.createElement("h1", null, "Connexion au serveur pour l'initialisation"));
-            case EtatInterfaceTchat.ERRONE:
+            case EtatInterfaceJeu1.ERRONE:
                 return (React.createElement("div", null,
                     React.createElement("h1", null, "Fin de l'application apr\u00E8s l'erreur suivante : "),
                     React.createElement("div", { style: { color: couleur_1.TEXTE_ERREUR } }, this.messageErreur)));
@@ -26381,2268 +26185,99 @@ var CorpsBrut = /** @class */ (function (_super) {
         this.canal = client_1.creerCanalClient(this.adresseServeur);
         console.log("- du traitement des messages");
         this.canal.enregistrerTraitementMessageRecu(function (m) {
-            var msg = new tchat_1.MessageTchat(m);
-            console.log("* Réception");
-            console.log("- du message brut : " + msg.brut());
-            console.log("- du message net : " + msg.representation());
-            var contenu = m.contenu;
-            /* Message en transit */
-            if (m.type === tchat_1.TypeMessageTchat.TRANSIT) {
-                if (!_this.individusObjets.contient(m.ID_emetteur)) {
-                    console.log("- message incohéent");
-                    return;
-                }
-                if (m.ID_destinataire.val !== _this.individuSujet.ID.val) {
-                    console.log("- message incohéent");
-                    return;
-                }
-                var emetteur_1 = _this.individusObjets.valeur(m.ID_emetteur);
-                var destinataire_1 = _this.individuSujet;
-                _this.ajouterMessage({
-                    ID: m.ID,
-                    emetteur: emetteur_1,
-                    destinataire: destinataire_1,
-                    cachet: types_1.creerDateEnveloppe(m.date).representation(),
-                    contenu: contenu,
-                    accuses: []
-                });
-                return;
-            }
-            /* Message accusant réception */
-            if (m.type === tchat_1.TypeMessageTchat.AR) {
-                if (!_this.individusObjets.contient(m.ID_destinataire)) {
-                    console.log("- message incohéent");
-                    return;
-                }
-                if (m.ID_emetteur.val !== _this.individuSujet.ID.val) {
-                    console.log("- message incohéent");
-                    return;
-                }
-                var destinataire_2 = _this.individusObjets.valeur(m.ID_destinataire);
-                _this.mettreAJourMessageEnvoye(m.ID, destinataire_2);
-                return;
-            }
-            /* Messages d'erreur */
-            var emetteur;
-            var destinataire;
-            _this.ajouterMessage({
-                ID: _this.generateur.identifier('message'),
-                emetteur: _this.individu(m.ID_emetteur),
-                destinataire: _this.individu(m.ID_destinataire),
-                cachet: types_1.creerDateEnveloppe(m.date).representation(),
-                contenu: contenu,
-                accuses: []
-            });
-            /* TODO passer les AR en tableau de couleurs dans les messages*/
+            // TODO
         });
         console.log("- du traitement de la configuration");
         this.canal.enregistrerTraitementConfigurationRecue(function (c) {
-            var config = tchat_1.creerConfigurationTchat(c);
+            _this.config = jeu1_adressageRoutage_1.creerConfigurationJeu1(c);
             console.log("* Réception");
-            console.log("- de la configuration brute : " + config.brut());
-            console.log("- de la configuration nette : " + config.representation());
-            console.log("* Initialisation du noeud du réseau");
-            _this.noeud = tchat_1.creerNoeudTchatImmutable(tchat_1.decomposerConfiguration(config));
-            _this.individuSujet = {
-                ID: _this.noeud.val().centre.ID,
-                nom: _this.noeud.val().centre.pseudo,
-                fond: couleur_1.COUPLE_FOND_ENCRE_SUJET.fond,
-                encre: couleur_1.COUPLE_FOND_ENCRE_SUJET.encre
-            };
-            _this.generateur = types_1.creerIdentificationParCompteur(_this.individuSujet.ID.val + "-ERR-");
-            var suite = new couleur_1.SuiteCouplesFondEncre();
-            _this.individusObjets =
-                types_1.creerTableIdentificationImmutable('sommet', types_1.creerTableImmutable(_this.noeud.val().voisins).application(function (s) {
-                    var c = suite.courant();
-                    return {
-                        ID: s.ID,
-                        nom: s.pseudo,
-                        fond: c.fond,
-                        encre: c.encre
-                    };
-                }).val());
+            console.log("- de la configuration brute : " + _this.config.brut());
+            console.log("- de la configuration nette : " + _this.config.representation());
             _this.setState({
-                etatInterface: EtatInterfaceTchat.NORMAL
+                etatInterface: EtatInterfaceJeu1.NORMAL
             });
         });
         console.log("- du traitement d'une erreur rédhibitoire");
         this.canal.enregistrerTraitementErreurRecue(function (err) {
-            var erreur = tchat_1.creerErreurTchat(err);
+            var erreur = jeu1_adressageRoutage_1.creerErreurJeu1(err);
             console.log("* Réception");
             console.log("- de l'erreur rédhibitoire brute : " + erreur.brut());
             console.log("- de l'erreur rédhibitoire nette : " + erreur.representation());
             console.log("* Affichage de l'erreur");
             _this.messageErreur = erreur.representation();
             _this.setState({
-                etatInterface: EtatInterfaceTchat.ERRONE,
+                etatInterface: EtatInterfaceJeu1.ERRONE,
             });
         });
     };
     return CorpsBrut;
 }(React.Component));
-exports.Corps = (_c = ["\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n  background: ", "\n"], _c.raw = ["\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n  background: ", "\n"], styled_components_1.default(CorpsBrut)(_c, couleur_1.FOND));
-var _a, _b, _c;
-
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var styled_components_1 = __webpack_require__(5);
-var react_custom_scrollbars_1 = __webpack_require__(42);
-var containerAdmin_1 = __webpack_require__(63);
-var ContenuAdmin = /** @class */ (function (_super) {
-    __extends(ContenuAdmin, _super);
-    function ContenuAdmin() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ContenuAdmin.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className },
-            React.createElement(react_custom_scrollbars_1.default, { style: { width: "24vw", height: "100vh" } },
-                React.createElement(containerAdmin_1.ContainerAdmin, { sujet: this.props.sujet, objets: this.props.objets, tous: this.props.tous, selection: this.props.selection, modifSelection: this.props.modifSelection }))));
-    };
-    return ContenuAdmin;
-}(React.Component));
-exports.Admin = (_a = ["\n    background: rgb(170, 170, 170);\n    position: fixed;\n    top: 0;\n    left: 0;\n"], _a.raw = ["\n    background: rgb(170, 170, 170);\n    position: fixed;\n    top: 0;\n    left: 0;\n"], styled_components_1.default(ContenuAdmin)(_a));
+exports.Corps = (_a = ["\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n  background: ", "\n"], _a.raw = ["\n  width: 100vw;\n  height: 100vh;\n  position: fixed;\n  top: 0;\n  left: 0;\n  background: ", "\n"], styled_components_1.default(CorpsBrut)(_a, couleur_1.FOND));
 var _a;
 
 
 /***/ }),
-/* 47 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _raf2 = __webpack_require__(48);
-
-var _raf3 = _interopRequireDefault(_raf2);
-
-var _domCss = __webpack_require__(43);
-
-var _domCss2 = _interopRequireDefault(_domCss);
-
-var _react = __webpack_require__(1);
-
-var _propTypes = __webpack_require__(12);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _isString = __webpack_require__(56);
-
-var _isString2 = _interopRequireDefault(_isString);
-
-var _getScrollbarWidth = __webpack_require__(57);
-
-var _getScrollbarWidth2 = _interopRequireDefault(_getScrollbarWidth);
-
-var _returnFalse = __webpack_require__(58);
-
-var _returnFalse2 = _interopRequireDefault(_returnFalse);
-
-var _getInnerWidth = __webpack_require__(59);
-
-var _getInnerWidth2 = _interopRequireDefault(_getInnerWidth);
-
-var _getInnerHeight = __webpack_require__(60);
-
-var _getInnerHeight2 = _interopRequireDefault(_getInnerHeight);
-
-var _styles = __webpack_require__(61);
-
-var _defaultRenderElements = __webpack_require__(62);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Scrollbars = function (_Component) {
-    _inherits(Scrollbars, _Component);
-
-    function Scrollbars(props) {
-        var _ref;
-
-        _classCallCheck(this, Scrollbars);
-
-        for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-            rest[_key - 1] = arguments[_key];
-        }
-
-        var _this = _possibleConstructorReturn(this, (_ref = Scrollbars.__proto__ || Object.getPrototypeOf(Scrollbars)).call.apply(_ref, [this, props].concat(rest)));
-
-        _this.getScrollLeft = _this.getScrollLeft.bind(_this);
-        _this.getScrollTop = _this.getScrollTop.bind(_this);
-        _this.getScrollWidth = _this.getScrollWidth.bind(_this);
-        _this.getScrollHeight = _this.getScrollHeight.bind(_this);
-        _this.getClientWidth = _this.getClientWidth.bind(_this);
-        _this.getClientHeight = _this.getClientHeight.bind(_this);
-        _this.getValues = _this.getValues.bind(_this);
-        _this.getThumbHorizontalWidth = _this.getThumbHorizontalWidth.bind(_this);
-        _this.getThumbVerticalHeight = _this.getThumbVerticalHeight.bind(_this);
-        _this.getScrollLeftForOffset = _this.getScrollLeftForOffset.bind(_this);
-        _this.getScrollTopForOffset = _this.getScrollTopForOffset.bind(_this);
-
-        _this.scrollLeft = _this.scrollLeft.bind(_this);
-        _this.scrollTop = _this.scrollTop.bind(_this);
-        _this.scrollToLeft = _this.scrollToLeft.bind(_this);
-        _this.scrollToTop = _this.scrollToTop.bind(_this);
-        _this.scrollToRight = _this.scrollToRight.bind(_this);
-        _this.scrollToBottom = _this.scrollToBottom.bind(_this);
-
-        _this.handleTrackMouseEnter = _this.handleTrackMouseEnter.bind(_this);
-        _this.handleTrackMouseLeave = _this.handleTrackMouseLeave.bind(_this);
-        _this.handleHorizontalTrackMouseDown = _this.handleHorizontalTrackMouseDown.bind(_this);
-        _this.handleVerticalTrackMouseDown = _this.handleVerticalTrackMouseDown.bind(_this);
-        _this.handleHorizontalThumbMouseDown = _this.handleHorizontalThumbMouseDown.bind(_this);
-        _this.handleVerticalThumbMouseDown = _this.handleVerticalThumbMouseDown.bind(_this);
-        _this.handleWindowResize = _this.handleWindowResize.bind(_this);
-        _this.handleScroll = _this.handleScroll.bind(_this);
-        _this.handleDrag = _this.handleDrag.bind(_this);
-        _this.handleDragEnd = _this.handleDragEnd.bind(_this);
-
-        _this.state = {
-            didMountUniversal: false
-        };
-        return _this;
-    }
-
-    _createClass(Scrollbars, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.addListeners();
-            this.update();
-            this.componentDidMountUniversal();
-        }
-    }, {
-        key: 'componentDidMountUniversal',
-        value: function componentDidMountUniversal() {
-            // eslint-disable-line react/sort-comp
-            var universal = this.props.universal;
-
-            if (!universal) return;
-            this.setState({ didMountUniversal: true });
-        }
-    }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-            this.update();
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            this.removeListeners();
-            (0, _raf2.cancel)(this.requestFrame);
-            clearTimeout(this.hideTracksTimeout);
-            clearInterval(this.detectScrollingInterval);
-        }
-    }, {
-        key: 'getScrollLeft',
-        value: function getScrollLeft() {
-            return this.view.scrollLeft;
-        }
-    }, {
-        key: 'getScrollTop',
-        value: function getScrollTop() {
-            return this.view.scrollTop;
-        }
-    }, {
-        key: 'getScrollWidth',
-        value: function getScrollWidth() {
-            return this.view.scrollWidth;
-        }
-    }, {
-        key: 'getScrollHeight',
-        value: function getScrollHeight() {
-            return this.view.scrollHeight;
-        }
-    }, {
-        key: 'getClientWidth',
-        value: function getClientWidth() {
-            return this.view.clientWidth;
-        }
-    }, {
-        key: 'getClientHeight',
-        value: function getClientHeight() {
-            return this.view.clientHeight;
-        }
-    }, {
-        key: 'getValues',
-        value: function getValues() {
-            var _view = this.view,
-                scrollLeft = _view.scrollLeft,
-                scrollTop = _view.scrollTop,
-                scrollWidth = _view.scrollWidth,
-                scrollHeight = _view.scrollHeight,
-                clientWidth = _view.clientWidth,
-                clientHeight = _view.clientHeight;
-
-
-            return {
-                left: scrollLeft / (scrollWidth - clientWidth) || 0,
-                top: scrollTop / (scrollHeight - clientHeight) || 0,
-                scrollLeft: scrollLeft,
-                scrollTop: scrollTop,
-                scrollWidth: scrollWidth,
-                scrollHeight: scrollHeight,
-                clientWidth: clientWidth,
-                clientHeight: clientHeight
-            };
-        }
-    }, {
-        key: 'getThumbHorizontalWidth',
-        value: function getThumbHorizontalWidth() {
-            var _props = this.props,
-                thumbSize = _props.thumbSize,
-                thumbMinSize = _props.thumbMinSize;
-            var _view2 = this.view,
-                scrollWidth = _view2.scrollWidth,
-                clientWidth = _view2.clientWidth;
-
-            var trackWidth = (0, _getInnerWidth2["default"])(this.trackHorizontal);
-            var width = Math.ceil(clientWidth / scrollWidth * trackWidth);
-            if (trackWidth === width) return 0;
-            if (thumbSize) return thumbSize;
-            return Math.max(width, thumbMinSize);
-        }
-    }, {
-        key: 'getThumbVerticalHeight',
-        value: function getThumbVerticalHeight() {
-            var _props2 = this.props,
-                thumbSize = _props2.thumbSize,
-                thumbMinSize = _props2.thumbMinSize;
-            var _view3 = this.view,
-                scrollHeight = _view3.scrollHeight,
-                clientHeight = _view3.clientHeight;
-
-            var trackHeight = (0, _getInnerHeight2["default"])(this.trackVertical);
-            var height = Math.ceil(clientHeight / scrollHeight * trackHeight);
-            if (trackHeight === height) return 0;
-            if (thumbSize) return thumbSize;
-            return Math.max(height, thumbMinSize);
-        }
-    }, {
-        key: 'getScrollLeftForOffset',
-        value: function getScrollLeftForOffset(offset) {
-            var _view4 = this.view,
-                scrollWidth = _view4.scrollWidth,
-                clientWidth = _view4.clientWidth;
-
-            var trackWidth = (0, _getInnerWidth2["default"])(this.trackHorizontal);
-            var thumbWidth = this.getThumbHorizontalWidth();
-            return offset / (trackWidth - thumbWidth) * (scrollWidth - clientWidth);
-        }
-    }, {
-        key: 'getScrollTopForOffset',
-        value: function getScrollTopForOffset(offset) {
-            var _view5 = this.view,
-                scrollHeight = _view5.scrollHeight,
-                clientHeight = _view5.clientHeight;
-
-            var trackHeight = (0, _getInnerHeight2["default"])(this.trackVertical);
-            var thumbHeight = this.getThumbVerticalHeight();
-            return offset / (trackHeight - thumbHeight) * (scrollHeight - clientHeight);
-        }
-    }, {
-        key: 'scrollLeft',
-        value: function scrollLeft() {
-            var left = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-            this.view.scrollLeft = left;
-        }
-    }, {
-        key: 'scrollTop',
-        value: function scrollTop() {
-            var top = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-            this.view.scrollTop = top;
-        }
-    }, {
-        key: 'scrollToLeft',
-        value: function scrollToLeft() {
-            this.view.scrollLeft = 0;
-        }
-    }, {
-        key: 'scrollToTop',
-        value: function scrollToTop() {
-            this.view.scrollTop = 0;
-        }
-    }, {
-        key: 'scrollToRight',
-        value: function scrollToRight() {
-            this.view.scrollLeft = this.view.scrollWidth;
-        }
-    }, {
-        key: 'scrollToBottom',
-        value: function scrollToBottom() {
-            this.view.scrollTop = this.view.scrollHeight;
-        }
-    }, {
-        key: 'addListeners',
-        value: function addListeners() {
-            /* istanbul ignore if */
-            if (typeof document === 'undefined') return;
-            var view = this.view,
-                trackHorizontal = this.trackHorizontal,
-                trackVertical = this.trackVertical,
-                thumbHorizontal = this.thumbHorizontal,
-                thumbVertical = this.thumbVertical;
-
-            view.addEventListener('scroll', this.handleScroll);
-            if (!(0, _getScrollbarWidth2["default"])()) return;
-            trackHorizontal.addEventListener('mouseenter', this.handleTrackMouseEnter);
-            trackHorizontal.addEventListener('mouseleave', this.handleTrackMouseLeave);
-            trackHorizontal.addEventListener('mousedown', this.handleHorizontalTrackMouseDown);
-            trackVertical.addEventListener('mouseenter', this.handleTrackMouseEnter);
-            trackVertical.addEventListener('mouseleave', this.handleTrackMouseLeave);
-            trackVertical.addEventListener('mousedown', this.handleVerticalTrackMouseDown);
-            thumbHorizontal.addEventListener('mousedown', this.handleHorizontalThumbMouseDown);
-            thumbVertical.addEventListener('mousedown', this.handleVerticalThumbMouseDown);
-            window.addEventListener('resize', this.handleWindowResize);
-        }
-    }, {
-        key: 'removeListeners',
-        value: function removeListeners() {
-            /* istanbul ignore if */
-            if (typeof document === 'undefined') return;
-            var view = this.view,
-                trackHorizontal = this.trackHorizontal,
-                trackVertical = this.trackVertical,
-                thumbHorizontal = this.thumbHorizontal,
-                thumbVertical = this.thumbVertical;
-
-            view.removeEventListener('scroll', this.handleScroll);
-            if (!(0, _getScrollbarWidth2["default"])()) return;
-            trackHorizontal.removeEventListener('mouseenter', this.handleTrackMouseEnter);
-            trackHorizontal.removeEventListener('mouseleave', this.handleTrackMouseLeave);
-            trackHorizontal.removeEventListener('mousedown', this.handleHorizontalTrackMouseDown);
-            trackVertical.removeEventListener('mouseenter', this.handleTrackMouseEnter);
-            trackVertical.removeEventListener('mouseleave', this.handleTrackMouseLeave);
-            trackVertical.removeEventListener('mousedown', this.handleVerticalTrackMouseDown);
-            thumbHorizontal.removeEventListener('mousedown', this.handleHorizontalThumbMouseDown);
-            thumbVertical.removeEventListener('mousedown', this.handleVerticalThumbMouseDown);
-            window.removeEventListener('resize', this.handleWindowResize);
-            // Possibly setup by `handleDragStart`
-            this.teardownDragging();
-        }
-    }, {
-        key: 'handleScroll',
-        value: function handleScroll(event) {
-            var _this2 = this;
-
-            var _props3 = this.props,
-                onScroll = _props3.onScroll,
-                onScrollFrame = _props3.onScrollFrame;
-
-            if (onScroll) onScroll(event);
-            this.update(function (values) {
-                var scrollLeft = values.scrollLeft,
-                    scrollTop = values.scrollTop;
-
-                _this2.viewScrollLeft = scrollLeft;
-                _this2.viewScrollTop = scrollTop;
-                if (onScrollFrame) onScrollFrame(values);
-            });
-            this.detectScrolling();
-        }
-    }, {
-        key: 'handleScrollStart',
-        value: function handleScrollStart() {
-            var onScrollStart = this.props.onScrollStart;
-
-            if (onScrollStart) onScrollStart();
-            this.handleScrollStartAutoHide();
-        }
-    }, {
-        key: 'handleScrollStartAutoHide',
-        value: function handleScrollStartAutoHide() {
-            var autoHide = this.props.autoHide;
-
-            if (!autoHide) return;
-            this.showTracks();
-        }
-    }, {
-        key: 'handleScrollStop',
-        value: function handleScrollStop() {
-            var onScrollStop = this.props.onScrollStop;
-
-            if (onScrollStop) onScrollStop();
-            this.handleScrollStopAutoHide();
-        }
-    }, {
-        key: 'handleScrollStopAutoHide',
-        value: function handleScrollStopAutoHide() {
-            var autoHide = this.props.autoHide;
-
-            if (!autoHide) return;
-            this.hideTracks();
-        }
-    }, {
-        key: 'handleWindowResize',
-        value: function handleWindowResize() {
-            this.update();
-        }
-    }, {
-        key: 'handleHorizontalTrackMouseDown',
-        value: function handleHorizontalTrackMouseDown(event) {
-            event.preventDefault();
-            var target = event.target,
-                clientX = event.clientX;
-
-            var _target$getBoundingCl = target.getBoundingClientRect(),
-                targetLeft = _target$getBoundingCl.left;
-
-            var thumbWidth = this.getThumbHorizontalWidth();
-            var offset = Math.abs(targetLeft - clientX) - thumbWidth / 2;
-            this.view.scrollLeft = this.getScrollLeftForOffset(offset);
-        }
-    }, {
-        key: 'handleVerticalTrackMouseDown',
-        value: function handleVerticalTrackMouseDown(event) {
-            event.preventDefault();
-            var target = event.target,
-                clientY = event.clientY;
-
-            var _target$getBoundingCl2 = target.getBoundingClientRect(),
-                targetTop = _target$getBoundingCl2.top;
-
-            var thumbHeight = this.getThumbVerticalHeight();
-            var offset = Math.abs(targetTop - clientY) - thumbHeight / 2;
-            this.view.scrollTop = this.getScrollTopForOffset(offset);
-        }
-    }, {
-        key: 'handleHorizontalThumbMouseDown',
-        value: function handleHorizontalThumbMouseDown(event) {
-            event.preventDefault();
-            this.handleDragStart(event);
-            var target = event.target,
-                clientX = event.clientX;
-            var offsetWidth = target.offsetWidth;
-
-            var _target$getBoundingCl3 = target.getBoundingClientRect(),
-                left = _target$getBoundingCl3.left;
-
-            this.prevPageX = offsetWidth - (clientX - left);
-        }
-    }, {
-        key: 'handleVerticalThumbMouseDown',
-        value: function handleVerticalThumbMouseDown(event) {
-            event.preventDefault();
-            this.handleDragStart(event);
-            var target = event.target,
-                clientY = event.clientY;
-            var offsetHeight = target.offsetHeight;
-
-            var _target$getBoundingCl4 = target.getBoundingClientRect(),
-                top = _target$getBoundingCl4.top;
-
-            this.prevPageY = offsetHeight - (clientY - top);
-        }
-    }, {
-        key: 'setupDragging',
-        value: function setupDragging() {
-            (0, _domCss2["default"])(document.body, _styles.disableSelectStyle);
-            document.addEventListener('mousemove', this.handleDrag);
-            document.addEventListener('mouseup', this.handleDragEnd);
-            document.onselectstart = _returnFalse2["default"];
-        }
-    }, {
-        key: 'teardownDragging',
-        value: function teardownDragging() {
-            (0, _domCss2["default"])(document.body, _styles.disableSelectStyleReset);
-            document.removeEventListener('mousemove', this.handleDrag);
-            document.removeEventListener('mouseup', this.handleDragEnd);
-            document.onselectstart = undefined;
-        }
-    }, {
-        key: 'handleDragStart',
-        value: function handleDragStart(event) {
-            this.dragging = true;
-            event.stopImmediatePropagation();
-            this.setupDragging();
-        }
-    }, {
-        key: 'handleDrag',
-        value: function handleDrag(event) {
-            if (this.prevPageX) {
-                var clientX = event.clientX;
-
-                var _trackHorizontal$getB = this.trackHorizontal.getBoundingClientRect(),
-                    trackLeft = _trackHorizontal$getB.left;
-
-                var thumbWidth = this.getThumbHorizontalWidth();
-                var clickPosition = thumbWidth - this.prevPageX;
-                var offset = -trackLeft + clientX - clickPosition;
-                this.view.scrollLeft = this.getScrollLeftForOffset(offset);
-            }
-            if (this.prevPageY) {
-                var clientY = event.clientY;
-
-                var _trackVertical$getBou = this.trackVertical.getBoundingClientRect(),
-                    trackTop = _trackVertical$getBou.top;
-
-                var thumbHeight = this.getThumbVerticalHeight();
-                var _clickPosition = thumbHeight - this.prevPageY;
-                var _offset = -trackTop + clientY - _clickPosition;
-                this.view.scrollTop = this.getScrollTopForOffset(_offset);
-            }
-            return false;
-        }
-    }, {
-        key: 'handleDragEnd',
-        value: function handleDragEnd() {
-            this.dragging = false;
-            this.prevPageX = this.prevPageY = 0;
-            this.teardownDragging();
-            this.handleDragEndAutoHide();
-        }
-    }, {
-        key: 'handleDragEndAutoHide',
-        value: function handleDragEndAutoHide() {
-            var autoHide = this.props.autoHide;
-
-            if (!autoHide) return;
-            this.hideTracks();
-        }
-    }, {
-        key: 'handleTrackMouseEnter',
-        value: function handleTrackMouseEnter() {
-            this.trackMouseOver = true;
-            this.handleTrackMouseEnterAutoHide();
-        }
-    }, {
-        key: 'handleTrackMouseEnterAutoHide',
-        value: function handleTrackMouseEnterAutoHide() {
-            var autoHide = this.props.autoHide;
-
-            if (!autoHide) return;
-            this.showTracks();
-        }
-    }, {
-        key: 'handleTrackMouseLeave',
-        value: function handleTrackMouseLeave() {
-            this.trackMouseOver = false;
-            this.handleTrackMouseLeaveAutoHide();
-        }
-    }, {
-        key: 'handleTrackMouseLeaveAutoHide',
-        value: function handleTrackMouseLeaveAutoHide() {
-            var autoHide = this.props.autoHide;
-
-            if (!autoHide) return;
-            this.hideTracks();
-        }
-    }, {
-        key: 'showTracks',
-        value: function showTracks() {
-            clearTimeout(this.hideTracksTimeout);
-            (0, _domCss2["default"])(this.trackHorizontal, { opacity: 1 });
-            (0, _domCss2["default"])(this.trackVertical, { opacity: 1 });
-        }
-    }, {
-        key: 'hideTracks',
-        value: function hideTracks() {
-            var _this3 = this;
-
-            if (this.dragging) return;
-            if (this.scrolling) return;
-            if (this.trackMouseOver) return;
-            var autoHideTimeout = this.props.autoHideTimeout;
-
-            clearTimeout(this.hideTracksTimeout);
-            this.hideTracksTimeout = setTimeout(function () {
-                (0, _domCss2["default"])(_this3.trackHorizontal, { opacity: 0 });
-                (0, _domCss2["default"])(_this3.trackVertical, { opacity: 0 });
-            }, autoHideTimeout);
-        }
-    }, {
-        key: 'detectScrolling',
-        value: function detectScrolling() {
-            var _this4 = this;
-
-            if (this.scrolling) return;
-            this.scrolling = true;
-            this.handleScrollStart();
-            this.detectScrollingInterval = setInterval(function () {
-                if (_this4.lastViewScrollLeft === _this4.viewScrollLeft && _this4.lastViewScrollTop === _this4.viewScrollTop) {
-                    clearInterval(_this4.detectScrollingInterval);
-                    _this4.scrolling = false;
-                    _this4.handleScrollStop();
-                }
-                _this4.lastViewScrollLeft = _this4.viewScrollLeft;
-                _this4.lastViewScrollTop = _this4.viewScrollTop;
-            }, 100);
-        }
-    }, {
-        key: 'raf',
-        value: function raf(callback) {
-            var _this5 = this;
-
-            if (this.requestFrame) _raf3["default"].cancel(this.requestFrame);
-            this.requestFrame = (0, _raf3["default"])(function () {
-                _this5.requestFrame = undefined;
-                callback();
-            });
-        }
-    }, {
-        key: 'update',
-        value: function update(callback) {
-            var _this6 = this;
-
-            this.raf(function () {
-                return _this6._update(callback);
-            });
-        }
-    }, {
-        key: '_update',
-        value: function _update(callback) {
-            var _props4 = this.props,
-                onUpdate = _props4.onUpdate,
-                hideTracksWhenNotNeeded = _props4.hideTracksWhenNotNeeded;
-
-            var values = this.getValues();
-            if ((0, _getScrollbarWidth2["default"])()) {
-                var scrollLeft = values.scrollLeft,
-                    clientWidth = values.clientWidth,
-                    scrollWidth = values.scrollWidth;
-
-                var trackHorizontalWidth = (0, _getInnerWidth2["default"])(this.trackHorizontal);
-                var thumbHorizontalWidth = this.getThumbHorizontalWidth();
-                var thumbHorizontalX = scrollLeft / (scrollWidth - clientWidth) * (trackHorizontalWidth - thumbHorizontalWidth);
-                var thumbHorizontalStyle = {
-                    width: thumbHorizontalWidth,
-                    transform: 'translateX(' + thumbHorizontalX + 'px)'
-                };
-                var scrollTop = values.scrollTop,
-                    clientHeight = values.clientHeight,
-                    scrollHeight = values.scrollHeight;
-
-                var trackVerticalHeight = (0, _getInnerHeight2["default"])(this.trackVertical);
-                var thumbVerticalHeight = this.getThumbVerticalHeight();
-                var thumbVerticalY = scrollTop / (scrollHeight - clientHeight) * (trackVerticalHeight - thumbVerticalHeight);
-                var thumbVerticalStyle = {
-                    height: thumbVerticalHeight,
-                    transform: 'translateY(' + thumbVerticalY + 'px)'
-                };
-                if (hideTracksWhenNotNeeded) {
-                    var trackHorizontalStyle = {
-                        visibility: scrollWidth > clientWidth ? 'visible' : 'hidden'
-                    };
-                    var trackVerticalStyle = {
-                        visibility: scrollHeight > clientHeight ? 'visible' : 'hidden'
-                    };
-                    (0, _domCss2["default"])(this.trackHorizontal, trackHorizontalStyle);
-                    (0, _domCss2["default"])(this.trackVertical, trackVerticalStyle);
-                }
-                (0, _domCss2["default"])(this.thumbHorizontal, thumbHorizontalStyle);
-                (0, _domCss2["default"])(this.thumbVertical, thumbVerticalStyle);
-            }
-            if (onUpdate) onUpdate(values);
-            if (typeof callback !== 'function') return;
-            callback(values);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this7 = this;
-
-            var scrollbarWidth = (0, _getScrollbarWidth2["default"])();
-            /* eslint-disable no-unused-vars */
-
-            var _props5 = this.props,
-                onScroll = _props5.onScroll,
-                onScrollFrame = _props5.onScrollFrame,
-                onScrollStart = _props5.onScrollStart,
-                onScrollStop = _props5.onScrollStop,
-                onUpdate = _props5.onUpdate,
-                renderView = _props5.renderView,
-                renderTrackHorizontal = _props5.renderTrackHorizontal,
-                renderTrackVertical = _props5.renderTrackVertical,
-                renderThumbHorizontal = _props5.renderThumbHorizontal,
-                renderThumbVertical = _props5.renderThumbVertical,
-                tagName = _props5.tagName,
-                hideTracksWhenNotNeeded = _props5.hideTracksWhenNotNeeded,
-                autoHide = _props5.autoHide,
-                autoHideTimeout = _props5.autoHideTimeout,
-                autoHideDuration = _props5.autoHideDuration,
-                thumbSize = _props5.thumbSize,
-                thumbMinSize = _props5.thumbMinSize,
-                universal = _props5.universal,
-                autoHeight = _props5.autoHeight,
-                autoHeightMin = _props5.autoHeightMin,
-                autoHeightMax = _props5.autoHeightMax,
-                style = _props5.style,
-                children = _props5.children,
-                props = _objectWithoutProperties(_props5, ['onScroll', 'onScrollFrame', 'onScrollStart', 'onScrollStop', 'onUpdate', 'renderView', 'renderTrackHorizontal', 'renderTrackVertical', 'renderThumbHorizontal', 'renderThumbVertical', 'tagName', 'hideTracksWhenNotNeeded', 'autoHide', 'autoHideTimeout', 'autoHideDuration', 'thumbSize', 'thumbMinSize', 'universal', 'autoHeight', 'autoHeightMin', 'autoHeightMax', 'style', 'children']);
-            /* eslint-enable no-unused-vars */
-
-            var didMountUniversal = this.state.didMountUniversal;
-
-
-            var containerStyle = _extends({}, _styles.containerStyleDefault, autoHeight && _extends({}, _styles.containerStyleAutoHeight, {
-                minHeight: autoHeightMin,
-                maxHeight: autoHeightMax
-            }), style);
-
-            var viewStyle = _extends({}, _styles.viewStyleDefault, {
-                // Hide scrollbars by setting a negative margin
-                marginRight: scrollbarWidth ? -scrollbarWidth : 0,
-                marginBottom: scrollbarWidth ? -scrollbarWidth : 0
-            }, autoHeight && _extends({}, _styles.viewStyleAutoHeight, {
-                // Add scrollbarWidth to autoHeight in order to compensate negative margins
-                minHeight: (0, _isString2["default"])(autoHeightMin) ? 'calc(' + autoHeightMin + ' + ' + scrollbarWidth + 'px)' : autoHeightMin + scrollbarWidth,
-                maxHeight: (0, _isString2["default"])(autoHeightMax) ? 'calc(' + autoHeightMax + ' + ' + scrollbarWidth + 'px)' : autoHeightMax + scrollbarWidth
-            }), autoHeight && universal && !didMountUniversal && {
-                minHeight: autoHeightMin,
-                maxHeight: autoHeightMax
-            }, universal && !didMountUniversal && _styles.viewStyleUniversalInitial);
-
-            var trackAutoHeightStyle = {
-                transition: 'opacity ' + autoHideDuration + 'ms',
-                opacity: 0
-            };
-
-            var trackHorizontalStyle = _extends({}, _styles.trackHorizontalStyleDefault, autoHide && trackAutoHeightStyle, (!scrollbarWidth || universal && !didMountUniversal) && {
-                display: 'none'
-            });
-
-            var trackVerticalStyle = _extends({}, _styles.trackVerticalStyleDefault, autoHide && trackAutoHeightStyle, (!scrollbarWidth || universal && !didMountUniversal) && {
-                display: 'none'
-            });
-
-            return (0, _react.createElement)(tagName, _extends({}, props, { style: containerStyle, ref: function ref(_ref2) {
-                    _this7.container = _ref2;
-                } }), [(0, _react.cloneElement)(renderView({ style: viewStyle }), { key: 'view', ref: function ref(_ref3) {
-                    _this7.view = _ref3;
-                } }, children), (0, _react.cloneElement)(renderTrackHorizontal({ style: trackHorizontalStyle }), { key: 'trackHorizontal', ref: function ref(_ref4) {
-                    _this7.trackHorizontal = _ref4;
-                } }, (0, _react.cloneElement)(renderThumbHorizontal({ style: _styles.thumbHorizontalStyleDefault }), { ref: function ref(_ref5) {
-                    _this7.thumbHorizontal = _ref5;
-                } })), (0, _react.cloneElement)(renderTrackVertical({ style: trackVerticalStyle }), { key: 'trackVertical', ref: function ref(_ref6) {
-                    _this7.trackVertical = _ref6;
-                } }, (0, _react.cloneElement)(renderThumbVertical({ style: _styles.thumbVerticalStyleDefault }), { ref: function ref(_ref7) {
-                    _this7.thumbVertical = _ref7;
-                } }))]);
-        }
-    }]);
-
-    return Scrollbars;
-}(_react.Component);
-
-exports["default"] = Scrollbars;
-
-
-Scrollbars.propTypes = {
-    onScroll: _propTypes2["default"].func,
-    onScrollFrame: _propTypes2["default"].func,
-    onScrollStart: _propTypes2["default"].func,
-    onScrollStop: _propTypes2["default"].func,
-    onUpdate: _propTypes2["default"].func,
-    renderView: _propTypes2["default"].func,
-    renderTrackHorizontal: _propTypes2["default"].func,
-    renderTrackVertical: _propTypes2["default"].func,
-    renderThumbHorizontal: _propTypes2["default"].func,
-    renderThumbVertical: _propTypes2["default"].func,
-    tagName: _propTypes2["default"].string,
-    thumbSize: _propTypes2["default"].number,
-    thumbMinSize: _propTypes2["default"].number,
-    hideTracksWhenNotNeeded: _propTypes2["default"].bool,
-    autoHide: _propTypes2["default"].bool,
-    autoHideTimeout: _propTypes2["default"].number,
-    autoHideDuration: _propTypes2["default"].number,
-    autoHeight: _propTypes2["default"].bool,
-    autoHeightMin: _propTypes2["default"].oneOfType([_propTypes2["default"].number, _propTypes2["default"].string]),
-    autoHeightMax: _propTypes2["default"].oneOfType([_propTypes2["default"].number, _propTypes2["default"].string]),
-    universal: _propTypes2["default"].bool,
-    style: _propTypes2["default"].object,
-    children: _propTypes2["default"].node
-};
-
-Scrollbars.defaultProps = {
-    renderView: _defaultRenderElements.renderViewDefault,
-    renderTrackHorizontal: _defaultRenderElements.renderTrackHorizontalDefault,
-    renderTrackVertical: _defaultRenderElements.renderTrackVerticalDefault,
-    renderThumbHorizontal: _defaultRenderElements.renderThumbHorizontalDefault,
-    renderThumbVertical: _defaultRenderElements.renderThumbVerticalDefault,
-    tagName: 'div',
-    thumbMinSize: 30,
-    hideTracksWhenNotNeeded: false,
-    autoHide: false,
-    autoHideTimeout: 1000,
-    autoHideDuration: 200,
-    autoHeight: false,
-    autoHeightMin: 0,
-    autoHeightMax: 200,
-    universal: false
-};
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(50)
-  , root = typeof window === 'undefined' ? global : window
-  , vendors = ['moz', 'webkit']
-  , suffix = 'AnimationFrame'
-  , raf = root['request' + suffix]
-  , caf = root['cancel' + suffix] || root['cancelRequest' + suffix]
-
-for(var i = 0; !raf && i < vendors.length; i++) {
-  raf = root[vendors[i] + 'Request' + suffix]
-  caf = root[vendors[i] + 'Cancel' + suffix]
-      || root[vendors[i] + 'CancelRequest' + suffix]
-}
-
-// Some versions of FF have rAF but not cAF
-if(!raf || !caf) {
-  var last = 0
-    , id = 0
-    , queue = []
-    , frameDuration = 1000 / 60
-
-  raf = function(callback) {
-    if(queue.length === 0) {
-      var _now = now()
-        , next = Math.max(0, frameDuration - (_now - last))
-      last = next + _now
-      setTimeout(function() {
-        var cp = queue.slice(0)
-        // Clear queue here to prevent
-        // callbacks from appending listeners
-        // to the current frame's queue
-        queue.length = 0
-        for(var i = 0; i < cp.length; i++) {
-          if(!cp[i].cancelled) {
-            try{
-              cp[i].callback(last)
-            } catch(e) {
-              setTimeout(function() { throw e }, 0)
-            }
-          }
-        }
-      }, Math.round(next))
-    }
-    queue.push({
-      handle: ++id,
-      callback: callback,
-      cancelled: false
-    })
-    return id
-  }
-
-  caf = function(handle) {
-    for(var i = 0; i < queue.length; i++) {
-      if(queue[i].handle === handle) {
-        queue[i].cancelled = true
-      }
-    }
-  }
-}
-
-module.exports = function(fn) {
-  // Wrap in a new function to prevent
-  // `cancel` potentially being assigned
-  // to the native rAF function
-  return raf.call(root, fn)
-}
-module.exports.cancel = function() {
-  caf.apply(root, arguments)
-}
-module.exports.polyfill = function(object) {
-  if (!object) {
-    object = root;
-  }
-  object.requestAnimationFrame = raf
-  object.cancelAnimationFrame = caf
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(49)))
-
-/***/ }),
-/* 49 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
-(function() {
-  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
-
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    module.exports = function() {
-      return performance.now();
-    };
-  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
-    module.exports = function() {
-      return (getNanoSeconds() - nodeLoadTime) / 1e6;
-    };
-    hrtime = process.hrtime;
-    getNanoSeconds = function() {
-      var hr;
-      hr = hrtime();
-      return hr[0] * 1e9 + hr[1];
-    };
-    moduleLoadTime = getNanoSeconds();
-    upTime = process.uptime() * 1e9;
-    nodeLoadTime = moduleLoadTime - upTime;
-  } else if (Date.now) {
-    module.exports = function() {
-      return Date.now() - loadTime;
-    };
-    loadTime = Date.now();
-  } else {
-    module.exports = function() {
-      return new Date().getTime() - loadTime;
-    };
-    loadTime = new Date().getTime();
-  }
-
-}).call(this);
-
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports) {
-
-var div = null
-var prefixes = [ 'Webkit', 'Moz', 'O', 'ms' ]
-
-module.exports = function prefixStyle (prop) {
-  // re-use a dummy div
-  if (!div) {
-    div = document.createElement('div')
-  }
-
-  var style = div.style
-
-  // prop exists without prefix
-  if (prop in style) {
-    return prop
-  }
-
-  // borderRadius -> BorderRadius
-  var titleCase = prop.charAt(0).toUpperCase() + prop.slice(1)
-
-  // find the vendor-prefixed prop
-  for (var i = prefixes.length; i >= 0; i--) {
-    var name = prefixes[i] + titleCase
-    // e.g. WebkitBorderRadius or webkitBorderRadius
-    if (name in style) {
-      return name
-    }
-  }
-
-  return false
-}
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var space = __webpack_require__(53)
-
-/**
- * Export.
- */
-
-module.exports = toCamelCase
-
-/**
- * Convert a `string` to camel case.
- *
- * @param {String} string
- * @return {String}
- */
-
-function toCamelCase(string) {
-  return space(string).replace(/\s(\w)/g, function (matches, letter) {
-    return letter.toUpperCase()
-  })
-}
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var clean = __webpack_require__(54)
-
-/**
- * Export.
- */
-
-module.exports = toSpaceCase
-
-/**
- * Convert a `string` to space case.
- *
- * @param {String} string
- * @return {String}
- */
-
-function toSpaceCase(string) {
-  return clean(string).replace(/[\W_]+(.|$)/g, function (matches, match) {
-    return match ? ' ' + match : ''
-  }).trim()
-}
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports) {
-
-
-/**
- * Export.
- */
-
-module.exports = toNoCase
-
-/**
- * Test whether a string is camel-case.
- */
-
-var hasSpace = /\s/
-var hasSeparator = /(_|-|\.|:)/
-var hasCamel = /([a-z][A-Z]|[A-Z][a-z])/
-
-/**
- * Remove any starting case from a `string`, like camel or snake, but keep
- * spaces and punctuation that may be important otherwise.
- *
- * @param {String} string
- * @return {String}
- */
-
-function toNoCase(string) {
-  if (hasSpace.test(string)) return string.toLowerCase()
-  if (hasSeparator.test(string)) return (unseparate(string) || string).toLowerCase()
-  if (hasCamel.test(string)) return uncamelize(string).toLowerCase()
-  return string.toLowerCase()
-}
-
-/**
- * Separator splitter.
- */
-
-var separatorSplitter = /[\W_]+(.|$)/g
-
-/**
- * Un-separate a `string`.
- *
- * @param {String} string
- * @return {String}
- */
-
-function unseparate(string) {
-  return string.replace(separatorSplitter, function (m, next) {
-    return next ? ' ' + next : ''
-  })
-}
-
-/**
- * Camelcase splitter.
- */
-
-var camelSplitter = /(.)([A-Z]+)/g
-
-/**
- * Un-camelcase a `string`.
- *
- * @param {String} string
- * @return {String}
- */
-
-function uncamelize(string) {
-  return string.replace(camelSplitter, function (m, previous, uppers) {
-    return previous + ' ' + uppers.toLowerCase().split('').join(' ')
-  })
-}
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports) {
-
-/* The following list is defined in React's core */
-var IS_UNITLESS = {
-  animationIterationCount: true,
-  boxFlex: true,
-  boxFlexGroup: true,
-  boxOrdinalGroup: true,
-  columnCount: true,
-  flex: true,
-  flexGrow: true,
-  flexPositive: true,
-  flexShrink: true,
-  flexNegative: true,
-  flexOrder: true,
-  gridRow: true,
-  gridColumn: true,
-  fontWeight: true,
-  lineClamp: true,
-  lineHeight: true,
-  opacity: true,
-  order: true,
-  orphans: true,
-  tabSize: true,
-  widows: true,
-  zIndex: true,
-  zoom: true,
-
-  // SVG-related properties
-  fillOpacity: true,
-  stopOpacity: true,
-  strokeDashoffset: true,
-  strokeOpacity: true,
-  strokeWidth: true
-};
-
-module.exports = function(name, value) {
-  if(typeof value === 'number' && !IS_UNITLESS[ name ]) {
-    return value + 'px';
-  } else {
-    return value;
-  }
-};
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = isString;
-function isString(maybe) {
-    return typeof maybe === 'string';
-}
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = getScrollbarWidth;
-
-var _domCss = __webpack_require__(43);
-
-var _domCss2 = _interopRequireDefault(_domCss);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var scrollbarWidth = false;
-
-function getScrollbarWidth() {
-    if (scrollbarWidth !== false) return scrollbarWidth;
-    /* istanbul ignore else */
-    if (typeof document !== 'undefined') {
-        var div = document.createElement('div');
-        (0, _domCss2["default"])(div, {
-            width: 100,
-            height: 100,
-            position: 'absolute',
-            top: -9999,
-            overflow: 'scroll',
-            MsOverflowStyle: 'scrollbar'
-        });
-        document.body.appendChild(div);
-        scrollbarWidth = div.offsetWidth - div.clientWidth;
-        document.body.removeChild(div);
-    } else {
-        scrollbarWidth = 0;
-    }
-    return scrollbarWidth || 0;
-}
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = returnFalse;
-function returnFalse() {
-    return false;
-}
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = getInnerWidth;
-function getInnerWidth(el) {
-    var clientWidth = el.clientWidth;
-
-    var _getComputedStyle = getComputedStyle(el),
-        paddingLeft = _getComputedStyle.paddingLeft,
-        paddingRight = _getComputedStyle.paddingRight;
-
-    return clientWidth - parseFloat(paddingLeft) - parseFloat(paddingRight);
-}
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports["default"] = getInnerHeight;
-function getInnerHeight(el) {
-    var clientHeight = el.clientHeight;
-
-    var _getComputedStyle = getComputedStyle(el),
-        paddingTop = _getComputedStyle.paddingTop,
-        paddingBottom = _getComputedStyle.paddingBottom;
-
-    return clientHeight - parseFloat(paddingTop) - parseFloat(paddingBottom);
-}
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var containerStyleDefault = exports.containerStyleDefault = {
-    position: 'relative',
-    overflow: 'hidden',
-    width: '100%',
-    height: '100%'
-};
-
-// Overrides containerStyleDefault properties
-var containerStyleAutoHeight = exports.containerStyleAutoHeight = {
-    height: 'auto'
-};
-
-var viewStyleDefault = exports.viewStyleDefault = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    overflow: 'scroll',
-    WebkitOverflowScrolling: 'touch'
-};
-
-// Overrides viewStyleDefault properties
-var viewStyleAutoHeight = exports.viewStyleAutoHeight = {
-    position: 'relative',
-    top: undefined,
-    left: undefined,
-    right: undefined,
-    bottom: undefined
-};
-
-var viewStyleUniversalInitial = exports.viewStyleUniversalInitial = {
-    overflow: 'hidden',
-    marginRight: 0,
-    marginBottom: 0
-};
-
-var trackHorizontalStyleDefault = exports.trackHorizontalStyleDefault = {
-    position: 'absolute',
-    height: 6
-};
-
-var trackVerticalStyleDefault = exports.trackVerticalStyleDefault = {
-    position: 'absolute',
-    width: 6
-};
-
-var thumbHorizontalStyleDefault = exports.thumbHorizontalStyleDefault = {
-    position: 'relative',
-    display: 'block',
-    height: '100%'
-};
-
-var thumbVerticalStyleDefault = exports.thumbVerticalStyleDefault = {
-    position: 'relative',
-    display: 'block',
-    width: '100%'
-};
-
-var disableSelectStyle = exports.disableSelectStyle = {
-    userSelect: 'none'
-};
-
-var disableSelectStyleReset = exports.disableSelectStyleReset = {
-    userSelect: ''
-};
-
-/***/ }),
-/* 62 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-exports.renderViewDefault = renderViewDefault;
-exports.renderTrackHorizontalDefault = renderTrackHorizontalDefault;
-exports.renderTrackVerticalDefault = renderTrackVerticalDefault;
-exports.renderThumbHorizontalDefault = renderThumbHorizontalDefault;
-exports.renderThumbVerticalDefault = renderThumbVerticalDefault;
-
-var _react = __webpack_require__(1);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-/* eslint-disable react/prop-types */
-
-function renderViewDefault(props) {
-    return _react2["default"].createElement('div', props);
-}
-
-function renderTrackHorizontalDefault(_ref) {
-    var style = _ref.style,
-        props = _objectWithoutProperties(_ref, ['style']);
-
-    var finalStyle = _extends({}, style, {
-        right: 2,
-        bottom: 2,
-        left: 2,
-        borderRadius: 3
-    });
-    return _react2["default"].createElement('div', _extends({ style: finalStyle }, props));
-}
-
-function renderTrackVerticalDefault(_ref2) {
-    var style = _ref2.style,
-        props = _objectWithoutProperties(_ref2, ['style']);
-
-    var finalStyle = _extends({}, style, {
-        right: 2,
-        bottom: 2,
-        top: 2,
-        borderRadius: 3
-    });
-    return _react2["default"].createElement('div', _extends({ style: finalStyle }, props));
-}
-
-function renderThumbHorizontalDefault(_ref3) {
-    var style = _ref3.style,
-        props = _objectWithoutProperties(_ref3, ['style']);
-
-    var finalStyle = _extends({}, style, {
-        cursor: 'pointer',
-        borderRadius: 'inherit',
-        backgroundColor: 'rgba(0,0,0,.2)'
-    });
-    return _react2["default"].createElement('div', _extends({ style: finalStyle }, props));
-}
-
-function renderThumbVerticalDefault(_ref4) {
-    var style = _ref4.style,
-        props = _objectWithoutProperties(_ref4, ['style']);
-
-    var finalStyle = _extends({}, style, {
-        cursor: 'pointer',
-        borderRadius: 'inherit',
-        backgroundColor: 'rgba(0,0,0,.2)'
-    });
-    return _react2["default"].createElement('div', _extends({ style: finalStyle }, props));
-}
-
-/***/ }),
-/* 63 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var styled_components_1 = __webpack_require__(5);
-var couleur_1 = __webpack_require__(18);
-var SujetAdmin = (_a = ["\n    background: ", ";\n    flex: auto;\n    align-self: center;\n    min-width: calc(24vw);\n\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n"], _a.raw = ["\n    background: ", ";\n    flex: auto;\n    align-self: center;\n    min-width: calc(24vw);\n\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n"], styled_components_1.default.div(_a, couleur_1.FOND));
-var SujetAdminContainer = (_b = ["\n    flex: auto;\n    margin: 0;\n    background: ", ";\n    height: 7ex;\n\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: center;    \n"], _b.raw = ["\n    flex: auto;\n    margin: 0;\n    background: ", ";\n    height: 7ex;\n\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: center;    \n"], styled_components_1.default.div(_b, couleur_1.CADRE));
-var Separateur = (_c = ["\n        margin: 0 0 0 1em;\n"], _c.raw = ["\n        margin: 0 0 0 1em;\n"], styled_components_1.default.div(_c));
-var Retour = (_d = ["\n    flex: none;\n    width: 4ex;\n    height: 4ex;\n"], _d.raw = ["\n    flex: none;\n    width: 4ex;\n    height: 4ex;\n"], styled_components_1.default.div(_d));
-var Role;
-(function (Role) {
-    Role[Role["Emetteur"] = 0] = "Emetteur";
-    Role[Role["Recepteur"] = 1] = "Recepteur";
-})(Role || (Role = {}));
-;
-var PastilleBrute = /** @class */ (function (_super) {
-    __extends(PastilleBrute, _super);
-    function PastilleBrute() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var BLEU_TURQUIN = "rgb(66, 91, 138)";
+var BLANC = "rgb(255, 255, 255)";
+var NOIR = "rgb(0,0,0)";
+var NOIR_CARBONE = "rgb(19, 14, 10)";
+var ANTHRACITE = "rgb(48, 48, 48)";
+var FRAISE = "rgb(191, 48, 48)";
+var JAUNE_OR = "rgb(239, 216, 7)";
+var ZINZOLIN = "rgb(108, 2, 119)";
+var BLEU_CANARD = "rgb(0, 128, 128)";
+var BLEU_CIEL = "rgb(119, 181, 254)";
+var VERT_PRINTEMPS = "rgb(0, 255, 127)";
+var GRIS_FER = "rgb(127, 127, 127)";
+var LIN = "rgb(250, 240, 230)";
+var ROUGE_FEU = "rgb(254, 27, 0)";
+var FUMEE = "rgb(187, 210, 225)";
+exports.FOND = LIN;
+exports.CADRE = BLEU_CIEL;
+exports.SELECTION = BLEU_TURQUIN;
+exports.SEPARATION_CADRE = BLANC;
+exports.TEXTE = NOIR;
+exports.TEXTE_PALE = ANTHRACITE;
+exports.TEXTE_INV = BLANC;
+exports.TEXTE_ERREUR = ROUGE_FEU;
+exports.FOND_TEXTE = BLANC;
+exports.FOND_TEXTE_INV = NOIR_CARBONE;
+var SuiteCouplesFondEncre = /** @class */ (function () {
+    function SuiteCouplesFondEncre() {
+        this.fonds = [JAUNE_OR, BLEU_CANARD, ZINZOLIN, VERT_PRINTEMPS]; /* TODO etendre ! */
+        this.encres = [NOIR, BLANC, BLANC, NOIR]; /* TODO etendre ! */
+        this.pos = 0;
     }
-    PastilleBrute.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className }));
+    SuiteCouplesFondEncre.prototype.courant = function () {
+        var r = { fond: this.fonds[this.pos], encre: this.encres[this.pos] };
+        this.pos = (this.pos + 1) % (this.encres.length);
+        return r;
     };
-    return PastilleBrute;
-}(React.Component));
-var Pastille = (_e = ["\n        flex: none;\n        width: 4ex;\n        height: 4ex;\n        border-radius: 100%;\n        background-color: ", ";\n    "], _e.raw = ["\n        flex: none;\n        width: 4ex;\n        height: 4ex;\n        border-radius: 100%;\n        background-color: ", ";\n    "], styled_components_1.default(PastilleBrute)(_e, function (props) { return props.fond; }));
-var Pseudo = (_f = ["\n    flex: initial;\n    background: ", ";\n    color: ", ";\n    text-align: center;\n    padding: 1ex;\n    height: 4ex;\n    width: 10ex;\n    font-size: x-large;\n"], _f.raw = ["\n    flex: initial;\n    background: ", ";\n    color: ", ";\n    text-align: center;\n    padding: 1ex;\n    height: 4ex;\n    width: 10ex;\n    font-size: x-large;\n"], styled_components_1.default.div(_f, couleur_1.CADRE, couleur_1.TEXTE_INV));
-var ObjetAdminBrut = /** @class */ (function (_super) {
-    __extends(ObjetAdminBrut, _super);
-    function ObjetAdminBrut() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ObjetAdminBrut.prototype.render = function () {
-        return React.createElement("button", { className: this.props.className, onClick: this.props.onClick },
-            React.createElement(Pastille, { fond: this.props.fond }),
-            React.createElement(Pseudo, null, this.props.nom));
-    };
-    return ObjetAdminBrut;
-}(React.Component));
-var ObjetAdmin = (_g = ["\n    flex: initial;\n    background: ", ";\n    border-radius: 1ex;\n\n    border-style: solid;\n    border-width: ", ";\n    border-color: ", ";\n\n    padding: ", ";\n    margin: 1em 0 1em 0;\n    max-width: 20vw;\n    width: 12em;\n    min-width: 12em;\n\n    display: flex;\n    flex-direction: row;\n    justify-content: center;\n    align-items: center;    \n"], _g.raw = ["\n    flex: initial;\n    background: ", ";\n    border-radius: 1ex;\n\n    border-style: solid;\n    border-width: ", ";\n    border-color: ", ";\n\n    padding: ", ";\n    margin: 1em 0 1em 0;\n    max-width: 20vw;\n    width: 12em;\n    min-width: 12em;\n\n    display: flex;\n    flex-direction: row;\n    justify-content: center;\n    align-items: center;    \n"], styled_components_1.default(ObjetAdminBrut)(_g, couleur_1.CADRE, function (props) { return props.choix ? "0.5ex" : "0"; }, couleur_1.SELECTION, function (props) { return props.choix ? "0.5ex" : "1ex"; }));
-var ContenuContainerAdmin = /** @class */ (function (_super) {
-    __extends(ContenuContainerAdmin, _super);
-    function ContenuContainerAdmin() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ContenuContainerAdmin.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: this.props.className },
-            React.createElement(SujetAdmin, null,
-                React.createElement(SujetAdminContainer, null,
-                    React.createElement(Separateur, null),
-                    React.createElement(Retour, null,
-                        React.createElement("img", { src: "chevronGauche.svg" })),
-                    React.createElement(Separateur, null),
-                    React.createElement(Separateur, null),
-                    React.createElement(Pastille, { fond: this.props.sujet.fond }),
-                    React.createElement(Pseudo, null, this.props.sujet.nom))),
-            "Choisissez un destinataire :",
-            this.props.objets.map(function (i) {
-                return React.createElement(ObjetAdmin, { choix: _this.props.selection.nom === i.nom, onClick: function () { return _this.props.modifSelection(i); }, fond: i.fond, nom: i.nom });
-            }),
-            "ou tous les destinataires :",
-            React.createElement(ObjetAdmin, { choix: this.props.selection.nom === this.props.tous.nom, onClick: function () { return _this.props.modifSelection(_this.props.tous); }, fond: this.props.tous.fond, nom: this.props.tous.nom })));
-    };
-    return ContenuContainerAdmin;
-}(React.Component));
-exports.ContainerAdmin = (_h = ["\n    background: ", ";\n    position: absolute;\n    top: 0;\n    left: 0;\n    /* important / overflow : deux sens haut vers bas et gauche vers droite pour le d\u00E9passement */\n    min-width: calc(24vw);\n    min-height: calc(100vh);\n    /* occupe au moins la place du container */\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-end;\n    align-items: center;\n"], _h.raw = ["\n    background: ", ";\n    position: absolute;\n    top: 0;\n    left: 0;\n    /* important / overflow : deux sens haut vers bas et gauche vers droite pour le d\u00E9passement */\n    min-width: calc(24vw);\n    min-height: calc(100vh);\n    /* occupe au moins la place du container */\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-end;\n    align-items: center;\n"], styled_components_1.default(ContenuContainerAdmin)(_h, couleur_1.FOND));
-var _a, _b, _c, _d, _e, _f, _g, _h;
+    return SuiteCouplesFondEncre;
+}());
+exports.SuiteCouplesFondEncre = SuiteCouplesFondEncre;
+exports.COUPLE_FOND_ENCRE_TOUS = {
+    fond: GRIS_FER,
+    encre: BLANC
+};
+exports.COUPLE_FOND_ENCRE_SUJET = {
+    fond: FRAISE,
+    encre: BLANC
+};
+exports.COUPLE_FOND_ENCRE_INCONNU = {
+    fond: FUMEE,
+    encre: NOIR
+};
 
 
 /***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var styled_components_1 = __webpack_require__(5);
-var react_custom_scrollbars_1 = __webpack_require__(42);
-var containerAction_1 = __webpack_require__(65);
-var couleur_1 = __webpack_require__(18);
-var ContenuAction = /** @class */ (function (_super) {
-    __extends(ContenuAction, _super);
-    function ContenuAction() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ContenuAction.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className },
-            React.createElement(react_custom_scrollbars_1.default, { style: { width: "74vw", height: "100vh" } },
-                React.createElement(containerAction_1.ContainerAction, { sujet: this.props.sujet, messages: this.props.messages, selection: this.props.selection, envoiMessage: this.props.envoiMessage }))));
-    };
-    return ContenuAction;
-}(React.Component));
-exports.Action = (_a = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    right: 1vw;\n"], _a.raw = ["\n    background: ", ";\n    position: fixed;\n    top: 0;\n    right: 1vw;\n"], styled_components_1.default(ContenuAction)(_a, couleur_1.FOND));
-var _a;
-
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var styled_components_1 = __webpack_require__(5);
-var couleur_1 = __webpack_require__(18);
-var containersMessages_1 = __webpack_require__(66);
-var ContenuContainerAction = /** @class */ (function (_super) {
-    __extends(ContenuContainerAction, _super);
-    function ContenuContainerAction() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ContenuContainerAction.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: this.props.className },
-            this.props.messages.map(function (m) {
-                return ((m.emetteur.nom === _this.props.sujet.nom) ?
-                    React.createElement(containersMessages_1.ContainerMessageEmis, { message: m }) :
-                    React.createElement(containersMessages_1.ContainerMessageRecu, { message: m }));
-            }),
-            React.createElement(containersMessages_1.EntreeMessage, { sujet: this.props.sujet, destinataire: this.props.selection, envoiMessage: this.props.envoiMessage })));
-    };
-    return ContenuContainerAction;
-}(React.Component));
-exports.ContainerAction = (_a = ["\n    background: ", ";\n    position: absolute;\n    top: 0;\n    left: 0;\n    /* important / overflow : deux sens haut vers bas et gauche vers droite pour le d\u00E9passement */\n    min-width: calc(74vw);\n    min-height: calc(100vh);\n    /* occupe au moins la place du container */\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-end;\n"], _a.raw = ["\n    background: ", ";\n    position: absolute;\n    top: 0;\n    left: 0;\n    /* important / overflow : deux sens haut vers bas et gauche vers droite pour le d\u00E9passement */\n    min-width: calc(74vw);\n    min-height: calc(100vh);\n    /* occupe au moins la place du container */\n    display: flex;\n    flex-direction: column;\n    justify-content: flex-end;\n"], styled_components_1.default(ContenuContainerAction)(_a, couleur_1.FOND));
-var _a;
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(1);
-var styled_components_1 = __webpack_require__(5);
-var types_1 = __webpack_require__(8);
-var couleur_1 = __webpack_require__(18);
-var react_textarea_autosize_1 = __webpack_require__(67);
-var Role;
-(function (Role) {
-    Role[Role["Emetteur"] = 0] = "Emetteur";
-    Role[Role["Recepteur"] = 1] = "Recepteur";
-})(Role || (Role = {}));
-;
-var InterlocuteurBrut = /** @class */ (function (_super) {
-    __extends(InterlocuteurBrut, _super);
-    function InterlocuteurBrut() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    InterlocuteurBrut.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className }, ((this.props.role === Role.Emetteur) ? "De : " : "A : ") + this.props.nom));
-    };
-    return InterlocuteurBrut;
-}(React.Component));
-var Interlocuteur = (_a = ["\n        flex: none;\n        background-color: ", ";\n        color : ", ";                \n        text-align: center;\n        padding: 1ex;\n        \n        width: 18ex;\n        margin: 1ex;\n        border-radius: 1ex;\n    "], _a.raw = ["\n        flex: none;\n        background-color: ", ";\n        color : ", ";                \n        text-align: center;\n        padding: 1ex;\n        \n        width: 18ex;\n        margin: 1ex;\n        border-radius: 1ex;\n    "], styled_components_1.default(InterlocuteurBrut)(_a, function (props) { return props.fond; }, function (props) { return props.encre; }));
-var MessageFixe = (_b = ["\n    flex: auto;\n    background: ", ";\n    color: ", ";\n    text-align: justify;\n    padding: 1ex;\n    \n    min-width: 24ex;\n    max-width: 72ex;\n    margin: 1ex;\n    white-space: pre-wrap;\n    overflow-wrap: break-word;\n"], _b.raw = ["\n    flex: auto;\n    background: ", ";\n    color: ", ";\n    text-align: justify;\n    padding: 1ex;\n    \n    min-width: 24ex;\n    max-width: 72ex;\n    margin: 1ex;\n    white-space: pre-wrap;\n    overflow-wrap: break-word;\n"], styled_components_1.default.div(_b, couleur_1.FOND_TEXTE, couleur_1.TEXTE));
-var Cachet = (_c = ["\n    font-size: x-small;\n    color: ", ";\n    text-align: right;\n"], _c.raw = ["\n    font-size: x-small;\n    color: ", ";\n    text-align: right;\n"], styled_components_1.default.div(_c, couleur_1.TEXTE_PALE));
-var PastilleBrute = /** @class */ (function (_super) {
-    __extends(PastilleBrute, _super);
-    function PastilleBrute() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PastilleBrute.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className }));
-    };
-    return PastilleBrute;
-}(React.Component));
-var Pastille = (_d = ["\n        display: inline-block;\n        width: 2ex;\n        height: 2ex;\n        border-radius: 100%;\n        background-color: ", ";\n        margin: 0 1ex 0 1ex;\n    "], _d.raw = ["\n        display: inline-block;\n        width: 2ex;\n        height: 2ex;\n        border-radius: 100%;\n        background-color: ", ";\n        margin: 0 1ex 0 1ex;\n    "], styled_components_1.default(PastilleBrute)(_d, function (props) { return props.fond; }));
-var ContainerMessageBrut = /** @class */ (function (_super) {
-    __extends(ContainerMessageBrut, _super);
-    function ContainerMessageBrut() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ContainerMessageBrut.prototype.render = function () {
-        return (React.createElement("div", { className: this.props.className },
-            React.createElement(Interlocuteur, { fond: this.props.message.emetteur.fond, encre: this.props.message.emetteur.encre, nom: this.props.message.emetteur.nom, role: Role.Emetteur }),
-            React.createElement(MessageFixe, { style: { color: (this.props.message.ID.val.includes('ERR')) ? couleur_1.TEXTE_ERREUR : couleur_1.TEXTE } },
-                this.props.message.contenu,
-                React.createElement(Cachet, null,
-                    this.props.message.accuses.map(function (c) {
-                        return React.createElement(Pastille, { fond: c });
-                    }),
-                    this.props.message.cachet)),
-            React.createElement(Interlocuteur, { fond: this.props.message.destinataire.fond, encre: this.props.message.destinataire.encre, nom: this.props.message.destinataire.nom, role: Role.Recepteur })));
-    };
-    return ContainerMessageBrut;
-}(React.Component));
-exports.ContainerMessageRecu = (_e = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: -1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex; \n    margin: 1ex 1em 1ex 1ex;\n    align-self: flex-end;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n"], _e.raw = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: -1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex; \n    margin: 1ex 1em 1ex 1ex;\n    align-self: flex-end;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n"], styled_components_1.default(ContainerMessageBrut)(_e, couleur_1.FOND_TEXTE, function (props) { return props.message.emetteur.fond; }));
-exports.ContainerMessageEmis = (_f = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: 1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex;\n    margin: 1ex 1ex 1ex 1em;\n    align-self: flex-start;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n"], _f.raw = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: 1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex;\n    margin: 1ex 1ex 1ex 1em;\n    align-self: flex-start;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n"], styled_components_1.default(ContainerMessageBrut)(_f, couleur_1.FOND_TEXTE, couleur_1.COUPLE_FOND_ENCRE_SUJET.fond));
-var styleTexteBrut = {
-    alignSelf: "flex-end",
-    flex: "auto",
-    resize: "vertical",
-    overflow: "auto",
-    margin: "1ex",
-    background: couleur_1.FOND_TEXTE_INV,
-    color: couleur_1.TEXTE_INV,
-    fontSize: "medium"
-};
-var EnvoiBrut = /** @class */ (function (_super) {
-    __extends(EnvoiBrut, _super);
-    function EnvoiBrut() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    EnvoiBrut.prototype.render = function () {
-        return (React.createElement("button", { className: this.props.className, onClick: this.props.onClick }, "A : " + this.props.nom));
-    };
-    return EnvoiBrut;
-}(React.Component));
-var Envoi = (_g = ["\n        flex: none;\n        background-color: ", ";\n        color : ", ";                \n        text-align: center;\n        padding: 1ex;\n        height: 4ex;\n        width: 18ex;\n        margin: 1ex;\n        border-radius: 1ex;\n    "], _g.raw = ["\n        flex: none;\n        background-color: ", ";\n        color : ", ";                \n        text-align: center;\n        padding: 1ex;\n        height: 4ex;\n        width: 18ex;\n        margin: 1ex;\n        border-radius: 1ex;\n    "], styled_components_1.default(EnvoiBrut)(_g, function (props) { return props.fond; }, function (props) { return props.encre; }));
-var EntreeMessageBrut = /** @class */ (function (_super) {
-    __extends(EntreeMessageBrut, _super);
-    function EntreeMessageBrut(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = { texte: '' };
-        _this.generateur = types_1.creerIdentificationParCompteur(_this.props.sujet.ID.val + "-MSG-");
-        _this.mettreAJourEntree = _this.mettreAJourEntree.bind(_this);
-        return _this;
-    }
-    EntreeMessageBrut.prototype.mettreAJourEntree = function (event) {
-        this.setState({ texte: event.target.value });
-    };
-    EntreeMessageBrut.prototype.reinitialiserEntree = function () {
-        this.setState({ texte: "" });
-    };
-    EntreeMessageBrut.prototype.render = function () {
-        var _this = this;
-        return (React.createElement("div", { className: this.props.className },
-            React.createElement(Interlocuteur, { fond: this.props.sujet.fond, encre: this.props.sujet.encre, nom: this.props.sujet.nom, role: Role.Emetteur }),
-            React.createElement(react_textarea_autosize_1.default, { value: this.state.texte, placeholder: "Entrez le texte de votre message puis appuyez sur le bouton à droite indiquant le destinataire pour l'envoyer.", minRows: 3, cols: 72, style: styleTexteBrut, onChange: this.mettreAJourEntree }),
-            React.createElement(Envoi, { fond: this.props.destinataire.fond, encre: this.props.destinataire.encre, nom: this.props.destinataire.nom, role: Role.Recepteur, onClick: function () {
-                    var d = types_1.creerDateMaintenant();
-                    _this.props.envoiMessage({
-                        ID: _this.generateur.identifier('message'),
-                        emetteur: _this.props.sujet,
-                        destinataire: _this.props.destinataire,
-                        cachet: d.representation(),
-                        contenu: _this.state.texte,
-                        accuses: []
-                    }, d);
-                    _this.reinitialiserEntree();
-                } })));
-    };
-    return EntreeMessageBrut;
-}(React.Component));
-exports.EntreeMessage = (_h = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: 1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex;\n    margin: 1ex 1ex 1ex 1em;\n    align-self: flex-start;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n    max-width: calc(50vw);\n"], _h.raw = ["\n    flex: initial;\n    background: ", ";\n    box-shadow: 1ex 1ex 3ex -1ex ", ";\n    border-radius: 1ex;\n    margin: 1ex 1ex 1ex 1em;\n    align-self: flex-start;\n    /* Contrainte : marge plus grande que la largeur des ascenseurs. */\n    display: flex;\n    flex-direction: row;\n    justify-content: flex-start;\n    align-items: flex-start;\n    min-width: 80ex;\n    max-width: calc(50vw);\n"], styled_components_1.default(EntreeMessageBrut)(_h, couleur_1.FOND_TEXTE, couleur_1.COUPLE_FOND_ENCRE_SUJET.fond));
-var _a, _b, _c, _d, _e, _f, _g, _h;
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-
-
-
-var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
-
-var isIE = isBrowser ? !!document.documentElement.currentStyle : false;
-var hiddenTextarea = isBrowser && document.createElement('textarea');
-
-var HIDDEN_TEXTAREA_STYLE = {
-  'min-height': '0',
-  'max-height': 'none',
-  height: '0',
-  visibility: 'hidden',
-  overflow: 'hidden',
-  position: 'absolute',
-  'z-index': '-1000',
-  top: '0',
-  right: '0'
-};
-
-var SIZING_STYLE = ['letter-spacing', 'line-height', 'font-family', 'font-weight', 'font-size', 'font-style', 'text-rendering', 'text-transform', 'width', 'text-indent', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width', 'box-sizing'];
-
-var computedStyleCache = {};
-
-function calculateNodeHeight(uiTextNode, uid) {
-  var useCache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-  var minRows = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-  var maxRows = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-
-  if (hiddenTextarea.parentNode === null) {
-    document.body.appendChild(hiddenTextarea);
-  }
-
-  // Copy all CSS properties that have an impact on the height of the content in
-  // the textbox
-  var nodeStyling = calculateNodeStyling(uiTextNode, uid, useCache);
-
-  if (nodeStyling === null) {
-    return null;
-  }
-
-  var paddingSize = nodeStyling.paddingSize,
-      borderSize = nodeStyling.borderSize,
-      boxSizing = nodeStyling.boxSizing,
-      sizingStyle = nodeStyling.sizingStyle;
-
-  // Need to have the overflow attribute to hide the scrollbar otherwise
-  // text-lines will not calculated properly as the shadow will technically be
-  // narrower for content
-
-  Object.keys(sizingStyle).forEach(function (key) {
-    hiddenTextarea.style[key] = sizingStyle[key];
-  });
-  Object.keys(HIDDEN_TEXTAREA_STYLE).forEach(function (key) {
-    hiddenTextarea.style.setProperty(key, HIDDEN_TEXTAREA_STYLE[key], 'important');
-  });
-  hiddenTextarea.value = uiTextNode.value || uiTextNode.placeholder || 'x';
-
-  var minHeight = -Infinity;
-  var maxHeight = Infinity;
-  var height = hiddenTextarea.scrollHeight;
-
-  if (boxSizing === 'border-box') {
-    // border-box: add border, since height = content + padding + border
-    height = height + borderSize;
-  } else if (boxSizing === 'content-box') {
-    // remove padding, since height = content
-    height = height - paddingSize;
-  }
-
-  // measure height of a textarea with a single row
-  hiddenTextarea.value = 'x';
-  var singleRowHeight = hiddenTextarea.scrollHeight - paddingSize;
-
-  if (minRows !== null || maxRows !== null) {
-    if (minRows !== null) {
-      minHeight = singleRowHeight * minRows;
-      if (boxSizing === 'border-box') {
-        minHeight = minHeight + paddingSize + borderSize;
-      }
-      height = Math.max(minHeight, height);
-    }
-    if (maxRows !== null) {
-      maxHeight = singleRowHeight * maxRows;
-      if (boxSizing === 'border-box') {
-        maxHeight = maxHeight + paddingSize + borderSize;
-      }
-      height = Math.min(maxHeight, height);
-    }
-  }
-
-  var rowCount = Math.floor(height / singleRowHeight);
-
-  return { height: height, minHeight: minHeight, maxHeight: maxHeight, rowCount: rowCount };
-}
-
-function calculateNodeStyling(node, uid) {
-  var useCache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  if (useCache && computedStyleCache[uid]) {
-    return computedStyleCache[uid];
-  }
-
-  var style = window.getComputedStyle(node);
-
-  if (style === null) {
-    return null;
-  }
-
-  var sizingStyle = SIZING_STYLE.reduce(function (obj, name) {
-    obj[name] = style.getPropertyValue(name);
-    return obj;
-  }, {});
-
-  var boxSizing = sizingStyle['box-sizing'];
-
-  // IE (Edge has already correct behaviour) returns content width as computed width
-  // so we need to add manually padding and border widths
-  if (isIE && boxSizing === 'border-box') {
-    sizingStyle.width = parseFloat(sizingStyle.width) + parseFloat(style['border-right-width']) + parseFloat(style['border-left-width']) + parseFloat(style['padding-right']) + parseFloat(style['padding-left']) + 'px';
-  }
-
-  var paddingSize = parseFloat(sizingStyle['padding-bottom']) + parseFloat(sizingStyle['padding-top']);
-
-  var borderSize = parseFloat(sizingStyle['border-bottom-width']) + parseFloat(sizingStyle['border-top-width']);
-
-  var nodeInfo = {
-    sizingStyle: sizingStyle,
-    paddingSize: paddingSize,
-    borderSize: borderSize,
-    boxSizing: boxSizing
-  };
-
-  if (useCache) {
-    computedStyleCache[uid] = nodeInfo;
-  }
-
-  return nodeInfo;
-}
-
-var purgeCache = function purgeCache(uid) {
-  return delete computedStyleCache[uid];
-};
-
-function autoInc() {
-  var seed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-  return function () {
-    return ++seed;
-  };
-}
-
-var uid = autoInc();
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
-
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-
-
-
-
-
-
-
-
-var objectWithoutProperties = function (obj, keys) {
-  var target = {};
-
-  for (var i in obj) {
-    if (keys.indexOf(i) >= 0) continue;
-    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-    target[i] = obj[i];
-  }
-
-  return target;
-};
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-/**
- * <TextareaAutosize />
- */
-
-var noop = function noop() {};
-
-var _ref = isBrowser && window.requestAnimationFrame ? [window.requestAnimationFrame, window.cancelAnimationFrame] : [setTimeout, clearTimeout];
-var onNextFrame = _ref[0];
-var clearNextFrameAction = _ref[1];
-
-var TextareaAutosize = function (_React$Component) {
-  inherits(TextareaAutosize, _React$Component);
-
-  function TextareaAutosize(props) {
-    classCallCheck(this, TextareaAutosize);
-
-    var _this = possibleConstructorReturn(this, _React$Component.call(this, props));
-
-    _this._resizeLock = false;
-
-    _this._onRootDOMNode = function (node) {
-      _this._rootDOMNode = node;
-
-      if (_this.props.inputRef) {
-        _this.props.inputRef(node);
-      }
-    };
-
-    _this._onChange = function (event) {
-      if (!_this._controlled) {
-        _this._resizeComponent();
-      }
-      _this.props.onChange(event);
-    };
-
-    _this._resizeComponent = function () {
-      var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : noop;
-
-      if (typeof _this._rootDOMNode === 'undefined') {
-        callback();
-        return;
-      }
-
-      var nodeHeight = calculateNodeHeight(_this._rootDOMNode, _this._uid, _this.props.useCacheForDOMMeasurements, _this.props.minRows, _this.props.maxRows);
-
-      if (nodeHeight === null) {
-        callback();
-        return;
-      }
-
-      var height = nodeHeight.height,
-          minHeight = nodeHeight.minHeight,
-          maxHeight = nodeHeight.maxHeight,
-          rowCount = nodeHeight.rowCount;
-
-
-      _this.rowCount = rowCount;
-
-      if (_this.state.height !== height || _this.state.minHeight !== minHeight || _this.state.maxHeight !== maxHeight) {
-        _this.setState({ height: height, minHeight: minHeight, maxHeight: maxHeight }, callback);
-        return;
-      }
-
-      callback();
-    };
-
-    _this.state = {
-      height: props.style && props.style.height || 0,
-      minHeight: -Infinity,
-      maxHeight: Infinity
-    };
-
-    _this._uid = uid();
-    _this._controlled = typeof props.value === 'string';
-    return _this;
-  }
-
-  TextareaAutosize.prototype.render = function render() {
-    var _props = this.props,
-        _minRows = _props.minRows,
-        _maxRows = _props.maxRows,
-        _onHeightChange = _props.onHeightChange,
-        _useCacheForDOMMeasurements = _props.useCacheForDOMMeasurements,
-        _inputRef = _props.inputRef,
-        props = objectWithoutProperties(_props, ['minRows', 'maxRows', 'onHeightChange', 'useCacheForDOMMeasurements', 'inputRef']);
-
-
-    props.style = _extends({}, props.style, {
-      height: this.state.height
-    });
-
-    var maxHeight = Math.max(props.style.maxHeight || Infinity, this.state.maxHeight);
-
-    if (maxHeight < this.state.height) {
-      props.style.overflow = 'hidden';
-    }
-
-    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('textarea', _extends({}, props, {
-      onChange: this._onChange,
-      ref: this._onRootDOMNode
-    }));
-  };
-
-  TextareaAutosize.prototype.componentDidMount = function componentDidMount() {
-    var _this2 = this;
-
-    this._resizeComponent();
-    // Working around Firefox bug which runs resize listeners even when other JS is running at the same moment
-    // causing competing rerenders (due to setState in the listener) in React.
-    // More can be found here - facebook/react#6324
-    this._resizeListener = function () {
-      if (_this2._resizeLock) {
-        return;
-      }
-      _this2._resizeLock = true;
-      _this2._resizeComponent(function () {
-        return _this2._resizeLock = false;
-      });
-    };
-    window.addEventListener('resize', this._resizeListener);
-  };
-
-  TextareaAutosize.prototype.componentWillReceiveProps = function componentWillReceiveProps() {
-    var _this3 = this;
-
-    this._clearNextFrame();
-    this._onNextFrameActionId = onNextFrame(function () {
-      return _this3._resizeComponent();
-    });
-  };
-
-  TextareaAutosize.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState) {
-    if (this.state.height !== prevState.height) {
-      this.props.onHeightChange(this.state.height, this);
-    }
-  };
-
-  TextareaAutosize.prototype.componentWillUnmount = function componentWillUnmount() {
-    this._clearNextFrame();
-    window.removeEventListener('resize', this._resizeListener);
-    purgeCache(this._uid);
-  };
-
-  TextareaAutosize.prototype._clearNextFrame = function _clearNextFrame() {
-    clearNextFrameAction(this._onNextFrameActionId);
-  };
-
-  return TextareaAutosize;
-}(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
-
-TextareaAutosize.propTypes = {
-  value: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.string,
-  onChange: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
-  onHeightChange: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func,
-  useCacheForDOMMeasurements: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.bool,
-  minRows: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
-  maxRows: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.number,
-  inputRef: __WEBPACK_IMPORTED_MODULE_1_prop_types___default.a.func
-};
-TextareaAutosize.defaultProps = {
-  onChange: noop,
-  onHeightChange: noop,
-  useCacheForDOMMeasurements: false
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (TextareaAutosize);
-
-
-/***/ }),
-/* 68 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28661,225 +26296,368 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var communication_1 = __webpack_require__(41);
 var types_1 = __webpack_require__(8);
 var outils_1 = __webpack_require__(19);
+var binaire_1 = __webpack_require__(73);
 exports.hote = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-exports.port1 = 3000; // port de la essource 1 (serveur d'applications)
-exports.port2 = 1110; // port de la ressouce 2 (serveur de connexions)
-// La structure JSON décrivant le sommet est en lecture seulement. 
-var SommetTchat = /** @class */ (function (_super) {
-    __extends(SommetTchat, _super);
-    function SommetTchat(etat) {
+exports.port1 = 3001; // port de la essource 1 (serveur d'applications)
+exports.port2 = 1111; // port de la ressouce 2 (serveur de connexions)
+// Iditenfiants indéfinis utilisés dans des messages définis partiellement
+exports.sommetInconnu = { val: "*", sorte: 'sommet' };
+exports.messageInconnu = { val: "*", sorte: 'message' };
+exports.utilisateurInconnu = { val: "*", sorte: 'utilisateur' };
+var SommetJeu1 = /** @class */ (function (_super) {
+    __extends(SommetJeu1, _super);
+    function SommetJeu1(etat) {
         return _super.call(this, function (x) { return x; }, etat) || this;
     }
-    SommetTchat.prototype.net = function (e) {
+    SommetJeu1.prototype.net = function (e) {
         var s = this.val();
         switch (e) {
-            case 'nom': return s.pseudo;
+            case 'domaine': return binaire_1.creerMot(s.domaine).representation();
             case 'ID': return s.ID.val;
         }
         return outils_1.jamais(e);
     };
-    SommetTchat.prototype.representation = function () {
-        return this.net('nom') + " (" + this.net('ID') + ")";
+    SommetJeu1.prototype.representation = function () {
+        return this.net('domaine') + " (" + this.net('ID') + ")";
     };
-    return SommetTchat;
+    return SommetJeu1;
 }(communication_1.Sommet));
-exports.SommetTchat = SommetTchat;
-function creerSommetTchat(s) {
-    return new SommetTchat(s);
+exports.SommetJeu1 = SommetJeu1;
+function creerSommetJeu1(s) {
+    return new SommetJeu1(s);
 }
-exports.creerSommetTchat = creerSommetTchat;
-var NoeudTchatEnveloppeMutable = /** @class */ (function (_super) {
-    __extends(NoeudTchatEnveloppeMutable, _super);
-    function NoeudTchatEnveloppeMutable() {
+exports.creerSommetJeu1 = creerSommetJeu1;
+var NoeudJeu1EnveloppeMutable = /** @class */ (function (_super) {
+    __extends(NoeudJeu1EnveloppeMutable, _super);
+    function NoeudJeu1EnveloppeMutable() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NoeudTchatEnveloppeMutable.prototype.net = function (e) {
+    NoeudJeu1EnveloppeMutable.prototype.net = function (e) {
         var s = this.val();
         switch (e) {
-            case 'centre': return creerSommetTchat(s.centre).representation();
-            case 'voisins':
-                return types_1.creerTableImmutable(s.voisins).representation();
+            case 'centre': return creerSommetJeu1(s.centre).representation();
+            case 'voisins': return types_1.creerTableImmutable(s.voisins).representation();
         }
         return outils_1.jamais(e);
     };
-    NoeudTchatEnveloppeMutable.prototype.representation = function () {
+    NoeudJeu1EnveloppeMutable.prototype.representation = function () {
         return "(centre : " + this.net('centre') + " ; voisins : " + this.net('voisins') + ")";
     };
-    return NoeudTchatEnveloppeMutable;
+    return NoeudJeu1EnveloppeMutable;
 }(communication_1.NoeudEnveloppeMutable));
-function creerNoeudTchatMutable(n) {
-    return new NoeudTchatEnveloppeMutable(n);
+exports.NoeudJeu1EnveloppeMutable = NoeudJeu1EnveloppeMutable;
+function creerNoeudJeu1Mutable(n) {
+    return new NoeudJeu1EnveloppeMutable(n);
 }
-exports.creerNoeudTchatMutable = creerNoeudTchatMutable;
-function creerNoeudSansVoisinsTchatMutable(centre) {
-    return new NoeudTchatEnveloppeMutable(communication_1.creerCentreSansVoisins(centre));
+exports.creerNoeudJeu1Mutable = creerNoeudJeu1Mutable;
+function creerNoeudSansVoisinsJeu1Mutable(centre) {
+    return creerNoeudJeu1Mutable(communication_1.creerCentreSansVoisins(centre));
 }
-exports.creerNoeudSansVoisinsTchatMutable = creerNoeudSansVoisinsTchatMutable;
-var NoeudTchatEnveloppeImmutable = /** @class */ (function (_super) {
-    __extends(NoeudTchatEnveloppeImmutable, _super);
-    function NoeudTchatEnveloppeImmutable() {
+exports.creerNoeudSansVoisinsJeu1Mutable = creerNoeudSansVoisinsJeu1Mutable;
+var NoeudJeu1EnveloppeImmutable = /** @class */ (function (_super) {
+    __extends(NoeudJeu1EnveloppeImmutable, _super);
+    function NoeudJeu1EnveloppeImmutable() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    NoeudTchatEnveloppeImmutable.prototype.net = function (e) {
+    NoeudJeu1EnveloppeImmutable.prototype.net = function (e) {
         var s = this.val();
         switch (e) {
-            case 'centre': return creerSommetTchat(s.centre).representation();
-            case 'voisins':
-                return types_1.creerTableImmutable(s.voisins).representation();
+            case 'centre': return creerSommetJeu1(s.centre).representation();
+            case 'voisins': return types_1.creerTableImmutable(s.voisins).representation();
         }
         return outils_1.jamais(e);
     };
-    NoeudTchatEnveloppeImmutable.prototype.representation = function () {
+    NoeudJeu1EnveloppeImmutable.prototype.representation = function () {
         return "(centre : " + this.net('centre') + " ; voisins : " + this.net('voisins') + ")";
     };
-    return NoeudTchatEnveloppeImmutable;
+    return NoeudJeu1EnveloppeImmutable;
 }(communication_1.NoeudEnveloppeImmutable));
-function creerNoeudTchatImmutable(n) {
-    return new NoeudTchatEnveloppeImmutable(n);
+exports.NoeudJeu1EnveloppeImmutable = NoeudJeu1EnveloppeImmutable;
+function creerNoeudJeu1Immutable(n) {
+    return new NoeudJeu1EnveloppeImmutable(n);
 }
-exports.creerNoeudTchatImmutable = creerNoeudTchatImmutable;
-var TypeMessageTchat;
-(function (TypeMessageTchat) {
-    TypeMessageTchat[TypeMessageTchat["COM"] = 0] = "COM";
-    TypeMessageTchat[TypeMessageTchat["TRANSIT"] = 1] = "TRANSIT";
-    TypeMessageTchat[TypeMessageTchat["AR"] = 2] = "AR";
-    TypeMessageTchat[TypeMessageTchat["ERREUR_CONNEXION"] = 3] = "ERREUR_CONNEXION";
-    TypeMessageTchat[TypeMessageTchat["ERREUR_EMET"] = 4] = "ERREUR_EMET";
-    TypeMessageTchat[TypeMessageTchat["ERREUR_DEST"] = 5] = "ERREUR_DEST";
-    TypeMessageTchat[TypeMessageTchat["ERREUR_TYPE"] = 6] = "ERREUR_TYPE";
-    TypeMessageTchat[TypeMessageTchat["INTERDICTION"] = 7] = "INTERDICTION";
-})(TypeMessageTchat = exports.TypeMessageTchat || (exports.TypeMessageTchat = {}));
+exports.creerNoeudJeu1Immutable = creerNoeudJeu1Immutable;
+/*
+Protocole : cf. structure.org
+*/
+var TypeMessageJeu1;
+(function (TypeMessageJeu1) {
+    TypeMessageJeu1[TypeMessageJeu1["INIT"] = 0] = "INIT";
+    TypeMessageJeu1[TypeMessageJeu1["SUCCES_INIT"] = 1] = "SUCCES_INIT";
+    TypeMessageJeu1[TypeMessageJeu1["VERROU"] = 2] = "VERROU";
+    TypeMessageJeu1[TypeMessageJeu1["ACTIF"] = 3] = "ACTIF";
+    TypeMessageJeu1[TypeMessageJeu1["SUCCES_ACTIF"] = 4] = "SUCCES_ACTIF";
+    TypeMessageJeu1[TypeMessageJeu1["INACTIF"] = 5] = "INACTIF";
+    TypeMessageJeu1[TypeMessageJeu1["TRANSIT"] = 6] = "TRANSIT";
+    TypeMessageJeu1[TypeMessageJeu1["IGNOR"] = 7] = "IGNOR";
+    TypeMessageJeu1[TypeMessageJeu1["FIN"] = 8] = "FIN";
+    TypeMessageJeu1[TypeMessageJeu1["ESSAI"] = 9] = "ESSAI";
+    TypeMessageJeu1[TypeMessageJeu1["SUCCES_TRANSIT"] = 10] = "SUCCES_TRANSIT";
+    TypeMessageJeu1[TypeMessageJeu1["ECHEC_TRANSIT"] = 11] = "ECHEC_TRANSIT";
+    TypeMessageJeu1[TypeMessageJeu1["SUCCES_FIN"] = 12] = "SUCCES_FIN";
+    TypeMessageJeu1[TypeMessageJeu1["ECHEC_FIN"] = 13] = "ECHEC_FIN";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_CONNEXION"] = 14] = "ERREUR_CONNEXION";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_EMET"] = 15] = "ERREUR_EMET";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_DEST"] = 16] = "ERREUR_DEST";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_TYPE"] = 17] = "ERREUR_TYPE";
+    TypeMessageJeu1[TypeMessageJeu1["INTERDICTION"] = 18] = "INTERDICTION";
+})(TypeMessageJeu1 = exports.TypeMessageJeu1 || (exports.TypeMessageJeu1 = {}));
 // Structure immutable
-var MessageTchat = /** @class */ (function (_super) {
-    __extends(MessageTchat, _super);
-    function MessageTchat(etat) {
+var MessageJeu1 = /** @class */ (function (_super) {
+    __extends(MessageJeu1, _super);
+    function MessageJeu1(etat) {
         return _super.call(this, function (x) { return x; }, etat) || this;
     }
-    MessageTchat.prototype.net = function (e) {
+    MessageJeu1.prototype.net = function (e) {
         var msg = this.val();
         switch (e) {
-            case 'type': return TypeMessageTchat[msg.type];
+            case 'ID': return msg.ID.val;
+            case 'type': return TypeMessageJeu1[msg.type];
             case 'date': return types_1.creerDateEnveloppe(msg.date).representation();
-            case 'ID_de': return msg.ID_emetteur.val;
-            case 'ID_à': return msg.ID_destinataire.val;
-            case 'contenu': return msg.contenu;
+            case 'ID_de': return msg.ID_origine.val;
+            case 'ID_à': return msg.ID_destination.val;
+            case 'contenu': return msg.contenu.representation();
         }
         return outils_1.jamais(e);
     };
-    MessageTchat.prototype.representation = function () {
+    MessageJeu1.prototype.representation = function () {
+        var idm = this.net('ID');
         var dem = this.net('ID_de');
         var am = this.net('ID_à');
         var typem = this.net('type');
         var datem = this.net('date');
         var cm = this.net('contenu');
-        return datem + ", de " + dem + " à " + am + " (" + typem + ") - " + cm;
+        return idm + " - " + datem + ", de " + dem + " à " + am + " (" + typem + ") - " + cm;
     };
-    MessageTchat.prototype.transit = function () {
+    // Client : envoyer au serveur avec une destination (un domaine).
+    MessageJeu1.prototype.avecAdresse = function (id_destination) {
         var msg = this.val();
-        return new MessageTchat({
+        return new MessageJeu1({
             ID: msg.ID,
             ID_emetteur: msg.ID_emetteur,
-            ID_destinataire: msg.ID_destinataire,
-            type: TypeMessageTchat.TRANSIT,
+            ID_origine: msg.ID_origine,
+            ID_destination: id_destination,
+            type: msg.type,
             contenu: msg.contenu,
             date: msg.date
         });
     };
-    MessageTchat.prototype.avecAccuseReception = function () {
+    // Serveur : Identifier le message INIT.
+    MessageJeu1.prototype.avecIdentifiant = function (id) {
         var msg = this.val();
-        return new MessageTchat({
-            ID: msg.ID,
+        return new MessageJeu1({
+            ID: id,
             ID_emetteur: msg.ID_emetteur,
-            ID_destinataire: msg.ID_destinataire,
-            type: TypeMessageTchat.AR,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: msg.type,
             contenu: msg.contenu,
             date: msg.date
         });
     };
-    return MessageTchat;
+    // Serveur : diffuser un message à un domaine.
+    MessageJeu1.prototype.sansEmetteurPourTransit = function () {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: exports.utilisateurInconnu,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.TRANSIT,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    };
+    // Client : verrouiller un message en transit.
+    MessageJeu1.prototype.pourVerrouiller = function (id_emetteur, id_origine) {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: id_emetteur,
+            ID_origine: id_origine,
+            ID_destination: exports.sommetInconnu,
+            type: TypeMessageJeu1.VERROU,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    };
+    // Serveur : Accuser réception.
+    MessageJeu1.prototype.avecAccuseReception = function (type) {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: type,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    };
+    // 4. Client : Ignorer un message en TRANSIT (IGNOR).
+    MessageJeu1.prototype.aIgnorer = function () {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.IGNOR,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    };
+    // 5. Client : Consulter un message en TRANSIT (FIN).
+    MessageJeu1.prototype.aConsulter = function () {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.FIN,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    };
+    // 5. Client : tester un message en FIN.
+    MessageJeu1.prototype.aEssayer = function (contenu) {
+        var msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: exports.sommetInconnu,
+            ID_destination: exports.sommetInconnu,
+            type: TypeMessageJeu1.ESSAI,
+            contenu: contenu,
+            date: msg.date
+        });
+    };
+    return MessageJeu1;
 }(communication_1.Message));
-exports.MessageTchat = MessageTchat;
-function creerMessageErreurConnexion(id, idEmetteur, messageErreur) {
-    return new MessageTchat({
-        ID: id,
-        ID_emetteur: idEmetteur,
-        ID_destinataire: idEmetteur,
-        type: TypeMessageTchat.ERREUR_CONNEXION,
-        contenu: messageErreur,
+exports.MessageJeu1 = MessageJeu1;
+// Client : Produire un message INIT.
+function creerMessageInitial(id_emetteur, id_origine, contenu) {
+    return new MessageJeu1({
+        ID: exports.messageInconnu,
+        ID_emetteur: id_emetteur,
+        ID_origine: id_origine,
+        ID_destination: exports.sommetInconnu,
+        type: TypeMessageJeu1.INIT,
+        contenu: contenu,
         date: types_1.creerDateMaintenant().val()
     });
 }
-exports.creerMessageErreurConnexion = creerMessageErreurConnexion;
-function creerMessageCommunication(id, idEmetteur, idDestinataire, texte, date) {
-    return new MessageTchat({
-        ID: id,
-        ID_emetteur: idEmetteur,
-        ID_destinataire: idDestinataire,
-        type: TypeMessageTchat.COM,
-        contenu: texte,
-        date: date
-    });
+exports.creerMessageInitial = creerMessageInitial;
+function creerMessageEnveloppe(msg) {
+    return new MessageJeu1(msg);
 }
-exports.creerMessageCommunication = creerMessageCommunication;
-function creerMessageRetourErreur(original, codeErreur, messageErreur) {
-    return new MessageTchat({
-        ID: original.val().ID,
-        ID_emetteur: original.val().ID_emetteur,
-        ID_destinataire: original.val().ID_destinataire,
-        type: codeErreur,
-        contenu: messageErreur,
-        date: original.val().date
-    });
+exports.creerMessageEnveloppe = creerMessageEnveloppe;
+var Utilisateur = /** @class */ (function (_super) {
+    __extends(Utilisateur, _super);
+    function Utilisateur(u) {
+        return _super.call(this, function (x) { return x; }, u) || this;
+    }
+    Utilisateur.prototype.net = function (e) {
+        var u = this.val();
+        switch (e) {
+            case 'ID': return u.ID.val;
+            case 'nom':
+                return binaire_1.creerMot(u.pseudo).representation();
+        }
+        return outils_1.jamais(e);
+    };
+    Utilisateur.prototype.representation = function () {
+        return this.net('nom') + " (" + this.net('ID') + ")";
+    };
+    return Utilisateur;
+}(types_1.Enveloppe));
+exports.Utilisateur = Utilisateur;
+function creerUtilisateur(u) {
+    return new Utilisateur(u);
 }
-exports.creerMessageRetourErreur = creerMessageRetourErreur;
-var ConfigurationTchat = /** @class */ (function (_super) {
-    __extends(ConfigurationTchat, _super);
-    function ConfigurationTchat(c) {
+exports.creerUtilisateur = creerUtilisateur;
+function creerPopulationLocaleVide() {
+    return types_1.creerTableIdentificationMutableVide('utilisateur', function (x) { return x; });
+}
+exports.creerPopulationLocaleVide = creerPopulationLocaleVide;
+function creerPopulationLocale(pop) {
+    return types_1.creerTableIdentificationMutable('utilisateur', function (x) { return x; }, pop);
+}
+exports.creerPopulationLocale = creerPopulationLocale;
+function peuplerPopulationLocale(prefixe, noms) {
+    var identification = types_1.creerIdentificationParCompteur(prefixe);
+    var pop = creerPopulationLocaleVide();
+    noms.forEach(function (nom, i, tab) {
+        var u = { ID: identification.identifier('utilisateur'), pseudo: tab[i].tableauBinaire() };
+        pop.ajouter(u.ID, u);
+    });
+    return pop;
+}
+exports.peuplerPopulationLocale = peuplerPopulationLocale;
+var ConfigurationJeu1 = /** @class */ (function (_super) {
+    __extends(ConfigurationJeu1, _super);
+    function ConfigurationJeu1(c) {
         return _super.call(this, function (x) { return x; }, c) || this;
     }
-    ConfigurationTchat.prototype.net = function (e) {
+    ConfigurationJeu1.prototype.net = function (e) {
         var config = this.val();
         switch (e) {
-            case 'centre': return creerSommetTchat(config.centre).representation();
-            case 'voisins': return types_1.creerTableImmutable(config.voisins).representation();
+            case 'centre': return creerSommetJeu1(config.centre).representation();
+            case 'population':
+                return types_1.creerTableIdentificationImmutable('utilisateur', config.population).representation();
+            case 'utilisateur': return creerUtilisateur(config.utilisateur).representation();
+            case 'voisins': return types_1.creerTableIdentificationImmutable('sommet', config.voisins).representation();
             case 'date': return types_1.creerDateEnveloppe(config.date).representation();
         }
         return outils_1.jamais(e);
     };
-    ConfigurationTchat.prototype.representation = function () {
-        var cc = this.net('centre');
-        var vc = this.net('voisins');
-        var dc = this.net('date');
-        return "(centre : " + cc + " ; voisins : " + vc + ") créée " + dc;
+    ConfigurationJeu1.prototype.representation = function () {
+        var c = this.net('centre');
+        var pop = this.net('population');
+        var util = this.net('utilisateur');
+        var v = this.net('voisins');
+        var d = this.net('date');
+        return "(centre : " + c
+            + " ; population : " + pop
+            + " ; utilisateur : " + util
+            + " ; voisins : " + v
+            + " ; créé à : " + d + ")";
     };
-    return ConfigurationTchat;
+    return ConfigurationJeu1;
 }(communication_1.Configuration));
-exports.ConfigurationTchat = ConfigurationTchat;
-function creerConfigurationTchat(c) {
-    return new ConfigurationTchat(c);
+exports.ConfigurationJeu1 = ConfigurationJeu1;
+function creerConfigurationJeu1(c) {
+    return new ConfigurationJeu1(c);
 }
-exports.creerConfigurationTchat = creerConfigurationTchat;
-function composerConfigurationTchat(n, date) {
-    return new ConfigurationTchat({
-        "configurationInitiale": types_1.Unite.ZERO,
-        "centre": n.centre,
-        "voisins": n.voisins,
-        "date": date
+exports.creerConfigurationJeu1 = creerConfigurationJeu1;
+function composerConfigurationJeu1(n, pop, u, date) {
+    return new ConfigurationJeu1({
+        configurationInitiale: types_1.Unite.ZERO,
+        centre: n.centre,
+        population: pop,
+        utilisateur: u,
+        voisins: n.voisins,
+        date: date
     });
 }
-exports.composerConfigurationTchat = composerConfigurationTchat;
+exports.composerConfigurationJeu1 = composerConfigurationJeu1;
 function decomposerConfiguration(c) {
-    var centre = c.val().centre;
-    var voisins = c.val().voisins;
-    return { "centre": centre, "voisins": voisins };
+    var config = c.val();
+    var centre = config.centre;
+    var voisins = config.voisins;
+    var n = { "centre": centre, "voisins": voisins };
+    var pop = config.population;
+    var u = config.utilisateur;
+    return [n, pop, u];
 }
 exports.decomposerConfiguration = decomposerConfiguration;
-var ErreurTchat = /** @class */ (function (_super) {
-    __extends(ErreurTchat, _super);
-    function ErreurTchat(err) {
+var ErreurJeu1 = /** @class */ (function (_super) {
+    __extends(ErreurJeu1, _super);
+    function ErreurJeu1(err) {
         return _super.call(this, function (x) { return x; }, err) || this;
     }
-    ErreurTchat.prototype.net = function (e) {
+    ErreurJeu1.prototype.net = function (e) {
         var erreur = this.val();
         switch (e) {
             case 'messageErreur': return erreur.messageErreur;
@@ -28887,36 +26665,162 @@ var ErreurTchat = /** @class */ (function (_super) {
         }
         return outils_1.jamais(e);
     };
-    ErreurTchat.prototype.representation = function () {
+    ErreurJeu1.prototype.representation = function () {
         return "[" + this.net('date') + " : " + this.net('messageErreur') + "]";
     };
-    return ErreurTchat;
+    return ErreurJeu1;
 }(communication_1.ErreurRedhibitoire));
-exports.ErreurTchat = ErreurTchat;
-function creerErreurTchat(err) {
-    return new ErreurTchat(err);
+exports.ErreurJeu1 = ErreurJeu1;
+function creerErreurJeu1(err) {
+    return new ErreurJeu1(err);
 }
-exports.creerErreurTchat = creerErreurTchat;
-function composerErreurTchat(msg, date) {
-    return new ErreurTchat({
-        "erreurRedhibitoire": types_1.Unite.ZERO,
-        "messageErreur": msg,
-        "date": date
+exports.creerErreurJeu1 = creerErreurJeu1;
+function composerErreurJeu1(msg, date) {
+    return new ErreurJeu1({
+        erreurRedhibitoire: types_1.Unite.ZERO,
+        messageErreur: msg,
+        date: date
     });
 }
-exports.composerErreurTchat = composerErreurTchat;
-function creerAnneauTchat(noms) {
-    var assembleur = communication_1.creerAssemblageReseauEnAnneau(noms.length, creerNoeudSansVoisinsTchatMutable);
-    var identification = types_1.creerIdentificationParCompteur("S-");
-    noms.forEach(function (nom, i, tab) {
-        var s = { ID: identification.identifier('sommet'), pseudo: tab[i] };
+exports.composerErreurJeu1 = composerErreurJeu1;
+function creerAnneauJeu1(domaines) {
+    var assembleur = communication_1.creerAssemblageReseauEnAnneau(domaines.length, creerNoeudSansVoisinsJeu1Mutable);
+    var identification = types_1.creerIdentificationParCompteur("DOM-");
+    domaines.forEach(function (dom, i, tab) {
+        var s = { ID: identification.identifier('sommet'), domaine: tab[i].tableauBinaire() };
         assembleur.ajouterSommet(s);
     });
     return assembleur.assembler();
 }
-exports.creerAnneauTchat = creerAnneauTchat;
+exports.creerAnneauJeu1 = creerAnneauJeu1;
+var TableUtilisateurs = /** @class */ (function (_super) {
+    __extends(TableUtilisateurs, _super);
+    function TableUtilisateurs() {
+        return _super.call(this, 'utilisateur', function (x) { return x; }) || this;
+    }
+    return TableUtilisateurs;
+}(types_1.TableIdentificationMutable));
+var PopulationParDomaineMutable = /** @class */ (function (_super) {
+    __extends(PopulationParDomaineMutable, _super);
+    function PopulationParDomaineMutable() {
+        return _super.call(this, 'sommet', function (t) { return t.val(); }) || this;
+    }
+    PopulationParDomaineMutable.prototype.contientUtilisateur = function (ID_dom, ID_util) {
+        if (!this.contient(ID_dom)) {
+            return false;
+        }
+        return this.valeurEtat(ID_dom).contient(ID_util);
+    };
+    PopulationParDomaineMutable.prototype.utilisateur = function (ID_dom, ID_util) {
+        return this.valeurEtat(ID_dom).valeur(ID_util);
+    };
+    PopulationParDomaineMutable.prototype.ajouterDomaine = function (ID_dom) {
+        this.ajouter(ID_dom, new TableUtilisateurs());
+    };
+    PopulationParDomaineMutable.prototype.ajouterUtilisateur = function (ID_dom, u) {
+        this.valeurEtat(ID_dom).ajouter(u.ID, u);
+    };
+    PopulationParDomaineMutable.prototype.retirerUtilisateur = function (ID_dom, ID_util) {
+        this.valeurEtat(ID_dom).retirer(ID_util);
+    };
+    PopulationParDomaineMutable.prototype.selectionnerUtilisateur = function () {
+        var ID_dom = this.selectionCleSuivantCritereEtat(function (pop) { return !pop.estVide(); });
+        var ID_util = this.valeurEtat(ID_dom).selectionCle();
+        return [ID_dom, ID_util];
+    };
+    return PopulationParDomaineMutable;
+}(types_1.TableIdentificationMutable));
+exports.PopulationParDomaineMutable = PopulationParDomaineMutable;
+function creerVidePopulationParDomaine() {
+    return new PopulationParDomaineMutable();
+}
+exports.creerVidePopulationParDomaine = creerVidePopulationParDomaine;
+function assemblerPopulationParDomaine(reseau, noms) {
+    var popDom = creerVidePopulationParDomaine();
+    reseau.iterer(function (ID_dom, n) {
+        popDom.ajouterDomaine(ID_dom);
+        var popLoc = peuplerPopulationLocale("UTIL-" + ID_dom.val + "-", noms);
+        popLoc.iterer(function (ID_util, u) {
+            popDom.ajouterUtilisateur(ID_dom, u);
+        });
+    });
+    return popDom;
+}
+exports.assemblerPopulationParDomaine = assemblerPopulationParDomaine;
+function creerTableMutableUtilisateurParMessageParDomaine() {
+    return types_1.creerTableIdentificationMutableVide('sommet', function (x) { return x; });
+}
+exports.creerTableMutableUtilisateurParMessageParDomaine = creerTableMutableUtilisateurParMessageParDomaine;
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+// Revue 31/07 OK - Testé
+var types_1 = __webpack_require__(8);
+var Mot = /** @class */ (function (_super) {
+    __extends(Mot, _super);
+    function Mot(etat) {
+        return _super.call(this, etat) || this;
+    }
+    Mot.prototype.representation = function () {
+        return "[" + this.net('valeurs') + "]";
+    };
+    Mot.prototype.base2 = function () {
+        return this.foncteur(function (v) { return types_1.Deux[v]; }).reduction("", function (x, y) { return x + "." + y; }).slice(1);
+    };
+    Mot.prototype.base10 = function () {
+        return parseInt(this.foncteur(function (v) { return v.toString(); }).reduction("", function (x, y) { return x + y; }), 2);
+    };
+    Mot.prototype.tableauBinaire = function () {
+        return this.etat().tableau;
+    };
+    return Mot;
+}(types_1.TableauImmutable));
+exports.Mot = Mot;
+function creerMot(mot) {
+    return new Mot({
+        taille: mot.length,
+        tableau: mot
+    });
+}
+exports.creerMot = creerMot;
+function binaire(n) {
+    var s = Array.from(n.toString(2));
+    return creerMot(s.map(function (v, i, t) {
+        switch (v) {
+            case '0': return types_1.Deux.ZERO;
+            case '1': return types_1.Deux.UN;
+            default:
+                throw new Error("[Erreur : binaire(" + n.toString + ") non défini.");
+        }
+    }));
+}
+exports.binaire = binaire;
+function premiersBinaires(n) {
+    var r = [];
+    for (var i = 0; i < n; i++) {
+        r.push(i);
+    }
+    return r.map(function (v, i, tab) { return binaire(v); });
+}
+exports.premiersBinaires = premiersBinaires;
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=tchatReact.client.js.map
+//# sourceMappingURL=jeu1React.client.js.map

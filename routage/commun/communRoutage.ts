@@ -28,7 +28,12 @@ import { Enveloppe } from '../../bibliotheque/types/enveloppe';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 import { FormatTableImmutable, creerTableImmutable, FormatTableMutable } from '../../bibliotheque/types/table';
 import { Unite, Deux, Mutable } from '../../bibliotheque/types/mutable';
-import { creerIdentificationParCompteur, Identification, FormatIdentifiableImmutable, Identifiant } from '../../bibliotheque/types/identifiant';
+import {
+  creerIdentificationParCompteur,
+  Identification,
+  FormatIdentifiableImmutable,
+  Identifiant
+} from '../../bibliotheque/types/identifiant';
 
 // import {
 //     FormatMessage, Message,
@@ -45,8 +50,8 @@ import { jamais } from '../../bibliotheque/outils';
 import { Mot, creerMot } from '../../bibliotheque/binaire';
 
 export const hote: string = 'merite'; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3001; // port de la essource 1 (serveur d'applications)
-export const port2: number = 1111; // port de la ressouce 2 (serveur de connexions)
+export const port1 = 3002; // port de la essource 1 (serveur d'applications)
+export const port2: number = 1112; // port de la ressouce 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
 export const sommetInconnu: Identifiant<'sommet'> = { val: '*', sorte: 'sommet' };
@@ -499,7 +504,9 @@ export function composerConfigurationJeu1(
   });
 }
 
-export function decomposerConfiguration(c: ConfigurationJeu1): [FormatNoeudJeu1Immutable, FormatPopulationLocaleImmutable, FormatUtilisateur] {
+export function decomposerConfiguration(
+  c: ConfigurationJeu1
+): [FormatNoeudJeu1Immutable, FormatPopulationLocaleImmutable, FormatUtilisateur] {
   let config = c.val();
   let centre: FormatSommetJeu1 = config.centre;
   let voisins = config.voisins;

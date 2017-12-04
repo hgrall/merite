@@ -1,5 +1,4 @@
-import { port2 } from '../../chat/commun/reseauChat';
-import { port1, hote } from '../../chat/commun/reseauChat';
+import { port1, port2, hote } from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
 
@@ -81,16 +80,19 @@ const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerP
 
 const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 
-const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<'utilisateur', LienJeu1, LienJeu1>(
+const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
   'utilisateur',
-  x => x
-);
+  LienJeu1,
+  LienJeu1
+>('utilisateur', x => x);
 
 const repertoireHtml: string = shell.pwd() + '/build';
 
 const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 const serveurCanaux = new ServeurJeu1(port2, hote);
+
+console.log('Représentation de l anneau', anneau.representation());
 
 /*
 * Fin de l'état - Partie 1
@@ -119,7 +121,7 @@ serveurAppli.demarrer();
 */
 
 /*
-* Config 1 - Traitemetn des connexions
+* Config 1 - Traitement des connexions
 */
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
@@ -130,7 +132,9 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
     let d = creerDateMaintenant();
     console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
     console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
-    l.envoyerMessageErreur(composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val()));
+    l.envoyerMessageErreur(
+      composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
+    );
     return false;
   }
   let ID_dom = ids[0];
@@ -150,7 +154,9 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 
   // Cas où la sélection d'un utilisateur est réussie
   let d = creerDateMaintenant();
-  console.log('* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.');
+  console.log(
+    '* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
+  );
 
   connexions.ajouter(ID_util, l);
 

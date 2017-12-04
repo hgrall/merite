@@ -10,6 +10,8 @@ import {
 } from "./outils";
 
 
+
+
 export type FormatMot = FormatTableauImmutable<Deux>;
 
 export class Mot
@@ -29,6 +31,11 @@ export class Mot
     base10(): number {
         return parseInt(this.foncteur(v => v.toString()).reduction("", (x, y) => x + y), 2);
     }
+
+    tableauBinaire() : ReadonlyArray<Deux> {
+        return this.etat().tableau;
+    }
+
 }
 
 export function creerMot(mot: ReadonlyArray<Deux>): Mot {
@@ -38,7 +45,6 @@ export function creerMot(mot: ReadonlyArray<Deux>): Mot {
     });
 }
 
-//retourne le nombre en langage binaire (type Mot)
 export function binaire(n: number): Mot {
     let s: string[] = Array.from(n.toString(2));
     return creerMot(s.map((v, i, t) => {

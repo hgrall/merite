@@ -118,7 +118,6 @@ export function creerNoeudJeu1Immutable(n: FormatNoeudJeu1Immutable): NoeudJeu1I
     return new NoeudJeu1EnveloppeImmutable(n);
 }
 
-//SEPARATION JUSQUICI
 
 export type ReseauJeu1 = ReseauImmutable<FormatSommetJeu1>;
 
@@ -555,7 +554,7 @@ export function creerAnneauJeu1(domaines: Mot[]): ReseauJeu1 {
         = creerIdentificationParCompteur("DOM-");
     domaines.forEach((dom: Mot, i: number, tab: Mot[]) => {
         let s: FormatSommetJeu1
-            = { ID: identification.identifier('sommet'), domaine: tab[i].tableauBinaire() };
+            = { ID: identification.identifier('sommet'), domaine: tab[i].val().tableau };
         assembleur.ajouterSommet(s);
     });
     return assembleur.assembler();

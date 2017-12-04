@@ -102,7 +102,7 @@ class DateFrEnveloppe extends Enveloppe<FormatDateFr, FormatDateFr, EtiquetteDat
         return this.detail('heure') + ", le " + this.detail('date');
     }
 
-    // represente la date par 12:53:53, le vendredi 02/02/2017
+    // represente la date par 12:53:53, le vendredi 02 fevrier 2017
     representationLongue(): string {
         return this.detail('heure') + ", le " + this.detail('dateLongue');
     }

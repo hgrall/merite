@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
 
 /**
@@ -10,6 +11,13 @@ import RaisedButton from 'material-ui/RaisedButton';
  *
  * You can also close this dialog by clicking outside the dialog, or with the 'Esc' key.
  */
+
+const styles = {
+  boutonRegles: {
+    margin: '10px'
+  }
+};
+
 export class Regles extends React.Component<any, any> {
   state = {
     open: true,
@@ -35,7 +43,12 @@ export class Regles extends React.Component<any, any> {
 
     return (
       <div>
-        <RaisedButton label="Regles du jeu" onClick={this.handleOpen} />
+        <RaisedButton 
+          label="Regles du jeu" 
+          primary={true}
+          style={styles.boutonRegles}
+          icon={<Announcement/>}
+          onClick={this.handleOpen} />
         <Dialog
           title="Regles du jeu"
           actions={actions}

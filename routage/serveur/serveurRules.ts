@@ -1,10 +1,13 @@
 import {Identification, Identifiant, creerIdentifiant, egaliteIdentifiant, creerIdentificationParCompteur, FormatIdentifiableMutable, FormatIdentifiableImmutable} from '../../bibliotheque/types/identifiant';
-import {TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine, MessageJeu1, TypeMessageJeu1} from '../commun/table'
+import {TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine, MessageJeu1, FormatMessageJeu1, TypeMessageJeu1 } from '../commun/table'
 import { Mot } from '../../bibliotheque/binaire';
 import { TableIdentificationMutable, creerTableIdentificationImmutable } from '../../bibliotheque/types/tableIdentification'
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
+import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
 import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE} from './serveurRoutage'
+import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
+import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 ////////////////////
 
 
@@ -13,18 +16,42 @@ import {connexions, utilisateursConnectesParDomaine, identificationMessages, tab
 * Traitement des messages
 */
 
-export function initier(idUtil: Identifiant<'utilisateur'>, idDomOrigine: Identifiant<'sommet'>, idDomDest: Identifiant<'sommet'>, contenu: Mot): void {
-    // TODO : Recuperer Identifiant du message 
-    console.log('initier le message');
+export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, idDomOrigine: Identifiant<'sommet'>, idDomDest: Identifiant<'sommet'>, contenu: Mot): void {
     let id: Identifiant<'message'> = identificationMessages.identifier('message')// incrementation du compteur
-    console.log('nouvel id', id);
     verrou(idDomDest, id, PERSONNE); // creation du message dans la table de verouillage
-    //diffusion(id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
+    diffusion(date, idUtil,id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
 }
 
 // verouille dans un domaine le message pour un utilisateur 
 function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>, utilisateur: Identifiant<'utilisateur'>) : void {
   tableVerrouillageMessagesParDomaine.valeur(domaine).ajouter(message, utilisateur);
+}
+
+// Diffusion d’un message à tous les utilisateurs d’un domaine
+function diffusion(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>,idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot) : void {
+  return diffusionListeUtilisateur(date, idUtil, idMessage, origin, idDomaineDestination, contenu, utilisateurParDomaine(idDomaineDestination));
+}
+
+function utilisateurParDomaine (idDomaine: Identifiant<'sommet'>) : FormatTableImmutable<FormatUtilisateur> {
+  return utilisateursConnectesParDomaine.valeur(idDomaine);
+}
+''
+// Récurrence sur les utilisateurs de la liste utilisateurs
+function diffusionListeUtilisateur(date: FormatDateFr , idUtil: Identifiant<'utilisateur'>,idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>) : void {
+  // Completed to split the list 
+  let message : MessageJeu1 = new MessageJeu1({
+    ID: idMessage,
+    ID_emetteur: idUtil,
+    ID_origine: origin,
+    ID_destination: idDomaineDestination,
+    type: TypeMessageJeu1.TRANSIT,
+    contenu: contenu,
+    date: date
+  });
+  creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
+    connexions.valeur(idU).envoyerAuClientDestinataire(message);
+    //recevoir[listeUtilisateurs.](idMessage, origin, idDomaineDestination, contenu); // Spe client
+  });
 }
 
 export function diffuser(msg: MessageJeu1): void {
@@ -38,118 +65,44 @@ export function accuserReception(msg: MessageJeu1): void {
   connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
 }
 
-export function verrouiller(msg: MessageJeu1): void {
-  let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_origine);
-  creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
-    let ar = egaliteIdentifiant(idU, msg.val().ID_emetteur) ? TypeMessageJeu1.ACTIF : TypeMessageJeu1.INACTIF;
-    connexions.valeur(idU).envoyerAuClientDestinataire(msg.avecAccuseReception(ar));
+// Le serveur verrouille le message id à la demande de emetteur du // domaine dest.
+
+export function verrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
+  if (verrouilleur === PERSONNE) { // verification que le serveur n'est pas verouillé
+      verrou(dest, id, emetteur); 
+      miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
+  } 
+}
+
+// Le serveur met à jour les autres utilisateurs du domaine dest, en // demandant la destruction du message id.
+
+function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
+  let ar; 
+  creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
+    if (emetteur == idU) {
+      ar = TypeMessageJeu1.ACTIF
+    } else {
+      ar = TypeMessageJeu1.INACTIF
+    }
+    connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+      ID: id,
+      ID_emetteur: emetteur,
+      ID_origine: origine,
+      ID_destination: dest,
+      type: ar,
+      contenu: contenu,
+      date: date
+    }));
   });
 }
 
-
-/////////////////////
-
-
-
-
-
-// /* Etat du Serveur */
-
-// // Compteur pour l’identification des messages
-// const IdentificationMsg: Identification<'message'> = creerIdentificationParCompteur("MSG-");
-
-// // Table des verroux pour les messages : message idMessage verrouillé // par (PERSONNE | idUtilisateur) de idDomaine
-// // Verrou(idDomaine, idMessage, PERSONNE | idUtilisateur)*
-// const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine
-//     = creerTableMutableUtilisateurParMessageParDomaine();
-// // TODO : complete tableVerrouillageMessagesParDomaine
-// // {
-// // anneau.iterer((id, n) => {
-// //     tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', (x) => x));
-// // });
-// // }
-
-// // TODO : require utilisateursConnectesParDomaine du type PopulationParDomaineMutable
-// // recupere la liste d'utilisateur d'un domaine 
-// function utilisateurParDomaine (idDomaine: Identifiant<'sommet'>) : PopulationParDomaineMutable {
-//     let utilisateurs = utilisateursConnectesParDomaine.valeur(idDomaine);
-//     return utilisateurs; 
-// }
-
-
-
-
-
-// // Diffusion(
-// // idMessage, idDomaineOrigine,
-// // idDomaineDestination, contenu , listeUtilisateurs)
-// // MiseAJourAprèsVerrouillage(
-// // idMessage, idUtilisateur,
-// // idDomaineOrigine, idDomaineDestination, contenu)
-// // MiseAJourAprèsVerrouillage(
-// // idMessage, idUtilisateur, idDomaineOrigine, idDomaineDestination, contenu,
-// // listeUtilisateurs)
-// // !Population(idDomaine, listeUtilisateurs)
-// // Consigne(idDomaineDestinataire, idUtilisateurDestinataire, contenu)
-
-// // Type Utilisateur utilisé quand il n'y a pas d'utilisateur
-// const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
-
-// /* Regles */
-// function diffuser(message: MessageJeu1) {
-//     //TODO : diffuse les messages au destinataire
-// }
-
-// // Le serveur initie la transmission en identifiant le message,
-
-
-// // Le serveur diffuse le message à tous les utilisateurs d’un domaine, // qui le reçoivent.
-
-// // Diffusion d’un message à tous les utilisateurs d’un domaine
-// function diffusion( idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot) : void {
-//     return diffusionListeUtilisateur(idMessage, origin, idDomaineDestination, contenu, utilisateurParDomaine(idDomaineDestination));
-// }
-
-// // Récurrence sur les utilisateurs de la liste utilisateurs
-// function diffusionListeUtilisateur( idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: PopulationParDomaineMutable) : void {
-//     // Completed to split the list 
-//     if (!listeUtilisateurs.estVide()) {
-//         recevoir[listeUtilisateurs.](idMessage, origin, idDomaineDestination, contenu); // Spe client
-//         return diffusionListeUtilisateur( idMessage, origin, idDomaineDestination, contenu, listeUtilisateurs);
-//     }
-// }
-
-// // Le serveur verrouille le message id à la demande de emetteur du // domaine dest.
-
-// function verrouiller(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
-//     if () {
-//         verrou(dest, id, emetteur); 
-//         miseAJourAprèsVerrouillage(id, emetteur, origine, dest, contenu);
-//     } 
-// }
-// // Le serveur met à jour les autres utilisateurs du domaine dest, en // demandant la destruction du message id.
-
-// function miseAJourAprèsVerrouillage(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
-//     miseAJourAprèsVerrouillageListeUtilisateur(id, emetteur, origine, dest, contenu, lu)
-// } 
-
-// function miseAJourAprèsVerrouillageListeUtilisateur(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string, listeUtilisateurs: string): void {
-//     if (listeUtilisateurs.length() !== 0) {
-//         if (listeUtilisateurs[0] === emetteur) {
-//             detruire[u](id);
-//         } else {
-//             activer[u](id, origine, dest, contenu)
-//         }
-//         miseAJourAprèsVerrouillageListeUtilisateur(id, emetteur, origine, dest, contenu, listeUtilisateurs); // remove fst element 
-//     }
-// }
-
-// // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
+// Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
 // function transmettre(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
 //     verrou(dest, id, PERSONNE); // on leve le verrou
 //     diffusion(id, origine, dest, contenu); // on diffuse le message au destinataire choisi
-// } 
+//} 
 // // Le serveur vérifie que l’utilisateur interprète correctement le 
 // // message si celui-ci est verrouillé par l’utilisateur et indique 
 // // qu’il a gagné le cas échéant.

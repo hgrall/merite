@@ -1,7 +1,7 @@
 import { port1, port2, hote } from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
-import * as serveur from './serveurRules';
+import * as serveur from '../serveur/serveurRules';
 import { Identification, creerIdentificationParCompteur } from '../../bibliotheque/types/identifiant';
 import { Identifiant, creerIdentifiant, egaliteIdentifiant } from '../../bibliotheque/types/identifiant';
 import {
@@ -187,7 +187,25 @@ export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMes
   });
 }
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
+console.log(' ETAT INITIAL');
+console.log('Table de verouillage');
+console.log(tableVerrouillageMessagesParDomaine);
 
+serveur.initier(
+  {
+   seconde: 2,
+  minute: 1,
+  heure: 0,
+  jourSemaine: 4,
+  jourMois: 14,
+  mois:5,
+  annee: 4,
+}
+,
+  creerIdentifiant('utilisateur', 'momo'),
+  creerIdentifiant('sommet', 'DOM-0'), 
+  creerIdentifiant('sommet', 'DOM-1'), 
+  binaire(0));
 
 serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
   let msg: MessageJeu1 = creerMessageEnveloppe(m);
@@ -199,27 +217,13 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
       // TODO ajouter log
-      serveur.initier(msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-
-      //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-      //serveur.diffuser(msg.sansEmetteurPourTransit());
+      serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
+      connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;
     case TypeMessageJeu1.VERROU:
       // TODO tester erreurs.
       // TODO ajouter log
-      let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).valeur(msg.val().ID);
-      if (verrouilleur === PERSONNE) {
-        tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).ajouter(msg.val().ID, msg.val().ID_emetteur);
-        //serveur.verrouiller(msg);
-      }
-      break;
-    case TypeMessageJeu1.ACTIF:
-      // TODO tester erreurs.
-      // TODO ajouter log
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-      //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-      //serveur.diffuser(msg.sansEmetteurPourTransit());
+      serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     case TypeMessageJeu1.SUIVANT:
       // TODO tester erreurs.

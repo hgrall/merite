@@ -92,7 +92,7 @@ const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 const serveurCanaux = new ServeurJeu1(port2, hote);
 
-console.log('Représentation de l anneau', anneau.representation());
+console.log('Anneau créé : ', anneau.representation);
 
 /*
 * Fin de l'état - Partie 1

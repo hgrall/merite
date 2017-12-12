@@ -15,6 +15,12 @@ export function creerTableMutableUtilisateurParMessageParDomaine(): TableMutable
 return creerTableIdentificationMutableVide('sommet', (x) => x);
 }
 
+// Iditenfiants indéfinis utilisés dans des messages définis partiellement
+export const sommetInconnu: Identifiant<'sommet'> = { val: "*", sorte: 'sommet' };
+export const messageInconnu: Identifiant<'message'> = { val: "*", sorte: 'message' };
+export const utilisateurInconnu: Identifiant<'utilisateur'> = { val: "*", sorte: 'utilisateur' };
+
+
 export enum TypeMessageJeu1 {
   INIT,
   SUCCES_INIT,
@@ -80,5 +86,117 @@ representation(): string {
     let cm = this.net('contenu');
     return idm + " - " + datem + ", de " + dem + " à " + am + " (" + typem + ") - " + cm;
 }
+
+    // Client : envoyer au serveur avec une destination (un domaine).
+    avecAdresse(id_destination: Identifiant<'sommet'>): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: id_destination,
+            type: msg.type,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // Serveur : Identifier le message INIT.
+    avecIdentifiant(id: Identifiant<'message'>): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: id,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: msg.type,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+    // Serveur : diffuser un message à un domaine.
+    sansEmetteurPourTransit(): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: utilisateurInconnu,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.TRANSIT,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // Client : verrouiller un message en transit.
+    pourVerrouiller(id_emetteur: Identifiant<'utilisateur'>, id_origine: Identifiant<'sommet'>): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: id_emetteur,
+            ID_origine: id_origine,
+            ID_destination: sommetInconnu,
+            type: TypeMessageJeu1.VERROU,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // Serveur : Accuser réception.
+    avecAccuseReception(type: TypeMessageJeu1) {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: type,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // 4. Client : Ignorer un message en TRANSIT (IGNOR).
+    aIgnorer(): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.IGNOR,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // 5. Client : Consulter un message en TRANSIT (FIN).
+    aConsulter(): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: msg.ID_origine,
+            ID_destination: msg.ID_destination,
+            type: TypeMessageJeu1.FIN,
+            contenu: msg.contenu,
+            date: msg.date
+        });
+    }
+
+    // 5. Client : tester un message en FIN.
+    aEssayer(contenu: Mot): MessageJeu1 {
+        let msg = this.val();
+        return new MessageJeu1({
+            ID: msg.ID,
+            ID_emetteur: msg.ID_emetteur,
+            ID_origine: sommetInconnu,
+            ID_destination: sommetInconnu,
+            type: TypeMessageJeu1.ESSAI,
+            contenu: contenu,
+            date: msg.date
+        });
+    }
+
 }
 

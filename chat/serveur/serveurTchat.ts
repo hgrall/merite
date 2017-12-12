@@ -7,7 +7,7 @@ import { TableIdentificationMutable, creerTableIdentificationMutableVide } from 
 
 
 
-import {hote, port1, port2, ReseauChat, creerAnneauChat, ReseauAnneau, creerSuperAnneau} from '../commun/reseauChat';
+import {hote, port1, port2, ReseauChat, creerAnneauChat} from '../commun/reseauChat';
 import {SommetChat} from '../commun/sommetChat';
 import {FormatNoeudChatImmutable} from '../commun/noeudChat';
 import {composerConfigurationChat, FormatConfigurationChat, EtiquetteConfigurationChat} from '../commun/configurationChat';
@@ -24,7 +24,7 @@ import {
     MessageChat
 } from '../commun/messageChat';
 
-import {binaire} from '../../bibliotheque/binaire'
+
 
 import { ServeurLiensWebSocket, LienWebSocket } from "../../bibliotheque/serveurConnexions";
 import { ServeurApplications, Interaction } from "../../bibliotheque/serveurApplications";
@@ -44,8 +44,7 @@ class LienChat extends LienWebSocket<
     > { }
 
 
-const superAnneau: ReseauAnneau
-= creerSuperAnneau([binaire(0), binaire(1), binaire(2), binaire(3)]);
+
 const anneau: ReseauChat = creerAnneauChat(["Morgane", "Elisa", "Loïc", "Jules"]);
 const reseauConnecte: ReseauChat = creerReseauVide();
 const connexions: TableIdentificationMutable<'sommet', LienChat, LienChat>
@@ -80,8 +79,6 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienChat) => {
     //Recuperation de l'identification à un sommet (identification d'un noeud)
     try {
         ID_sommet = anneau.selectionNoeud();
-        console.log('representation /////////////////////////')
-        console.log(anneau.representation());
     } catch (e) {
         let d = creerDateMaintenant();
         console.log("* " + d.representationLog() + " - " + (<Error>e).message);

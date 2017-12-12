@@ -6,8 +6,9 @@
   "scripts": {
     "tsc": "tsc",
     "webpack": "webpack",
-    "build":
-      "npm run tsc && npm run verif && npm run webpack && cp index.html build/ && node build/chat/serveur/serveurTchat && node build/routage/serveur/serveurRoutage",
+    "build": "npm run tsc && npm run verif && npm run webpack && cp index.html build/ && node build/chat/serveur/serveurTchat",
+    "start1": "npm run tsc && npm run verif && npm run webpack && cp index.html build/ && node build/chat/serveur/serveurTchat",
+    "start2": "npm run tsc && npm run verif && npm run webpack && cp index.html build/ && node build/routage/serveur/serveurRoutage",
     "test": "mocha -r ts-node/register test/general.ts",
     "verif": "tslint --exclude bibiliotheque/js **/*.ts"
   },

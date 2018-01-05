@@ -125,6 +125,7 @@ serveurAppli.demarrer();
 */
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
+  console.log('COOOOOOOOOOO');
   let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
   try {
     ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
@@ -174,7 +175,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
   return true;
 });
 
-/*
+/*-
 * Etat du serveur - Partie 2 (messages) :
 * - Identification des messages
 * - Messages(idDomaine, idMessage, PERSONNE | idUtilisateur) : table
@@ -228,8 +229,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
     case TypeMessageJeu1.SUIVANT:
       // TODO tester erreurs.
       // TODO ajouter log
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
+     
       //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
       //serveur.diffuser(msg.sansEmetteurPourTransit());
       break;

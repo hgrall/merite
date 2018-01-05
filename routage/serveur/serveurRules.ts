@@ -99,10 +99,12 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
 
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
-// function transmettre(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
-//     verrou(dest, id, PERSONNE); // on leve le verrou
-//     diffusion(id, origine, dest, contenu); // on diffuse le message au destinataire choisi
-//} 
+//  function transmettre(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
+//       tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
+//       tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
+// verrou(dest, id, PERSONNE); // on leve le verrou
+//      diffusion(id, origine, dest, contenu); // on diffuse le message au destinataire choisi
+// } 
 // // Le serveur vérifie que l’utilisateur interprète correctement le 
 // // message si celui-ci est verrouillé par l’utilisateur et indique 
 // // qu’il a gagné le cas échéant.

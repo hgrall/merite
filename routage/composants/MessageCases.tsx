@@ -37,35 +37,10 @@ export class MessageCases extends React.Component<any, any> {
               <Case class="col-1"/>
               <Case class="col-1"/>
               <Case class="col-1"/>
-          </div>
-          <div className="row" style={styles.lig}>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-          </div>
-          <div className="row" style={styles.lig}>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-              <Case class="col-sm-1"/>
-            
+              <Case class="col-1"/>
+              <Case class="col-1"/>
+              <Case class="col-1"/>
+              <Case class="col-1"/>
           </div>
         </div>
       );

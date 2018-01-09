@@ -5,7 +5,7 @@ import { CanalClient, creerCanalClient } from '../bibliotheque/client';
 
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Regles } from './composants/Regles';
-import { Message } from './composants/Message';
+import { NewMessage } from './composants/NewMessage';
 import { BarreEnvoi } from './composants/BarreEnvoi';
 
 import { MessageBox } from './composants/MessageBox';
@@ -92,6 +92,7 @@ export class Routage extends React.Component<any, any> {
 				<Regles />
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
+					<NewMessage/>
 					<MessageBox />
 				</Paper>
 			</div>

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {MessageATraiter} from './MessageATraiter';
+
 const styles = {
   root: {
     display: "flex" as 'flex',

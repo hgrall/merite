@@ -26,7 +26,7 @@ export class Message extends React.Component<any, any> {
             <CardHeader
               title="Code ton message en cliquant sur les cases !"
             />
-            <MessageCases/>
+            
           </Card>
           
         </div>

@@ -16,19 +16,26 @@ const caseNoire = {
     background: 'black'
 };
   
-export class Case extends React.Component<any, any> {
+interface CaseProps {
+  colored: number,
+  locked: boolean
+}
+
+export class Case extends React.Component<CaseProps, any> {
     state = {
         colored: false,
     };
     
     changeColor = () => {
-        this.setState({colored: !this.state.colored});
+        if (this.props.locked == false) {
+            this.setState({colored: !this.state.colored});
+        }
       };
     
 
     public render() {
       return (
-        <span style={this.state.colored ? caseNoire : caseBlanche} onClick={this.changeColor}>
+        <span style={this.props.colored == 1 ? caseNoire : caseBlanche} onClick={this.changeColor}>
         </span>
       );
     }

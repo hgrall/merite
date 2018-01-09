@@ -3,7 +3,7 @@ import {MessageCases} from './MessageCases';
 import {TraiterMessage} from './TraiterMessage';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-
+import {Message} from './MessageBox'
 const styles = {
   root: {
     display: "flex" as 'flex',
@@ -14,10 +14,13 @@ const styles = {
     margin: '30px'
   }
 };
+interface MessageProps {
+    message: Message
+  }
 
 const Messages = [];
 
-export class MessageATraiter extends React.Component<any, any> {
+export class MessageATraiter extends React.Component<MessageProps, any> {
   
   constructor(props: any){
       super(props);
@@ -27,9 +30,9 @@ export class MessageATraiter extends React.Component<any, any> {
     return (
       <div style={styles.root}>
        <Paper zDepth={2}>
-        <MessageCases/>
-        <TraiterMessage/>
-        Verrouillé : {this.verouiller()}
+        <MessageCases message={this.props.message}/>
+        <TraiterMessage message={this.props.message}/>
+        Verrouillé : {this.props.message.locked ? 'Oui' : 'Non'}
        </Paper>
         
       </div>

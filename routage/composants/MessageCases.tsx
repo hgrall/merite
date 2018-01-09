@@ -1,7 +1,11 @@
 import * as React from 'react';
 import GridList from 'material-ui/GridList';
 import {Case} from './Case';
+import {Message} from './MessageBox';
 
+interface MessageProps {
+  message: Message
+}
 const styles = {
     root: {
       margin: '30px'
@@ -13,34 +17,21 @@ const styles = {
     }
   };
 
-export class MessageCases extends React.Component<any, any> {
+export class MessageCases extends React.Component<MessageProps, any> {
     constructor(props: any){
         super(props);
     }
 
     public render() {
-      const col = 8; 
-      const lig = 3; 
+      var locked = this.props.message.locked;
+      var casesList = this.props.message.corps.map(function(int){
+        return <Case colored={int} locked={locked}/>;
+      })
       return (
 
         <div style={styles.root}>
           <div className="row" style={styles.lig}>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
-              <Case class="col-1"/>
+          {casesList}
           </div>
         </div>
       );

@@ -9,7 +9,17 @@ const styles = {
   }
 };
 
-let Messages : number []= [3];
+export type Message = {
+  corps : number[],
+  locked : boolean,
+  source : string 
+}
+
+let Messages : Message []= [{
+  corps : [0,1,0,0,1,0,1,0,1,1,1,0,1,0,0,1],
+  locked : false,
+  source : 'DOM-2'
+}];
 
 export class MessageBox extends React.Component<any, any> {
   
@@ -22,7 +32,7 @@ export class MessageBox extends React.Component<any, any> {
       <div style={styles.root}>
         {(Messages.length == 0) ? (
         <div>Vous n'avez aucun message a traiter </div>) :
-        (<MessageATraiter/>)}
+        (<MessageATraiter message={Messages[0]}/>)}
       </div>
     );
   }

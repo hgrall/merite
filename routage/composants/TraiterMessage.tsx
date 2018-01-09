@@ -7,6 +7,7 @@ import {MessageCases} from './MessageCases';
 import {DialogDecoderMessage} from './DialogDecoderMessage';
 import {DialogTransmettreMessage} from './DialogTransmettreMessage';
 import Add from 'material-ui/svg-icons/content/add';
+import { Message } from './MessageBox';
 /**
  * A modal dialog can only be closed by selecting one of the actions.
  */
@@ -18,7 +19,11 @@ const styles = {
   }
 };
 
-export class TraiterMessage extends React.Component {
+interface MessageProps {
+  message: Message
+}
+
+export class TraiterMessage extends React.Component<MessageProps, any> {
   state = {
     open: false,
   };
@@ -49,6 +54,7 @@ export class TraiterMessage extends React.Component {
           icon={<Add/>}
           style={styles.btn}
           onClick={this.handleOpen} 
+          disabled = {this.props.message.locked}
           primary={true}/>
         <Dialog
           title="Traiter le message"
@@ -56,7 +62,7 @@ export class TraiterMessage extends React.Component {
           modal={true}
           open={this.state.open}
         >
-            <MessageCases/>
+            <MessageCases message={this.props.message}/>
           Si tu penses que le message est pour toi, decode le.
           Sinon, transmet le a la personne concernee.
           Si le message est erronee, mets le a la poubelle.

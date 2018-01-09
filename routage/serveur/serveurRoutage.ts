@@ -92,7 +92,9 @@ const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 const serveurCanaux = new ServeurJeu1(port2, hote);
 
-console.log('Anneau créé : ', anneau.representation);
+//tmp
+console.log('Anneau créé (anneau.representation) : ', anneau.representation());
+// console.log('Anneau créé (anneau)', anneau);
 
 /*
 * Fin de l'état - Partie 1
@@ -139,6 +141,9 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
   }
   let ID_dom = ids[0];
   let ID_util = ids[1];
+
+  //tmp
+  console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
 
   if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
     let d = creerDateMaintenant();

@@ -79,15 +79,15 @@ export class canalClientUtilisateur<
     FE extends FormatErreurRedhibitoire, FC extends FormatConfigurationInitiale, // Format d'entrée
     FMIN extends FMOUT, FMOUT extends FormatMessage, // Formats d'entrée et de sortie
     EM extends string
-    > extends CanalClient<
-    FE extends FormatErreurRedhibitoire, FC extends FormatConfigurationInitiale, // Format d'entrée
-    FMIN extends FMOUT, FMOUT extends FormatMessage, // Formats d'entrée et de sortie
-    EM extends string
-    >{
+    > {
     utilisateur: Identifiant<'utilisateur'>;
+    adresse: string;
+    canalClient = creerCanalClient(this.adresse);
     
-    constructor(user:Identifiant<'utilisateur'>) {
+    constructor(user:Identifiant<'utilisateur'>,adresse:string) {
         this.utilisateur=user;
+        this.adresse=adresse;
+        
     };
 
     /* recevoir[idUtilisateur](idMessage, idDomOrigine, idDomDestination, contenu)
@@ -118,6 +118,7 @@ export class canalClientUtilisateur<
         idDom:Identifiant<'sommet'>,
         contenu:EM): void{
         
+
     };
 
     //perdre[idUtil](idMessage, idDom, contenu)

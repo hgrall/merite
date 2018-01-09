@@ -1,12 +1,5 @@
 /**
  * INTERACTIONS AVEC L'UTILISATEUR
- * 
-    EntreeEssai(idMessage, contenu)
-    EntreeEnvoi(idMessage, idDest)
-    EntreeIgnorer(idMessage)
-    EntreeInit(idDomDestination, contenu)
-    EntreeLibe(idMessage)
-    EntreeVerrou(idMessage)
  */
 
 import {
@@ -17,26 +10,31 @@ import {
 
 export class EntreeClient{
 
+    //EntreeEssai(idMessage, contenu)
     entreeEssai():void{
 
     };
 
+    //EntreeEnvoi(idMessage, idDest)
     entreeEnvoi():void{
         
     };
 
+    //EntreeIgnorer(idMessage)
     entreeIgnorer():void{
         
     };
 
+    //EntreeInit(idDomDestination, contenu)
     entreeInit():void{
-        
     };
 
+    //EntreeLibe(idMessage)
     entreeLibe():void{
         
     };
 
+    //EntreeVerrou(idMessage)
     entreeVerrou():void{
         
     };

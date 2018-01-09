@@ -21,7 +21,7 @@ import {
     TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine
 } from '../commun/jeu1_commun';
 
-
+//peut simplifier pour n'avoir qu'un type de chaque (choisir le immutable)
 class ServeurJeu1
     extends
     ServeurLiensWebSocket<
@@ -63,6 +63,8 @@ const utilisateursAConnecterParDomaine: PopulationParDomaineMutable
 const utilisateursConnectesParDomaine: PopulationParDomaineMutable
     = assemblerPopulationParDomaine(anneau, []);
 
+    //deux fois lienJeu1 car le type mutable et immutable sont identiques (pas de différenciation)
+    //ref à la websocket qui permet de connecter le serveur avec l'utilisateur
 const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1>
     = creerTableIdentificationMutableVide<'utilisateur', LienJeu1, LienJeu1>('utilisateur', (x) => x);
 
@@ -70,6 +72,7 @@ const repertoireHtml: string = shell.pwd() + "/build";
 
 const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
+//canaux: liens par websocket
 const serveurCanaux = new ServeurJeu1(port2, hote);
 
 /*
@@ -78,6 +81,8 @@ const serveurCanaux = new ServeurJeu1(port2, hote);
 
 /*
 * Configuration et démarrage du serveur d'applications
+
+specifie où on trouve les scripts embarques, 
 */
 serveurAppli.specifierRepertoireScriptsEmbarques("build");
 
@@ -103,7 +108,9 @@ serveurAppli.demarrer();
 * Config 1 - Traitement des connexions
 */
 
-//ajoute utilisateur dans UtilisateurConnectes
+// Traite ce qu'il se passe qd un utilisateur se connecte
+// resulte par envoie de la configuration a la fin: client recoit info pour config son interface
+// il pourra commencer à jouer
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
     let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
     //si reseau deja complet

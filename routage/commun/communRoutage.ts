@@ -358,7 +358,7 @@ export function creerMessageErreurConnexion(emetteur: string, messageErreur: str
         "date": new Date()
     });
 }
-
+*/
 export function creerMessageCommunication(emetteur: string, destinataire: string, texte: string): MessageJeu1 {
     return new MessageJeu1({
         "emetteur": emetteur,
@@ -368,7 +368,7 @@ export function creerMessageCommunication(emetteur: string, destinataire: string
         "date": new Date()
     });
 }
-
+/*
 export function creerMessageRetourErreur(original: MessageJeu1, codeErreur: TypeMessageJeu1, messageErreur: string): MessageJeu1 {
     return new MessageJeu1({
         "emetteur": original.enJSON().emetteur,

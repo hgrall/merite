@@ -4,30 +4,32 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 
 interface messageProps {
-    validation:() => void
+    validation:() => void,
+    verifier:() => void
   }
 /**
- * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
+ * Decodage : message a deja ete verouille par user
+ * c'est a l'utilisateur de donner son interpretation du msg
+ * verrouillage (dans le dialogue de transmission) --> ouverture --> INPUT user --> verifier
+ * 
  */
-export class DialogDecoderMessage extends React.Component<messageProps, any> {
+export class DialogResultMessage extends React.Component<messageProps, any> {
   state = {
-    open: false,
+    gagne: false,
   };
 
-  handleOpen = () => {
-    this.setState({open: true});
-  };
-
+  //ouvrir msg
   handleClose = () => {
     this.setState({open: false});
   };
 
-  valider = () => {
-    this.handleClose();
-    this.props.validation();  
+  //demande au serveur de verifier que interpretation du msg est correcte
+  verifier = () => {
+    this.props.verifier();  
   }
 
   render() {
+      /*
     const actions = [
       <FlatButton
         label="Valider"
@@ -42,26 +44,18 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
         onClick={this.handleClose}
       />
     ];
+    */
 
     return (
       <div>
-        <FlatButton
-            label="Decoder"
-            primary={true}
-            onClick={this.handleOpen}
-        />
+         
         <Dialog
-          title="Decoder"
-          actions={actions}
+          title="Résultat"
+         // actions={actions}
           modal={false}
-          open={this.state.open}
+          open={this.state.gagne}
           onRequestClose={this.handleClose}
         >
-          Quel est le message ? 
-          <br />
-          <TextField
-            hintText="Hint Text"
-          />
         </Dialog>
       </div>
     );

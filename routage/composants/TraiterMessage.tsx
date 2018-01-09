@@ -6,11 +6,19 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {MessageCases} from './MessageCases';
 import {DialogDecoderMessage} from './DialogDecoderMessage';
 import {DialogTransmettreMessage} from './DialogTransmettreMessage';
-
+import Add from 'material-ui/svg-icons/content/add';
 /**
  * A modal dialog can only be closed by selecting one of the actions.
  */
-export class NewMessage extends React.Component {
+
+const styles = {
+  btn: {
+    margin: '10px',
+    alignSelf: "flex-end" as "flex-end"
+  }
+};
+
+export class TraiterMessage extends React.Component {
   state = {
     open: false,
   };
@@ -29,16 +37,21 @@ export class NewMessage extends React.Component {
       <DialogTransmettreMessage validation={this.handleClose}/>,
       <FlatButton
       label="Jeter"
-      primary={true}
+      secondary={true}
       onClick={this.handleClose}
     />
     ];
 
     return (
       <div>
-        <RaisedButton label="Modal Dialog" onClick={this.handleOpen} />
+        <RaisedButton 
+          label="Traiter" 
+          icon={<Add/>}
+          style={styles.btn}
+          onClick={this.handleOpen} 
+          primary={true}/>
         <Dialog
-          title="Tu as recu un nouveau message"
+          title="Traiter le message"
           actions={actions}
           modal={true}
           open={this.state.open}

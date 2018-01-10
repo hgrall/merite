@@ -50,7 +50,7 @@ import { jamais } from '../../bibliotheque/outils';
 import { Mot, creerMot } from '../../bibliotheque/binaire';
 
 export const hote: string = 'merite'; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3002; // port de la essource 1 (serveur d'applications)
+export const port1 = 3002; // port de la ressource 1 (serveur d'applications)
 export const port2: number = 1112; // port de la ressouce 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement

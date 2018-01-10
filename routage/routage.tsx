@@ -92,7 +92,7 @@ export class Routage extends React.Component<any, any> {
 				<Regles />
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage/>
+					<NewMessage />
 					<MessageBox />
 				</Paper>
 			</div>

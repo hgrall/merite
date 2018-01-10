@@ -261,7 +261,9 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
   }
 
   // Client : verrouiller un message en transit.
-  pourVerrouiller(id_emetteur: Identifiant<'utilisateur'>, id_origine: Identifiant<'sommet'>): MessageJeu1 {
+  pourVerrouiller(
+    id_emetteur: Identifiant<'utilisateur'>, 
+    id_origine: Identifiant<'sommet'>): MessageJeu1 {
     let msg = this.val();
     return new MessageJeu1({
       ID: msg.ID,

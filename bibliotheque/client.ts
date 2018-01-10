@@ -66,4 +66,3 @@ export function creerCanalClient<
     >(adresse: string) {
     return new CanalClient<FE, FC, FMIN, FMOUT, EM>(adresse);
 }
-

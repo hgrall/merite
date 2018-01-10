@@ -2,7 +2,7 @@ import * as React from "react";
 
 import styled from "styled-components";
 
-import { Identification, creerIdentificationParCompteur } from "../../bibliotheque/types/identifiant"
+import { Identification, creerIdentificationParCompteur } from "../../bibliotheque/types/identifiant"
 
 import { DateImmutable, creerDateMaintenant } from "../../bibliotheque/types/date"
 

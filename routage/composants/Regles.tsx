@@ -45,7 +45,7 @@ export class Regles extends React.Component<any, any> {
       <div>
         <RaisedButton 
           label="Regles du jeu" 
-          primary={true}
+          secondary={true}
           style={styles.boutonRegles}
           icon={<Announcement/>}
           onClick={this.handleOpen} />

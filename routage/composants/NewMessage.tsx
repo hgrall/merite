@@ -1,54 +1,96 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import {Message} from './MessageBox';
+import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
-import {DialogDecoderMessage} from './DialogDecoderMessage';
-import {DialogTransmettreMessage} from './DialogTransmettreMessage';
+import {BarreEnvoi} from './BarreEnvoi'; 
 
+interface messageProps {
+    
+  }
+const styles = {
+  container: {
+    alignSelf: 'flex-end' as 'flex-end',
+    margin: '20px'
+  }
+}
 /**
- * A modal dialog can only be closed by selecting one of the actions.
+ * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
-export class NewMessage extends React.Component {
+export class NewMessage extends React.Component<messageProps, any> {
+
   state = {
     open: false,
+    message: {
+      corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+      locked : false,
+      source : ''
+    }
   };
 
   handleOpen = () => {
-    this.setState({open: true});
+    this.setState({
+      open: true,
+      message: {
+        corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        locked : false,
+        source : ''
+      }
+    });
   };
 
   handleClose = () => {
-    this.setState({open: false});
+    this.setState({
+      open: false,
+      message: this.state.message
+    });
   };
+
+  changeColor = (n:number) => {
+  
+    let message = this.state.message;
+    message.corps[n] = (this.state.message.corps[n] === 0)? 1 : 0;
+    this.setState({
+      open: true,
+      message: message
+    })
+  }
 
   render() {
     const actions = [
-      <DialogDecoderMessage validation={this.handleClose}/>,
-      <DialogTransmettreMessage validation={this.handleClose}/>,
       <FlatButton
-      label="Jeter"
-      primary={true}
-      onClick={this.handleClose}
-    />
+        label="Annuler"
+        secondary={true}
+        keyboardFocused={true}
+        onClick={this.handleClose}
+      />
     ];
 
     return (
-      <div>
-        <RaisedButton label="Modal Dialog" onClick={this.handleOpen} />
+      <div style={styles.container}>
+        <RaisedButton
+            label="Nouveau message"
+            primary={true}
+            onClick={this.handleOpen}
+        />
         <Dialog
-          title="Tu as recu un nouveau message"
+          title="Nouveau Message"
           actions={actions}
-          modal={true}
+          modal={false}
           open={this.state.open}
+          onRequestClose={this.handleClose}
         >
-            <MessageCases/>
-          Si tu penses que le message est pour toi, decode le.
-          Sinon, transmet le a la personne concernee.
-          Si le message est erronee, mets le a la poubelle.
+          Code ton message en cliquant sur les cases !
+          <MessageCases message={this.state.message} changeColor={this.changeColor}/>
+          <br />
+          <BarreEnvoi/>
         </Dialog>
       </div>
     );
   }
+
+  
 }

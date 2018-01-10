@@ -1,13 +1,13 @@
 import { port1, port2, hote } from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
-
+import * as serveur from '../serveur/serveurRules';
 import { Identification, creerIdentificationParCompteur } from '../../bibliotheque/types/identifiant';
 import { Identifiant, creerIdentifiant, egaliteIdentifiant } from '../../bibliotheque/types/identifiant';
 import {
-  TableIdentificationMutable,
-  creerTableIdentificationMutableVide,
-  creerTableIdentificationImmutable
+	TableIdentificationMutable,
+	creerTableIdentificationMutableVide,
+	creerTableIdentificationImmutable
 } from '../../bibliotheque/types/tableIdentification';
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
@@ -18,47 +18,47 @@ import {} from '../../bibliotheque/communication';
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
 import {
-  FormatErreurJeu1,
-  EtiquetteErreurJeu1,
-  FormatConfigurationJeu1,
-  EtiquetteConfigurationJeu1,
-  EtiquetteMessageJeu1,
-  FormatMessageJeu1,
-  ReseauJeu1,
-  creerAnneauJeu1,
-  PopulationParDomaineMutable,
-  assemblerPopulationParDomaine,
-  composerErreurJeu1,
-  composerConfigurationJeu1,
-  TableMutableUtilisateursParMessageParDomaine,
-  creerTableMutableUtilisateurParMessageParDomaine,
-  MessageJeu1,
-  TypeMessageJeu1,
-  creerMessageEnveloppe
+	FormatErreurJeu1,
+	EtiquetteErreurJeu1,
+	FormatConfigurationJeu1,
+	EtiquetteConfigurationJeu1,
+	EtiquetteMessageJeu1,
+	FormatMessageJeu1,
+	ReseauJeu1,
+	creerAnneauJeu1,
+	PopulationParDomaineMutable,
+	assemblerPopulationParDomaine,
+	composerErreurJeu1,
+	composerConfigurationJeu1,
+	TableMutableUtilisateursParMessageParDomaine,
+	creerTableMutableUtilisateurParMessageParDomaine,
+	MessageJeu1,
+	TypeMessageJeu1,
+	creerMessageEnveloppe
 } from '../commun/communRoutage';
 
 class ServeurJeu1 extends ServeurLiensWebSocket<
-  FormatErreurJeu1,
-  FormatErreurJeu1,
-  EtiquetteErreurJeu1,
-  FormatConfigurationJeu1,
-  FormatConfigurationJeu1,
-  EtiquetteConfigurationJeu1,
-  FormatMessageJeu1,
-  FormatMessageJeu1,
-  EtiquetteMessageJeu1
+	FormatErreurJeu1,
+	FormatErreurJeu1,
+	EtiquetteErreurJeu1,
+	FormatConfigurationJeu1,
+	FormatConfigurationJeu1,
+	EtiquetteConfigurationJeu1,
+	FormatMessageJeu1,
+	FormatMessageJeu1,
+	EtiquetteMessageJeu1
 > {}
 
 class LienJeu1 extends LienWebSocket<
-  FormatErreurJeu1,
-  FormatErreurJeu1,
-  EtiquetteErreurJeu1,
-  FormatConfigurationJeu1,
-  FormatConfigurationJeu1,
-  EtiquetteConfigurationJeu1,
-  FormatMessageJeu1,
-  FormatMessageJeu1,
-  EtiquetteMessageJeu1
+	FormatErreurJeu1,
+	FormatErreurJeu1,
+	EtiquetteErreurJeu1,
+	FormatConfigurationJeu1,
+	FormatConfigurationJeu1,
+	EtiquetteConfigurationJeu1,
+	FormatMessageJeu1,
+	FormatMessageJeu1,
+	EtiquetteMessageJeu1
 > {}
 
 /*
@@ -74,13 +74,24 @@ class LienJeu1 extends LienWebSocket<
 const anneau: ReseauJeu1 = creerAnneauJeu1([binaire(0), binaire(1), binaire(2), binaire(3)]);
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
 
-const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [binaire(0), binaire(1)]);
+const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
+	binaire(0),
+	binaire(1),
+	binaire(2),
+	binaire(3)
+]);
 
-const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [binaire(0), binaire(1)]);
+const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
+	binaire(0),
+	binaire(1),
+	binaire(2),
+	binaire(3)
+]);
 
-const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
+export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 
-const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
+
+export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
   'utilisateur',
   LienJeu1,
   LienJeu1
@@ -106,14 +117,14 @@ console.log('Anneau créé (anneau.representation) : ', anneau.representation())
 serveurAppli.specifierRepertoireScriptsEmbarques('build');
 
 {
-  let racine = '/';
-  let ressource = 'interfaceJeu1.html';
+	let racine = '/';
+	let ressource = 'interfaceJeu1.html';
 
-  serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
-    let d = creerDateMaintenant();
-    console.log('* ' + d.representationLog() + ' - Service de ' + ressource + ' en ' + racine);
-    i.servirFichier(repertoireHtml, ressource);
-  });
+	serveurAppli.enregistrerReponseARequeteGET(racine, (i: Interaction) => {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + ' - Service de ' + ressource + ' en ' + racine);
+		i.servirFichier(repertoireHtml, ressource);
+	});
 }
 
 serveurAppli.demarrer();
@@ -127,71 +138,73 @@ serveurAppli.demarrer();
 */
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-  let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
-  try {
-    ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
-  } catch (e) {
-    let d = creerDateMaintenant();
-    console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
-    console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
-    l.envoyerMessageErreur(
-      composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
-    );
-    return false;
-  }
-  let ID_dom = ids[0];
-  let ID_util = ids[1];
+	let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+	try {
+		ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
+	} catch (e) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
+		);
+		return false;
+	}
+	let ID_dom = ids[0];
+	let ID_util = ids[1];
 
-  //tmp
-  console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
+	//tmp
+	console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
 
-  if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
-    let d = creerDateMaintenant();
-    console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
-    l.envoyerMessageErreur(
-      composerErreurJeu1(
-        "Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
-        d.val()
-      )
-    );
-    return false;
-  }
+	if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1(
+				"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
+				d.val()
+			)
+		);
+		return false;
+	}
 
-  // Cas où la sélection d'un utilisateur est réussie
-  let d = creerDateMaintenant();
-  console.log(
-    '* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
-  );
+	// Cas où la sélection d'un utilisateur est réussie
+	let d = creerDateMaintenant();
+	console.log(
+		'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
+	);
 
-  connexions.ajouter(ID_util, l);
+	connexions.ajouter(ID_util, l);
 
-  let n = anneau.noeud(ID_dom);
-  let pop = utilisateursParDomaine.valeur(ID_dom);
-  let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-  let config = composerConfigurationJeu1(n, pop, u, d.val());
+	let n = anneau.noeud(ID_dom);
+	let pop = utilisateursParDomaine.valeur(ID_dom);
+	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
+	let config = composerConfigurationJeu1(n, pop, u, d.val());
 
-  console.log("- envoi au client d'adresse " + l.adresseClient());
-  console.log('  - de la configuration brute ' + config.brut());
-  console.log('  - de la configuration nette ' + config.representation());
-  l.envoyerConfiguration(config);
-  utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
-  utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
-  return true;
+	console.log("- envoi au client d'adresse " + l.adresseClient());
+	console.log('  - de la configuration brute ' + config.brut());
+	console.log('  - de la configuration nette ' + config.representation());
+	l.envoyerConfiguration(config);
+	utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
+	utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
+	return true;
+
 });
 
-/*
+/*-
 * Etat du serveur - Partie 2 (messages) :
 * - Identification des messages
 * - Messages(idDomaine, idMessage, PERSONNE | idUtilisateur) : table
 */
-const identificationMessages: Identification<'message'> = creerIdentificationParCompteur('MSG-');
-const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine = creerTableMutableUtilisateurParMessageParDomaine();
+export const identificationMessages: Identification<'message'> = creerIdentificationParCompteur('MSG-');
+export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine = creerTableMutableUtilisateurParMessageParDomaine();
 {
-  anneau.iterer((id, n) => {
-    tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
-  });
+	anneau.iterer((id, n) => {
+		tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
+	});
 }
-const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
+
+export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
 
 // TODO Consigne !
 
@@ -199,27 +212,8 @@ const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LI
 * Config 2 - Traitement des messages
 */
 
-function diffuser(msg: MessageJeu1): void {
-  let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_destination);
-  creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
-    connexions.valeur(idU).envoyerAuClientDestinataire(msg);
-  });
-}
-
-function accuserReception(msg: MessageJeu1): void {
-  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
-}
-
-function verrouiller(msg: MessageJeu1): void {
-  let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_origine);
-  creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
-    let ar = egaliteIdentifiant(idU, msg.val().ID_emetteur) ? TypeMessageJeu1.ACTIF : TypeMessageJeu1.INACTIF;
-    connexions.valeur(idU).envoyerAuClientDestinataire(msg.avecAccuseReception(ar));
-  });
-}
 
 serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
-  console.log('TODO traitement messages');
 
   let msg: MessageJeu1 = creerMessageEnveloppe(m);
   console.log("* Traitement d'un message");
@@ -230,37 +224,37 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
       // TODO ajouter log
-      msg = msg.avecIdentifiant(identificationMessages.identifier('message'));
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-      accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-      diffuser(msg.sansEmetteurPourTransit());
+      serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
+      connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;
     case TypeMessageJeu1.VERROU:
       // TODO tester erreurs.
       // TODO ajouter log
-      let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).valeur(msg.val().ID);
-      if (verrouilleur === PERSONNE) {
-        tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).ajouter(msg.val().ID, msg.val().ID_emetteur);
-        verrouiller(msg);
-      } else {
-        // TODO Rien à faire.
-      }
+      serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
-    case TypeMessageJeu1.ACTIF:
+    case TypeMessageJeu1.SUIVANT:
+      serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       // TODO tester erreurs.
       // TODO ajouter log
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-      accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-      diffuser(msg.sansEmetteurPourTransit());
+      break;
+    case TypeMessageJeu1.ESSAI:
+      // TODO tester erreurs.
+      // TODO ajouter log
+      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
+      break;
+    case TypeMessageJeu1.LIBE:
+      // TODO tester erreurs.
+      // TODO ajouter log
+      serveur.deverrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     default:
   }
+
 });
 
 serveurCanaux.enregistrerTraitementFermeture((l: LienJeu1, r: number, desc: string) => {
-  console.log('TODO traitement fermeture');
-  /*
+	console.log('TODO traitement fermeture');
+	/*
     let id: IdentifiantSommet = l.configuration().enJSON().centre.id;
     if ((connexions[id] === undefined) || (!reseauConnecte.possedeNoeud(id))) {
         console.log("* Impossibilité de fermer la connexion par Web socket : " + id + " est déjà déconnecté.");

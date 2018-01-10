@@ -2,11 +2,14 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-
+import {Message} from './MessageBox';
+import {EnvoyePar} from './EnvoyePar';
+import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 
 interface messageProps {
-    validation:() => void
+    validation:() => void,
+    message: Message
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
@@ -32,14 +35,8 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
   render() {
     const actions = [
       <FlatButton
-        label="Valider"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.valider}
-      />,
-      <FlatButton
         label="Annuler"
-        primary={true}
+        secondary={true}
         keyboardFocused={true}
         onClick={this.handleClose}
       />
@@ -59,7 +56,9 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
-          A qui voulez vous le transmettre ? 
+          A qui veux tu transmettre le message ? 
+          <EnvoyePar source={this.props.message.source}/>
+          <MessageCases message={this.props.message}/>
           <br />
           <BarreEnvoi/>
         </Dialog>

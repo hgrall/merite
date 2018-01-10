@@ -2,59 +2,41 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-
-import { BarreEnvoi } from './BarreEnvoi';
+import {Message} from './MessageBox';
+import {EnvoyePar} from './EnvoyePar';
+import {MessageCases} from './MessageCases';
+import {BarreEnvoi} from './BarreEnvoi'; 
 
 interface messageProps {
-  validation: () => void
-}
+    validation:() => void,
+    message: Message
+  }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
 export class DialogTransmettreMessage extends React.Component<messageProps, any> {
   state = {
     open: false,
-    handedOver: false,
-    lock: false,
   };
 
-
-  //verouiller
-  handleLock = () => {
-    this.setState({ lock: true });
-  };
-
-  //deverouiller
-  handleUnlock = () => {
-    this.setState({ lock: false });
-  };
-
-
-  //transmission du message + deverouillage automatique 
-  handleHandover = () => {
-    this.setState({ open: true , lock: false});
+  handleOpen = () => {
+    this.setState({open: true});
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({open: false});
   };
 
   valider = () => {
     this.handleClose();
-    this.props.validation();
+    this.props.validation();  
   }
 
   render() {
     const actions = [
       <FlatButton
-        label="Valider"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.valider}
-      />,
-      <FlatButton
         label="Annuler"
-        primary={true}
+        secondary={true}
         keyboardFocused={true}
         onClick={this.handleClose}
       />
@@ -63,9 +45,9 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
     return (
       <div>
         <FlatButton
-          label="Transmettre"
-          primary={true}
-          onClick={this.handleHandover}
+            label="Transmettre"
+            primary={true}
+            onClick={this.handleOpen}
         />
         <Dialog
           title="Transmission du message"
@@ -74,9 +56,11 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
-          A qui voulez vous le transmettre ?
+          A qui veux tu transmettre le message ? 
+          <EnvoyePar source={this.props.message.source}/>
+          <MessageCases message={this.props.message}/>
           <br />
-          <BarreEnvoi />
+          <BarreEnvoi/>
         </Dialog>
       </div>
     );

@@ -16,6 +16,7 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   handleOpen = () => {
     this.setState({open: true});
+    //fonction pour verifier, car appele qd 
   };
 
   handleClose = () => {
@@ -29,6 +30,7 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   render() {
     const actions = [
+      //EntreeEssai
       <FlatButton
         label="Valider"
         primary={true}

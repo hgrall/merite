@@ -10,8 +10,6 @@ import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 ////////////////////
 
-
-
 /*
 * Traitement des messages
 */
@@ -99,117 +97,57 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
 
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
-//  function transmettre(id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: string): void {
-//       tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-//       tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-// verrou(dest, id, PERSONNE); // on leve le verrou
-//      diffusion(id, origine, dest, contenu); // on diffuse le message au destinataire choisi
-// } 
-// // Le serveur vérifie que l’utilisateur interprète correctement le 
-// // message si celui-ci est verrouillé par l’utilisateur et indique 
-// // qu’il a gagné le cas échéant.
+export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
+  if (verrouilleur === emetteur) { // verification que le serveur est verouillé par l'emetteur
+    tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
+    verrou(dest, id, PERSONNE); 
+    diffusion(date, emetteur, id, origine, dest, contenu);
+  } 
+}
 
-// verifier(id, utilisateur, domaine, contenu) & Consigne(domaine, utilisateur, contenu) & Verrou(domaine, id, utilisateur)
-// > gagner[utilisateur](id, domaine, contenu)
+// Le serveur vérifie que l’utilisateur interprète correctement le 
+// message si celui-ci est verrouillé par l’utilisateur et indique 
+// qu’il a gagné le cas échéant.
 
-// serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
+export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+  let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
+    if (verrouilleur === emetteur){
+      if (consigne(origine, emetteur, contenu)){
+        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.SUCCES_FIN,
+          contenu: contenu,
+          date: date
+        }))
+      } else {
+        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.ECHEC_FIN,
+          contenu: contenu,
+          date: date
+        }))
+      }
+      
+    }
+}
 
-//     let msg: MessageJeu1 = creerMessageEnveloppe(m);
-//     console.log("* Traitement d'un message");
-//     console.log("- brut : " + msg.brut());
-//     console.log("- net : " + msg.representation());
+function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+  // verifie que la consigne est correcte
+  // renvoie un booleen
+  return true;
+}
 
-
-//     switch (m.type) {
-//         case TypeMessageJeu1.INIT:
-//             msg = msg.avecIdentifiant(identificationMessages.identifier('message'));
-//             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-//             accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-//             diffuser(msg.sansEmetteurPourTransit());
-//             break;
-//         case TypeMessageJeu1.VERROU:
-//             // TODO tester erreurs.
-//             // TODO ajouter log
-//             let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).valeur(msg.val().ID);
-//             if (verrouilleur === PERSONNE) {
-//                 tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).ajouter(msg.val().ID, msg.val().ID_emetteur);
-//                 verrouiller(msg);
-//             } else {
-//                 // TODO Rien à faire. 
-//             }
-//             break;
-//         case TypeMessageJeu1.ACTIF:
-//             // TODO tester erreurs.
-//             // TODO ajouter log
-//             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-//             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-//             accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-//             diffuser(msg.sansEmetteurPourTransit());
-//             break;
-//         default:
-//     }
-
-// });
-
-
-
-// /// Helpers 
-// export interface FormatUtilisateur extends FormatIdentifiableImmutable<'utilisateur'> {
-//     readonly pseudo: ReadonlyArray<Deux>, // TODO ajouter d'autres caractéristiques
-// }
-
-// export type FormatPopulationLocaleImmutable = FormatTableImmutable<FormatUtilisateur>;
-
-// class TableUtilisateurs
-// extends TableIdentificationMutable<'utilisateur',
-// FormatUtilisateur, FormatUtilisateur> {
-// constructor() {
-//     super('utilisateur', (x) => x);
-// }
-// }
-
-
-// export class PopulationParDomaineMutable
-// extends TableIdentificationMutable<'sommet',
-// TableUtilisateurs,
-// FormatPopulationLocaleImmutable
-// > {
-
-// constructor() {
-//     super('sommet', (t: TableUtilisateurs) => t.val());
-// }
-
-// contientUtilisateur(ID_dom: Identifiant<'sommet'>, ID_util: Identifiant<'utilisateur'>): boolean {
-//     if (!this.contient(ID_dom)) {
-//         return false;
-//     }
-//     return this.valeurEtat(ID_dom).contient(ID_util);
-// }
-
-// utilisateur(ID_dom: Identifiant<'sommet'>, ID_util: Identifiant<'utilisateur'>): FormatUtilisateur {
-//     return this.valeurEtat(ID_dom).valeur(ID_util);
-// }
-
-
-// ajouterDomaine(ID_dom: Identifiant<'sommet'>) {
-//     this.ajouter(ID_dom, new TableUtilisateurs());
-// }
-
-// ajouterUtilisateur(ID_dom: Identifiant<'sommet'>, u: FormatUtilisateur) {
-//     this.valeurEtat(ID_dom).ajouter(u.ID, u);
-// }
-
-// retirerUtilisateur(ID_dom: Identifiant<'sommet'>, ID_util: Identifiant<'utilisateur'>) {
-//     this.valeurEtat(ID_dom).retirer(ID_util);
-// }
-
-// selectionnerUtilisateur(): [Identifiant<'sommet'>, Identifiant<'utilisateur'>] {
-//     let ID_dom = this.selectionCleSuivantCritereEtat(pop => !pop.estVide());
-//     let ID_util = this.valeurEtat(ID_dom).selectionCle();
-//     return [ID_dom, ID_util];
-// }
-
-// }
-
-// const utilisateursConnectesParDomaine: PopulationParDomaineMutable
-// = assemblerPopulationParDomaine(anneau, []);
+export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
+  if (verrouilleur === emetteur) { // verification que le serveur est bien verouille par l'emetteur concerne 
+      verrou(dest, id, PERSONNE); 
+      miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
+  } 
+}

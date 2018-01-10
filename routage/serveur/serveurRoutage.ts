@@ -232,27 +232,19 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     case TypeMessageJeu1.SUIVANT:
+      serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       // TODO tester erreurs.
       // TODO ajouter log
-     
-      //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-      //serveur.diffuser(msg.sansEmetteurPourTransit());
       break;
     case TypeMessageJeu1.ESSAI:
       // TODO tester erreurs.
       // TODO ajouter log
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-      //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-      //serveur.diffuser(msg.sansEmetteurPourTransit());
+      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     case TypeMessageJeu1.LIBE:
       // TODO tester erreurs.
       // TODO ajouter log
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
-      tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-      //serveur.accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
-      //serveur.diffuser(msg.sansEmetteurPourTransit());
+      deverouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     default:
   }

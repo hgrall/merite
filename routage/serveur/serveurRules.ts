@@ -8,7 +8,6 @@ import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, c
 import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE} from './serveurRoutage'
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
-////////////////////
 
 /*
 * Traitement des messages

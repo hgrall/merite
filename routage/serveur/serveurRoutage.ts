@@ -244,7 +244,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
     case TypeMessageJeu1.LIBE:
       // TODO tester erreurs.
       // TODO ajouter log
-      deverouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
+      serveur.deverrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     default:
   }

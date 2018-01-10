@@ -33,22 +33,21 @@ const styles = {
 export class BarreEnvoi extends React.Component<any, any> {
   render() {
     return (
-      <div>
       <div style={styles.root}>
         <div style={styles.arrowContainer}>
-          Envoyer a : 
-          Jules
+          Envoyer au domaine : 
+          DOM-2
           <IconButton
           tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
           >
-         <ArrowBack/> 
-       </IconButton>
-       </div> 
-       <div style={styles.arrowContainer}>
-          Envoyer a : 
-          Elisa
+          <ArrowBack/> 
+        </IconButton>
+        </div> 
+        <div style={styles.arrowContainer}>
+          Envoyer au domaine : 
+          DOM-3
           <IconButton
             tooltip="Envoyer"
             iconStyle={styles.largeIcon}
@@ -58,31 +57,6 @@ export class BarreEnvoi extends React.Component<any, any> {
           </IconButton>
         </div>
       </div>
-            <div style={styles.root}>
-            <div style={styles.arrowContainer}>
-              Envoyer au domaine : 
-              Stark
-              <IconButton
-              tooltip="Envoyer"
-                iconStyle={styles.largeIcon}
-                style={styles.large}
-              >
-             <ArrowBack/> 
-           </IconButton>
-           </div> 
-           <div style={styles.arrowContainer}>
-              Envoyer au domaine : 
-              Lanister
-              <IconButton
-                tooltip="Envoyer"
-                iconStyle={styles.largeIcon}
-                style={styles.large}
-              >
-                <ArrowForward/>
-              </IconButton>
-            </div>
-          </div>
-          </div>
     );
   }
 }

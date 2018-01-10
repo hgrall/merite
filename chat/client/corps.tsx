@@ -26,7 +26,7 @@ import { FormatDateFr, creerDateEnveloppe, DateImmutable } from '../../bibliothe
 
 import {} from '../../bibliotheque/communication';
 
-import { CanalClient, creerCanalClient } from '../../bibliotheque/client/canalClient';
+import { CanalClient, creerCanalClient } from '../../bibliotheque/client';
 
 import { hote, port2 } from '../commun/reseauChat';
 import { SommetChat, creerSommetChat } from '../commun/sommetChat';

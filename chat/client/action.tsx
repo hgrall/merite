@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import Scrollbars from "react-custom-scrollbars";
 
-import { DateImmutable } from "../../bibliotheque/types/date"
+import { DateImmutable } from "../../bibliotheque/types/date"
 
 import { ContainerAction } from "./containerAction";
 

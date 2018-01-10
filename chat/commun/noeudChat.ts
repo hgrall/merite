@@ -1,9 +1,13 @@
 import { creerTableImmutable } from "../../bibliotheque/types/table";
+
 import {Sommet} from "../../bibliotheque/communication/communication";
+
 import {
     NoeudEnveloppeMutable, NoeudEnveloppeImmutable, NoeudMutable, NoeudImmutable, FormatNoeudImmutable, FormatNoeudMutable, EtiquetteNoeud,
 } from "../../bibliotheque/communication/noeud";
+
 import {creerCentreSansVoisins,} from "../../bibliotheque/communication/creerReseau";
+
 import { jamais } from "../../bibliotheque/outils";
 import {FormatSommetChat, creerSommetChat} from './sommetChat';
 

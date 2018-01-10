@@ -85,8 +85,8 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           <MessageCases message={this.props.message}/>
 
           Si tu penses que le message est pour toi, decode le.
-          Sinon, transmets le a la personne concernee.
-          Si le message est erroné, mets le a la poubelle.
+          Sinon, transmet le a la personne concernee.
+          Si le message est erronee, mets le a la poubelle.
         </Dialog>
       </div>
     );

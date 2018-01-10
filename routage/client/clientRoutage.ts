@@ -60,6 +60,9 @@ contenu : Mot,
 
     console.log("- du traitement des messages");
     canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
+        let msg = new MessageJeu1(m);
+        console.log()
+
         /*let msg = new MessageTchat(m);
         console.log("* Réception");
         console.log("- du message brut : " + msg.brut());

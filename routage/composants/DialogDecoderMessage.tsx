@@ -2,9 +2,12 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import {MessageCases} from './MessageCases';
+import {Message} from './MessageBox';
 
 interface messageProps {
-    validation:() => void
+    validation:() => void,
+    message: Message
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
@@ -16,7 +19,6 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   handleOpen = () => {
     this.setState({open: true});
-    //fonction pour verifier, car appele qd 
   };
 
   handleClose = () => {
@@ -30,7 +32,6 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   render() {
     const actions = [
-      //EntreeEssai
       <FlatButton
         label="Valider"
         primary={true}
@@ -39,7 +40,7 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
       />,
       <FlatButton
         label="Annuler"
-        primary={true}
+        secondary={true}
         keyboardFocused={true}
         onClick={this.handleClose}
       />
@@ -61,8 +62,9 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
         >
           Quel est le message ? 
           <br />
+          <MessageCases message={this.props.message}/>
           <TextField
-            hintText="Hint Text"
+            hintText="Decode ici le message"
           />
         </Dialog>
       </div>

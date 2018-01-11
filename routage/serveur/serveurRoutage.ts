@@ -180,7 +180,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
 	let config = composerConfigurationJeu1(n, pop, u, d.val());
-
+	console.log(n.centre.ID);
 	console.log("- envoi au client d'adresse " + l.adresseClient());
 	console.log('  - de la configuration brute ' + config.brut());
 	console.log('  - de la configuration nette ' + config.representation());

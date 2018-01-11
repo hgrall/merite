@@ -14,7 +14,7 @@ import Paper from 'material-ui/Paper';
 import { FormatErreurChat } from '../chat/commun/erreurChat';
 import { FormatConfigurationChat, creerConfigurationChat, ConfigurationChat } from '../chat/commun/configurationChat';
 import { FormatMessageChat, EtiquetteMessageChat } from '../chat/commun/messageChat';
-import { hote, port2 } from './commun/communRoutage';
+import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1 } from './commun/communRoutage';
 
 const styles = {
 	container: {
@@ -49,22 +49,33 @@ const styles = {
 	}
 };
 
-type CanalChat = CanalClient<FormatErreurChat, FormatConfigurationChat, FormatMessageChat, FormatMessageChat, EtiquetteMessageChat>;
+type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
-export class Routage extends React.Component<any, any> {
+interface FormState { 
+	dom: string,
+	util: string,
+	messages: Array<FormatMessageJeu1>
+  }
+
+export class Routage extends React.Component<any, FormState> {
 	private adresseServeur: string;
-	private canal: CanalChat;
-	private config: ConfigurationChat;
+	private canal: CanalJeu1;
+	private config: ConfigurationJeu1;
 	private messageErreur: string;
+
+	state: FormState = {
+		messages: [],
+		dom: '',
+		util: ''
+	}
 
 	constructor(props: any) {
 		super(props);
 		this.adresseServeur = hote + ':' + port2;
-
 		this.messageErreur = 'Aucune erreur';
 	}
 
-	componentDidMount(): void {
+	componentWillMount(): void {
 		console.log('* Initialisation après montage du corps');
 
 		console.log("- du canal de communication avec le serveur d'adresse " + this.adresseServeur);
@@ -77,8 +88,15 @@ export class Routage extends React.Component<any, any> {
 		});
 
 		console.log('- du traitement de la configuration');
-		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationChat) => {
-			this.config = creerConfigurationChat(c);
+		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
+			this.config = creerConfigurationJeu1(c);
+			this.setState({
+				dom: this.config.net("centre"),
+				messages: [],
+				util: this.config.net("utilisateur")
+			});
+		
+			console.log(this.config.net("centre"));
 			console.log('* Réception');
 			console.log('- de la configuration brute : ' + this.config.brut());
 			console.log('- de la configuration nette : ' + this.config.representation());
@@ -90,6 +108,10 @@ export class Routage extends React.Component<any, any> {
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
 				<Regles />
+				<p>
+				Domaine : {this.state.dom}  
+				Utilisateur : {this.state.util}
+				</p>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
 					<NewMessage />

@@ -218,12 +218,12 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   let msg: MessageJeu1 = creerMessageEnveloppe(m);
   console.log("* Traitement d'un message");
   console.log('- brut : ' + msg.brut());
-  console.log('- net : ' + msg.representation());
 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
-      // TODO ajouter log
+	  // TODO ajouter log
+	  console.log('message recu ----------------',)
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;

@@ -7,13 +7,13 @@ import { MuiThemeProvider } from 'material-ui/styles';
 import { Regles } from './composants/Regles';
 import { NewMessage } from './composants/NewMessage';
 import { BarreEnvoi } from './composants/BarreEnvoi';
-
+import {Identifiant, creerIdentifiant} from '../bibliotheque/types/identifiant'
+import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
+import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
+import { creerMot } from '../bibliotheque/binaire'
 import { MessageBox } from './composants/MessageBox';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { FormatErreurChat } from '../chat/commun/erreurChat';
-import { FormatConfigurationChat, creerConfigurationChat, ConfigurationChat } from '../chat/commun/configurationChat';
-import { FormatMessageChat, EtiquetteMessageChat } from '../chat/commun/messageChat';
 import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1 } from './commun/communRoutage';
 
 const styles = {
@@ -52,9 +52,11 @@ const styles = {
 type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
 interface FormState { 
-	dom: string,
-	util: string,
-	messages: Array<FormatMessageJeu1>
+	dom: Identifiant<'sommet'>,
+	util: Identifiant<'utilisateur'>,
+	messages: Array<FormatMessageJeu1>,
+	voisinFst: Identifiant<'sommet'>,
+	voisinSnd: Identifiant<'sommet'>,
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -65,14 +67,29 @@ export class Routage extends React.Component<any, FormState> {
 
 	state: FormState = {
 		messages: [],
-		dom: '',
-		util: ''
+		dom: creerIdentifiant('sommet',''),
+		util: creerIdentifiant('utilisateur',''),
+		voisinFst: creerIdentifiant('sommet',''),
+		voisinSnd: creerIdentifiant('sommet',''),
 	}
 
 	constructor(props: any) {
 		super(props);
 		this.adresseServeur = hote + ':' + port2;
 		this.messageErreur = 'Aucune erreur';
+	}
+
+	envoiMessage = () => {
+		console.log('called');
+		this.canal.envoyerMessage(new MessageJeu1({
+			ID: creerIdentifiant('message',''),
+			ID_emetteur: this.state.util,
+			ID_origine: this.state.dom,
+			ID_destination: this.state.voisinFst,
+			type: TypeMessageJeu1.INIT,
+			contenu: creerMot([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]),
+			date: conversionDate(new Date())
+		  }))
 	}
 
 	componentWillMount(): void {
@@ -91,6 +108,8 @@ export class Routage extends React.Component<any, FormState> {
 			let contenu: string = m.contenu;
 			switch (m.type) {
 				case TypeMessageJeu1.TRANSIT:
+
+					console.log('utilisateur recoit un message');
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					break;
 				case TypeMessageJeu1.ACTIF:
@@ -113,12 +132,15 @@ export class Routage extends React.Component<any, FormState> {
 		console.log('- du traitement de la configuration');
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
 			this.config = creerConfigurationJeu1(c);
+			console.log(this.config.val().voisins.table);
 			this.setState({
-				dom: this.config.net("centre"),
+				dom: this.config.val().centre.ID,
 				messages: [],
-				util: this.config.net("utilisateur")
+				util: this.config.val().utilisateur.ID,
+				voisinFst: this.config.val().voisins.table['DOM-1'].ID, // TO DO recuperer nom voisins
+				voisinSnd: this.config.val().voisins.table['DOM-3'].ID
 			});
-		
+			this.config.val().utilisateur.ID
 			console.log(this.config.net("centre"));
 			console.log('* Réception');
 			console.log('- de la configuration brute : ' + this.config.brut());
@@ -132,12 +154,12 @@ export class Routage extends React.Component<any, FormState> {
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
 				<Regles />
 				<p>
-				Domaine : {this.state.dom}  
-				Utilisateur : {this.state.util}
+				Domaine : {this.state.dom.val}  
+				Utilisateur : {this.state.util.val}
 				</p>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage />
+					<NewMessage envoyerMessage={this.envoiMessage}/>
 					<MessageBox />
 				</Paper>
 			</div>

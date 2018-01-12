@@ -14,7 +14,7 @@ import Paper from 'material-ui/Paper';
 import { FormatErreurChat } from '../chat/commun/erreurChat';
 import { FormatConfigurationChat, creerConfigurationChat, ConfigurationChat } from '../chat/commun/configurationChat';
 import { FormatMessageChat, EtiquetteMessageChat } from '../chat/commun/messageChat';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1 } from './commun/communRoutage';
+import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1 } from './commun/communRoutage';
 
 const styles = {
 	container: {
@@ -83,8 +83,31 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement des messages');
 		this.canal.enregistrerTraitementMessageRecu((m: any) => {
-			// TODO
-			console.log('TODO: enregistrerTraitementMessageRecu');
+			let msg = new MessageJeu1(m);
+			console.log('* Réception');
+			console.log('- du message brut : ' + msg.brut());
+			console.log('- du message net : ' + msg.representation());
+
+			let contenu: string = m.contenu;
+			switch (m.type) {
+				case TypeMessageJeu1.TRANSIT:
+					// l'utilisateur recoit un message du serveur et le place en transit 
+					break;
+				case TypeMessageJeu1.ACTIF:
+					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
+					break;
+				case TypeMessageJeu1.SUCCES_FIN:
+					// l'utilisateur gagne la partie
+					break;
+				case TypeMessageJeu1.ECHEC_FIN:
+					// l'utilisateur perd la partie 
+					break;
+				case TypeMessageJeu1.IGNOR:
+					// l'utilisateur détruit le message à la demande du serveur 
+					break;
+				default:
+			}
+			
 		});
 
 		console.log('- du traitement de la configuration');

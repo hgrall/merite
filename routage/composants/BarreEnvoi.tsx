@@ -31,6 +31,7 @@ const styles = {
 };
 
 export class BarreEnvoi extends React.Component<any, any> {
+
   render() {
     return (
       <div style={styles.root}>

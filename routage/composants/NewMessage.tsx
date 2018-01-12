@@ -8,19 +8,22 @@ import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 
-interface messageProps {
-    
-  }
+
 const styles = {
   container: {
     alignSelf: 'flex-end' as 'flex-end',
     margin: '20px'
   }
 }
+
+interface MessageProps {
+  envoyerMessage: () => void
+}
+
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
-export class NewMessage extends React.Component<messageProps, any> {
+export class NewMessage extends React.Component<MessageProps, any> {
 
   state = {
     open: false,
@@ -86,7 +89,7 @@ export class NewMessage extends React.Component<messageProps, any> {
           Code ton message en cliquant sur les cases !
           <MessageCases message={this.state.message} changeColor={this.changeColor}/>
           <br />
-          <BarreEnvoi/>
+          <BarreEnvoi envoyerMessage={this.props.envoyerMessage}/>
         </Dialog>
       </div>
     );

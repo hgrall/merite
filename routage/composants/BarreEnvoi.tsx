@@ -29,8 +29,10 @@ const styles = {
         padding: 30,
     }
 };
-
-export class BarreEnvoi extends React.Component<any, any> {
+interface MessageProps {
+  envoyerMessage?: () => void
+}
+export class BarreEnvoi extends React.Component<MessageProps, any> {
 
   render() {
     return (
@@ -42,6 +44,7 @@ export class BarreEnvoi extends React.Component<any, any> {
           tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
+            onClick={this.props.envoyerMessage}
           >
           <ArrowBack/> 
         </IconButton>

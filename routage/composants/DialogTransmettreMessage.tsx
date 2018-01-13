@@ -61,7 +61,7 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
         >
           A qui veux tu transmettre le message ? 
           <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
-          <MessageCases message={this.props.message}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <br />
           <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} envoyerMessage={this.props.envoyerMessage}/>
         </Dialog>

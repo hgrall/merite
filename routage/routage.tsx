@@ -173,8 +173,8 @@ export class Routage extends React.Component<any, FormState> {
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
 				<Regles />
 				<p>
-				Domaine : {this.state.dom.val}  
-				Utilisateur : {this.state.util.val}
+				Domaine : {this.state.dom.val} 
+				 Utilisateur : {this.state.util.val}
 				</p>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>

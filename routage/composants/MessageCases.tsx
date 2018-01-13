@@ -2,10 +2,12 @@ import * as React from 'react';
 import GridList from 'material-ui/GridList';
 import {Case} from './Case';
 import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
+import { Mot } from '../../bibliotheque/binaire'
 
 
 interface MessageProps {
-  message: MessageJeu1,
+  message: Mot,
+  locked: boolean,
   changeColor?: (n : number) => void
 }
 const styles = {
@@ -25,10 +27,10 @@ export class MessageCases extends React.Component<MessageProps, any> {
     }
 
     public render() {
-      var locked = this.props.message.val().type === TypeMessageJeu1.VERROU;
+      var locked = this.props.locked;
       var changeColor = this.props.changeColor;
       var id = 0;
-      var casesList = this.props.message.val().contenu['structure'].tableau.map(function(int){
+      var casesList = this.props.message['structure'].tableau.map(function(int){
         let CaseItem = <Case colored={int} locked={locked} changeColor={changeColor ? changeColor : (n : number)=>{}} id={id}/>;
         id ++; 
         return CaseItem;

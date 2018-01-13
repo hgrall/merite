@@ -7,6 +7,8 @@ import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 import { Identifiant } from '../../bibliotheque/types/identifiant';
+import { creerMot } from '../../bibliotheque/binaire'
+import { Deux } from '../../bibliotheque/types/mutable';
 
 
 const styles = {
@@ -29,21 +31,13 @@ export class NewMessage extends React.Component<MessageProps, any> {
 
   state = {
     open: false,
-    message: {
-      corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      locked : false,
-      source : ''
-    }
+    message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
   };
 
   handleOpen = () => {
     this.setState({
       open: true,
-      message: {
-        corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        locked : false,
-        source : ''
-      }
+      message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
     });
   };
 
@@ -55,12 +49,23 @@ export class NewMessage extends React.Component<MessageProps, any> {
   };
 
   changeColor = (n:number) => {
-  
     let message = this.state.message;
-    message.corps[n] = (this.state.message.corps[n] === 0)? 1 : 0;
+    let tab: Array<Deux> = [];
+    for (let i of this.state.message['structure'].tableau) {
+      if (i === n) {
+        if (i === Deux.UN) {
+          tab.push(Deux.ZERO)
+        } else {
+          tab.push(Deux.UN)
+        }
+      } else {
+        tab.push(i)
+      }
+    }
+    tab[n] = (tab[n] === 0)? 1 : 0;
     this.setState({
       open: true,
-      message: message
+      message: creerMot(tab)
     })
   }
 
@@ -89,7 +94,7 @@ export class NewMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
         >
           Code ton message en cliquant sur les cases !
-          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/> */}
+          <MessageCases message={this.state.message} changeColor={this.changeColor} locked={false}/>
           <br /> 
           <BarreEnvoi envoyerMessage={this.props.envoyerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
         </Dialog>

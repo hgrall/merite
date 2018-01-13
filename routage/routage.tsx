@@ -10,7 +10,7 @@ import { BarreEnvoi } from './composants/BarreEnvoi';
 import {Identifiant, creerIdentifiant} from '../bibliotheque/types/identifiant'
 import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
 import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
-import { creerMot } from '../bibliotheque/binaire'
+import { creerMot, Mot } from '../bibliotheque/binaire'
 import { MessageBox } from './composants/MessageBox';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
@@ -79,14 +79,14 @@ export class Routage extends React.Component<any, FormState> {
 		this.messageErreur = 'Aucune erreur';
 	}
 
-	envoiMessage = (dest: Identifiant<'sommet'>) => {
+	envoiMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
 			ID_emetteur: this.state.util,
 			ID_origine: this.state.dom,
 			ID_destination: dest,
 			type: TypeMessageJeu1.INIT,
-			contenu: creerMot([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]),
+			contenu: contenu,
 			date: conversionDate(new Date())
 		  }))
 	}

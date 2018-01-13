@@ -2,6 +2,7 @@ import * as React from 'react';
 import { MessageATraiter } from './MessageATraiter';
 import { MessageJeu1 } from '../commun/communRoutage';
 import {Identifiant} from '../../bibliotheque/types/identifiant';
+import { Mot } from '../../bibliotheque/binaire';
 
 const styles = {
   root: {
@@ -17,7 +18,7 @@ interface MessageProps {
   messages: Array<MessageJeu1>,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>,
-  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }
 
 export class MessageBox extends React.Component<MessageProps, any> {

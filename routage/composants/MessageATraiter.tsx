@@ -3,9 +3,10 @@ import {MessageCases} from './MessageCases';
 import {TraiterMessage} from './TraiterMessage';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-import {EnvoyePar} from './EnvoyePar'
-import {MessageJeu1, TypeMessageJeu1} from '../commun/communRoutage'
+import { EnvoyePar } from './EnvoyePar'
+import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import { Identifiant } from '../../bibliotheque/types/identifiant'
+import { Mot } from '../../bibliotheque/binaire';
 
 const styles = {
   root: {
@@ -31,7 +32,7 @@ interface MessageProps {
     message: MessageJeu1,
     voisinFst: Identifiant<'sommet'>,
     voisinSnd: Identifiant<'sommet'>,
-    envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+    envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   }
 
 const Messages = [];

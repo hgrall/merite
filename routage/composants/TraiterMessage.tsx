@@ -10,6 +10,7 @@ import Create from 'material-ui/svg-icons/content/create';
 import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
+import { Mot } from '../../bibliotheque/binaire'
 
 /**
  * A modal dialog can only be closed by selecting one of the actions.
@@ -34,7 +35,7 @@ interface MessageProps {
   message: MessageJeu1,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>,
-  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {

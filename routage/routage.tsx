@@ -103,7 +103,6 @@ export class Routage extends React.Component<any, FormState> {
 			let msg = new MessageJeu1(m);
 			console.log('* Réception');
 			console.log('- du message brut : ' + msg.brut());
-			console.log('- du message net : ' + msg.representation());
 
 			let contenu: string = m.contenu;
 			switch (m.type) {

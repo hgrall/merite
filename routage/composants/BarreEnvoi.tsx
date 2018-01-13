@@ -31,7 +31,7 @@ const styles = {
     }
 };
 interface MessageProps {
-  envoyerMessage?: () => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>,
 }
@@ -47,7 +47,7 @@ export class BarreEnvoi extends React.Component<MessageProps, any> {
           tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
-            onClick={this.props.envoyerMessage}
+            onClick={() => this.props.envoyerMessage(this.props.voisinFst)}
           >
           <ArrowBack/> 
         </IconButton>
@@ -59,6 +59,7 @@ export class BarreEnvoi extends React.Component<MessageProps, any> {
             tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
+            onClick={() => this.props.envoyerMessage(this.props.voisinSnd)}
           >
             <ArrowForward/>
           </IconButton>

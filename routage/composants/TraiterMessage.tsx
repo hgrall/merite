@@ -33,7 +33,8 @@ const styles = {
 interface MessageProps {
   message: MessageJeu1,
   voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>
+  voisinSnd: Identifiant<'sommet'>,
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {
@@ -52,7 +53,11 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
   render() {
     const actions = [
       <DialogDecoderMessage message={this.props.message} validation={this.handleClose}/>,
-      <DialogTransmettreMessage message={this.props.message} validation={this.handleClose} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>,
+      <DialogTransmettreMessage message={this.props.message} 
+        validation={this.handleClose} 
+        voisinFst={this.props.voisinFst} 
+        voisinSnd={this.props.voisinSnd}
+        envoyerMessage={this.props.envoyerMessage}/>,
       <FlatButton
         label="Jeter"
         secondary={true}

@@ -79,12 +79,12 @@ export class Routage extends React.Component<any, FormState> {
 		this.messageErreur = 'Aucune erreur';
 	}
 
-	envoiMessage = () => {
+	envoiMessage = (dest: Identifiant<'sommet'>) => {
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
 			ID_emetteur: this.state.util,
 			ID_origine: this.state.dom,
-			ID_destination: this.state.voisinFst,
+			ID_destination: dest,
 			type: TypeMessageJeu1.INIT,
 			contenu: creerMot([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]),
 			date: conversionDate(new Date())
@@ -179,7 +179,7 @@ export class Routage extends React.Component<any, FormState> {
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
 					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
-					<MessageBox messages={this.state.messages} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<MessageBox envoyerMessage={this.envoiMessage} messages={this.state.messages} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
 				</Paper>
 			</div>
 		);

@@ -31,6 +31,7 @@ interface MessageProps {
     message: MessageJeu1,
     voisinFst: Identifiant<'sommet'>,
     voisinSnd: Identifiant<'sommet'>,
+    envoyerMessage: (dest: Identifiant<'sommet'>) => void,
   }
 
 const Messages = [];
@@ -49,7 +50,8 @@ export class MessageATraiter extends React.Component<MessageProps, any> {
         <MessageCases message={this.props.message}/>
         <div style={styles.container}>
           Verrouillé : {this.props.message.val().type === TypeMessageJeu1.VERROU ? 'Oui' : 'Non'}
-          <TraiterMessage message={this.props.message} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
+          <TraiterMessage message={this.props.message} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} 
+          envoyerMessage={this.props.envoyerMessage}/>
         </div>
        </Paper>
         

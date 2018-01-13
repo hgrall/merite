@@ -16,7 +16,8 @@ const styles = {
 interface MessageProps {
   messages: Array<MessageJeu1>,
   voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>
+  voisinSnd: Identifiant<'sommet'>,
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
 }
 
 export class MessageBox extends React.Component<MessageProps, any> {
@@ -28,8 +29,9 @@ export class MessageBox extends React.Component<MessageProps, any> {
   public render() {
     var voisinFst= this.props.voisinFst;
     var voisinSnd = this.props.voisinSnd;
+    var envoyerMessage = this.props.envoyerMessage;
     var messageList = this.props.messages.map(function(mes){
-      return <MessageATraiter message={mes} voisinFst={voisinFst} voisinSnd={voisinSnd}/>;
+      return <MessageATraiter message={mes} voisinFst={voisinFst} voisinSnd={voisinSnd} envoyerMessage={envoyerMessage}/>;
     })
     return (
       <div>

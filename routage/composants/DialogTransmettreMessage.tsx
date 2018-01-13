@@ -12,6 +12,7 @@ interface messageProps {
     message: MessageJeu1,
     voisinFst: Identifiant<'sommet'>,
     voisinSnd: Identifiant<'sommet'>,
+    envoyerMessage: (dest: Identifiant<'sommet'>) => void,
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
@@ -62,7 +63,7 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
           <MessageCases message={this.props.message}/>
           <br />
-          <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
+          <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} envoyerMessage={this.props.envoyerMessage}/>
         </Dialog>
       </div>
     );

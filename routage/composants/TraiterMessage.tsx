@@ -7,7 +7,7 @@ import {MessageCases} from './MessageCases';
 import {DialogDecoderMessage} from './DialogDecoderMessage';
 import {DialogTransmettreMessage} from './DialogTransmettreMessage';
 import Create from 'material-ui/svg-icons/content/create';
-import { Message } from './MessageBox';
+import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 
 /**
@@ -30,7 +30,7 @@ const styles = {
 };
 
 interface MessageProps {
-  message: Message
+  message: MessageJeu1
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {
@@ -70,7 +70,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           icon={<Create/>}
           style={styles.btn}
           onClick={this.handleOpen} 
-          disabled = {this.props.message.locked}
+          disabled = {this.props.message.val().type === TypeMessageJeu1.VERROU}
           primary={true}/>
         <Dialog
           title="Traiter le message"
@@ -81,7 +81,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
           open={this.state.open}
         >
-          <EnvoyePar source={this.props.message.source}/>
+          <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
           <MessageCases message={this.props.message}/>
 
           Si tu penses que le message est pour toi, decode le.

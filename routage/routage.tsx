@@ -54,7 +54,7 @@ type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMe
 interface FormState { 
 	dom: Identifiant<'sommet'>,
 	util: Identifiant<'utilisateur'>,
-	messages: Array<FormatMessageJeu1>,
+	messages: Array<MessageJeu1>,
 	voisinFst: Identifiant<'sommet'>,
 	voisinSnd: Identifiant<'sommet'>,
   }
@@ -99,16 +99,24 @@ export class Routage extends React.Component<any, FormState> {
 		this.canal = creerCanalClient(this.adresseServeur);
 
 		console.log('- du traitement des messages');
-		this.canal.enregistrerTraitementMessageRecu((m: any) => {
+		this.canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
 			let msg = new MessageJeu1(m);
 			console.log('* Réception');
 			console.log('- du message brut : ' + msg.brut());
-
-			let contenu: string = m.contenu;
+			console.log(m.type);
+			console.log(TypeMessageJeu1.TRANSIT);
 			switch (m.type) {
 				case TypeMessageJeu1.TRANSIT:
-
+					this.state.messages.push(msg);
+					this.setState({
+						messages: this.state.messages,
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
 					console.log('utilisateur recoit un message');
+					console.log(this.state.messages);
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					break;
 				case TypeMessageJeu1.ACTIF:
@@ -124,6 +132,8 @@ export class Routage extends React.Component<any, FormState> {
 					// l'utilisateur détruit le message à la demande du serveur 
 					break;
 				default:
+				console.log('no match');
+				break;
 			}
 			
 		});
@@ -131,13 +141,27 @@ export class Routage extends React.Component<any, FormState> {
 		console.log('- du traitement de la configuration');
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
 			this.config = creerConfigurationJeu1(c);
-			console.log(this.config.val().voisins.table);
+
+			let voisinFst = creerIdentifiant('sommet','');
+			let voisinSnd = creerIdentifiant('sommet','');
+			let fst = true;
+			for (let i =0 ; i<4; i++) {
+				if (this.config.val().voisins.table['DOM-'+i]) {
+					if (fst) {
+						voisinFst = this.config.val().voisins.table['DOM-'+i].ID;
+						fst = false;
+					} else {
+						voisinSnd = this.config.val().voisins.table['DOM-'+i].ID;
+					}
+				}
+			}
+
 			this.setState({
 				dom: this.config.val().centre.ID,
 				messages: [],
 				util: this.config.val().utilisateur.ID,
-				voisinFst: this.config.val().voisins.table['DOM-1'].ID, // TO DO recuperer nom voisins
-				voisinSnd: this.config.val().voisins.table['DOM-3'].ID
+				voisinFst: voisinFst, // TO DO recuperer nom voisins
+				voisinSnd: voisinSnd
 			});
 			this.config.val().utilisateur.ID
 			console.log(this.config.net("centre"));
@@ -159,7 +183,7 @@ export class Routage extends React.Component<any, FormState> {
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
 					<NewMessage envoyerMessage={this.envoiMessage}/>
-					<MessageBox />
+					<MessageBox messages={this.state.messages}/>
 				</Paper>
 			</div>
 		);

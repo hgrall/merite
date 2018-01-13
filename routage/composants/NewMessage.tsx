@@ -3,7 +3,6 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {Message} from './MessageBox';
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
@@ -87,8 +86,8 @@ export class NewMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
         >
           Code ton message en cliquant sur les cases !
-          <MessageCases message={this.state.message} changeColor={this.changeColor}/>
-          <br />
+          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/>
+          <br /> */}
           <BarreEnvoi envoyerMessage={this.props.envoyerMessage}/>
         </Dialog>
       </div>

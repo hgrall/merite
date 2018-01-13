@@ -80,7 +80,6 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	envoiMessage = () => {
-		console.log('called');
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
 			ID_emetteur: this.state.util,
@@ -103,8 +102,7 @@ export class Routage extends React.Component<any, FormState> {
 			let msg = new MessageJeu1(m);
 			console.log('* Réception');
 			console.log('- du message brut : ' + msg.brut());
-			console.log(m.type);
-			console.log(TypeMessageJeu1.TRANSIT);
+
 			switch (m.type) {
 				case TypeMessageJeu1.TRANSIT:
 					this.state.messages.push(msg);
@@ -115,8 +113,6 @@ export class Routage extends React.Component<any, FormState> {
 						voisinFst: this.state.voisinFst,
 						voisinSnd: this.state.voisinSnd,
 					})
-					console.log('utilisateur recoit un message');
-					console.log(this.state.messages);
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					break;
 				case TypeMessageJeu1.ACTIF:
@@ -160,7 +156,7 @@ export class Routage extends React.Component<any, FormState> {
 				dom: this.config.val().centre.ID,
 				messages: [],
 				util: this.config.val().utilisateur.ID,
-				voisinFst: voisinFst, // TO DO recuperer nom voisins
+				voisinFst: voisinFst,
 				voisinSnd: voisinSnd
 			});
 			this.config.val().utilisateur.ID
@@ -182,8 +178,8 @@ export class Routage extends React.Component<any, FormState> {
 				</p>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage envoyerMessage={this.envoiMessage}/>
-					<MessageBox messages={this.state.messages}/>
+					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<MessageBox messages={this.state.messages} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
 				</Paper>
 			</div>
 		);

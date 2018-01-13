@@ -9,6 +9,7 @@ import {DialogTransmettreMessage} from './DialogTransmettreMessage';
 import Create from 'material-ui/svg-icons/content/create';
 import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
+import { Identifiant } from '../../bibliotheque/types/identifiant';
 
 /**
  * A modal dialog can only be closed by selecting one of the actions.
@@ -30,7 +31,9 @@ const styles = {
 };
 
 interface MessageProps {
-  message: MessageJeu1
+  message: MessageJeu1,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {
@@ -49,7 +52,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
   render() {
     const actions = [
       <DialogDecoderMessage message={this.props.message} validation={this.handleClose}/>,
-      <DialogTransmettreMessage message={this.props.message} validation={this.handleClose}/>,
+      <DialogTransmettreMessage message={this.props.message} validation={this.handleClose} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>,
       <FlatButton
         label="Jeter"
         secondary={true}

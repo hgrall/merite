@@ -6,6 +6,7 @@ import TextField from 'material-ui/TextField';
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
+import { Identifiant } from '../../bibliotheque/types/identifiant';
 
 
 const styles = {
@@ -16,7 +17,9 @@ const styles = {
 }
 
 interface MessageProps {
-  envoyerMessage: () => void
+  envoyerMessage: () => void,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>
 }
 
 /**
@@ -86,9 +89,9 @@ export class NewMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
         >
           Code ton message en cliquant sur les cases !
-          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/>
-          <br /> */}
-          <BarreEnvoi envoyerMessage={this.props.envoyerMessage}/>
+          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/> */}
+          <br /> 
+          <BarreEnvoi envoyerMessage={this.props.envoyerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
         </Dialog>
       </div>
     );

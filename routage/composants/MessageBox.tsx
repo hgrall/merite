@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { MessageATraiter } from './MessageATraiter';
 import { MessageJeu1 } from '../commun/communRoutage';
+import {Identifiant} from '../../bibliotheque/types/identifiant';
 
 const styles = {
   root: {
@@ -13,7 +14,9 @@ const styles = {
 };
 
 interface MessageProps {
-  messages: Array<MessageJeu1>
+  messages: Array<MessageJeu1>,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>
 }
 
 export class MessageBox extends React.Component<MessageProps, any> {
@@ -23,8 +26,10 @@ export class MessageBox extends React.Component<MessageProps, any> {
   }
 
   public render() {
+    var voisinFst= this.props.voisinFst;
+    var voisinSnd = this.props.voisinSnd;
     var messageList = this.props.messages.map(function(mes){
-      return <MessageATraiter message={mes}/>;
+      return <MessageATraiter message={mes} voisinFst={voisinFst} voisinSnd={voisinSnd}/>;
     })
     return (
       <div>

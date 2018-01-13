@@ -5,6 +5,7 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import {EnvoyePar} from './EnvoyePar'
 import {MessageJeu1, TypeMessageJeu1} from '../commun/communRoutage'
+import { Identifiant } from '../../bibliotheque/types/identifiant'
 
 const styles = {
   root: {
@@ -27,7 +28,9 @@ const styles = {
   }
 };
 interface MessageProps {
-    message: MessageJeu1
+    message: MessageJeu1,
+    voisinFst: Identifiant<'sommet'>,
+    voisinSnd: Identifiant<'sommet'>,
   }
 
 const Messages = [];
@@ -46,7 +49,7 @@ export class MessageATraiter extends React.Component<MessageProps, any> {
         <MessageCases message={this.props.message}/>
         <div style={styles.container}>
           Verrouillé : {this.props.message.val().type === TypeMessageJeu1.VERROU ? 'Oui' : 'Non'}
-          <TraiterMessage message={this.props.message}/>
+          <TraiterMessage message={this.props.message} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
         </div>
        </Paper>
         

@@ -6,10 +6,12 @@ import { MessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
-
+import { Identifiant } from '../../bibliotheque/types/identifiant'
 interface messageProps {
     validation:() => void,
-    message: MessageJeu1
+    message: MessageJeu1,
+    voisinFst: Identifiant<'sommet'>,
+    voisinSnd: Identifiant<'sommet'>,
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
@@ -60,7 +62,7 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
           <MessageCases message={this.props.message}/>
           <br />
-          <BarreEnvoi/>
+          <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
         </Dialog>
       </div>
     );

@@ -43,10 +43,10 @@ export class MessageATraiter extends React.Component<MessageProps, any> {
       <div style={styles.root}>
        <Paper zDepth={2}>
         <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
-        {/* <MessageCases message={this.props.message}/> */}
+        <MessageCases message={this.props.message}/>
         <div style={styles.container}>
           Verrouillé : {this.props.message.val().type === TypeMessageJeu1.VERROU ? 'Oui' : 'Non'}
-          {/* <TraiterMessage message={this.props.message}/> */}
+          <TraiterMessage message={this.props.message}/>
         </div>
        </Paper>
         

@@ -28,7 +28,7 @@ export class MessageCases extends React.Component<MessageProps, any> {
       var locked = this.props.message.val().type === TypeMessageJeu1.VERROU;
       var changeColor = this.props.changeColor;
       var id = 0;
-      var casesList = this.props.message.val().contenu.tableauBinaire().map(function(int){
+      var casesList = this.props.message.val().contenu['structure'].tableau.map(function(int){
         let CaseItem = <Case colored={int} locked={locked} changeColor={changeColor ? changeColor : (n : number)=>{}} id={id}/>;
         id ++; 
         return CaseItem;

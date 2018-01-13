@@ -180,7 +180,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
 	let config = composerConfigurationJeu1(n, pop, u, d.val());
-
+	console.log(n.centre.ID);
 	console.log("- envoi au client d'adresse " + l.adresseClient());
 	console.log('  - de la configuration brute ' + config.brut());
 	console.log('  - de la configuration nette ' + config.representation());
@@ -218,12 +218,12 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   let msg: MessageJeu1 = creerMessageEnveloppe(m);
   console.log("* Traitement d'un message");
   console.log('- brut : ' + msg.brut());
-  console.log('- net : ' + msg.representation());
 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
-      // TODO ajouter log
+	  // TODO ajouter log
+	  console.log('message recu ----------------',)
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;

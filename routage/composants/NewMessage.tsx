@@ -17,7 +17,7 @@ const styles = {
 }
 
 interface MessageProps {
-  envoyerMessage: () => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>
 }

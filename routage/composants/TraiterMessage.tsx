@@ -7,8 +7,9 @@ import {MessageCases} from './MessageCases';
 import {DialogDecoderMessage} from './DialogDecoderMessage';
 import {DialogTransmettreMessage} from './DialogTransmettreMessage';
 import Create from 'material-ui/svg-icons/content/create';
-import { Message } from './MessageBox';
+import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
+import { Identifiant } from '../../bibliotheque/types/identifiant';
 
 /**
  * A modal dialog can only be closed by selecting one of the actions.
@@ -30,7 +31,10 @@ const styles = {
 };
 
 interface MessageProps {
-  message: Message
+  message: MessageJeu1,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>,
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {
@@ -49,7 +53,11 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
   render() {
     const actions = [
       <DialogDecoderMessage message={this.props.message} validation={this.handleClose}/>,
-      <DialogTransmettreMessage message={this.props.message} validation={this.handleClose}/>,
+      <DialogTransmettreMessage message={this.props.message} 
+        validation={this.handleClose} 
+        voisinFst={this.props.voisinFst} 
+        voisinSnd={this.props.voisinSnd}
+        envoyerMessage={this.props.envoyerMessage}/>,
       <FlatButton
         label="Jeter"
         secondary={true}
@@ -70,7 +78,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           icon={<Create/>}
           style={styles.btn}
           onClick={this.handleOpen} 
-          disabled = {this.props.message.locked}
+          disabled = {this.props.message.val().type === TypeMessageJeu1.VERROU}
           primary={true}/>
         <Dialog
           title="Traiter le message"
@@ -81,7 +89,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
           open={this.state.open}
         >
-          <EnvoyePar source={this.props.message.source}/>
+          <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
           <MessageCases message={this.props.message}/>
 
           Si tu penses que le message est pour toi, decode le.

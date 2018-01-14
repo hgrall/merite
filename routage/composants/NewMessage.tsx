@@ -3,24 +3,29 @@ import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {Message} from './MessageBox';
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
+import { Identifiant } from '../../bibliotheque/types/identifiant';
 
-interface messageProps {
-    
-  }
+
 const styles = {
   container: {
     alignSelf: 'flex-end' as 'flex-end',
     margin: '20px'
   }
 }
+
+interface MessageProps {
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>
+}
+
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
-export class NewMessage extends React.Component<messageProps, any> {
+export class NewMessage extends React.Component<MessageProps, any> {
 
   state = {
     open: false,
@@ -84,9 +89,9 @@ export class NewMessage extends React.Component<messageProps, any> {
           onRequestClose={this.handleClose}
         >
           Code ton message en cliquant sur les cases !
-          <MessageCases message={this.state.message} changeColor={this.changeColor}/>
-          <br />
-          <BarreEnvoi/>
+          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/> */}
+          <br /> 
+          <BarreEnvoi envoyerMessage={this.props.envoyerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
         </Dialog>
       </div>
     );

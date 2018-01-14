@@ -153,6 +153,8 @@ export enum TypeMessageJeu1 {
   INIT,
   SUCCES_INIT,
   VERROU,
+  LIBE,
+  SUIVANT,
   ACTIF,
   SUCCES_ACTIF,
   INACTIF,

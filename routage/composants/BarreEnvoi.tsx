@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import IconButton from 'material-ui/IconButton';
+import { Identifiant } from '../../bibliotheque/types/identifiant'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 /**
@@ -29,29 +30,36 @@ const styles = {
         padding: 30,
     }
 };
+interface MessageProps {
+  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  voisinFst: Identifiant<'sommet'>,
+  voisinSnd: Identifiant<'sommet'>,
+}
+export class BarreEnvoi extends React.Component<MessageProps, any> {
 
-export class BarreEnvoi extends React.Component<any, any> {
   render() {
     return (
       <div style={styles.root}>
         <div style={styles.arrowContainer}>
           Envoyer au domaine : 
-          DOM-2
+          {this.props.voisinFst.val}
           <IconButton
           tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
+            onClick={() => this.props.envoyerMessage(this.props.voisinFst)}
           >
           <ArrowBack/> 
         </IconButton>
         </div> 
         <div style={styles.arrowContainer}>
           Envoyer au domaine : 
-          DOM-3
+          {this.props.voisinSnd.val}
           <IconButton
             tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
+            onClick={() => this.props.envoyerMessage(this.props.voisinSnd)}
           >
             <ArrowForward/>
           </IconButton>

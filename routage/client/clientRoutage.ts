@@ -61,14 +61,9 @@ contenu : Mot,
     console.log("- du traitement des messages");
     canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
         let msg = new MessageJeu1(m);
-        console.log()
-
-        /*let msg = new MessageTchat(m);
-        console.log("* Réception");
         console.log("- du message brut : " + msg.brut());
-        console.log("- du message net : " + representerMessage(msg));
-        posterNL('logChats', representerMessage(msg));
-*/
+        //console.log("- du message net : " + representerMessage(msg));
+        //posterNL('logChats', representerMessage(msg));
 })};
 
 /*L’utilisateur reçoit un message du serveur et le place en transit. 

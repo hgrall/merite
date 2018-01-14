@@ -3,11 +3,11 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import {MessageCases} from './MessageCases';
-import {Message} from './MessageBox';
+import { MessageJeu1 } from '../commun/communRoutage'
 
 interface messageProps {
     validation:() => void,
-    message: Message
+    message: MessageJeu1
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.

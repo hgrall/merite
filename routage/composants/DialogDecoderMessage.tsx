@@ -62,7 +62,7 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
         >
           Quel est le message ? 
           <br />
-          <MessageCases message={this.props.message}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <TextField
             hintText="Decode ici le message"
           />

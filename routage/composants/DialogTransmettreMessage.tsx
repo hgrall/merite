@@ -7,12 +7,14 @@ import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 import { Identifiant } from '../../bibliotheque/types/identifiant'
+import { Mot } from '../../bibliotheque/binaire'
+
 interface messageProps {
     validation:() => void,
     message: MessageJeu1,
     voisinFst: Identifiant<'sommet'>,
     voisinSnd: Identifiant<'sommet'>,
-    envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+    envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   }
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
@@ -61,9 +63,14 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
         >
           A qui veux tu transmettre le message ? 
           <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
-          <MessageCases message={this.props.message}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <br />
-          <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} envoyerMessage={this.props.envoyerMessage}/>
+          <BarreEnvoi 
+            voisinFst={this.props.voisinFst} 
+            voisinSnd={this.props.voisinSnd} 
+            envoyerMessage={this.props.envoyerMessage} 
+            contenu={this.props.message.val().contenu}
+          />
         </Dialog>
       </div>
     );

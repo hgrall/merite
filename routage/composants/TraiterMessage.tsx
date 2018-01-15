@@ -10,6 +10,7 @@ import Create from 'material-ui/svg-icons/content/create';
 import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
+import { Mot } from '../../bibliotheque/binaire'
 
 /**
  * A modal dialog can only be closed by selecting one of the actions.
@@ -34,7 +35,8 @@ interface MessageProps {
   message: MessageJeu1,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>,
-  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  locked: boolean,
+  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {
@@ -78,7 +80,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           icon={<Create/>}
           style={styles.btn}
           onClick={this.handleOpen} 
-          disabled = {this.props.message.val().type === TypeMessageJeu1.VERROU}
+          disabled = {!this.props.locked}
           primary={true}/>
         <Dialog
           title="Traiter le message"
@@ -90,7 +92,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           open={this.state.open}
         >
           <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
-          <MessageCases message={this.props.message}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.
           Sinon, transmet le a la personne concernee.

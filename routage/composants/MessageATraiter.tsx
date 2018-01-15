@@ -7,6 +7,8 @@ import { EnvoyePar } from './EnvoyePar'
 import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import { Identifiant } from '../../bibliotheque/types/identifiant'
 import { Mot } from '../../bibliotheque/binaire';
+import LockOpen from 'material-ui/svg-icons/action/lock-open';
+import LockClose from 'material-ui/svg-icons/action/lock-outline'
 
 const styles = {
   root: {
@@ -26,6 +28,10 @@ const styles = {
   },
   margin: {
     margin: '15px'
+  },
+  btn: {
+    margin: '10px',
+    alignSelf: "flex-end" as "flex-end"
   }
 };
 interface MessageProps {
@@ -35,12 +41,19 @@ interface MessageProps {
     envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   }
 
+interface MessageState {
+  locked: boolean
+}
+
 const Messages = [];
 
-export class MessageATraiter extends React.Component<MessageProps, any> {
+export class MessageATraiter extends React.Component<MessageProps, MessageState> {
   
   constructor(props: any){
       super(props);
+      this.state= ({
+        locked: false
+      })
   }
 
   public render() {
@@ -50,16 +63,24 @@ export class MessageATraiter extends React.Component<MessageProps, any> {
         <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
-          Verrouillé : {this.props.message.val().type === TypeMessageJeu1.VERROU ? 'Oui' : 'Non'}
-          <TraiterMessage message={this.props.message} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} 
-          envoyerMessage={this.props.envoyerMessage}/>
+          {this.state.locked ? <LockClose/> : <LockOpen/>}
+          <RaisedButton 
+          label={this.state.locked? "Deverouiller" : "Verouiller"}
+          style={styles.btn}
+          onClick={() => this.setState({
+            locked: !this.state.locked
+          })} 
+          primary={true}/>
+          <TraiterMessage 
+            message={this.props.message}
+            voisinFst={this.props.voisinFst}
+            voisinSnd={this.props.voisinSnd} 
+            locked={this.state.locked}
+            envoyerMessage={this.props.envoyerMessage}/>
         </div>
        </Paper>
         
       </div>
     );
-  }
-  verouiller(){
-      return false; 
   }
 }

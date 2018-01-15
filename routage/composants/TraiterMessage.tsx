@@ -35,6 +35,7 @@ interface MessageProps {
   message: MessageJeu1,
   voisinFst: Identifiant<'sommet'>,
   voisinSnd: Identifiant<'sommet'>,
+  locked: boolean,
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }
 
@@ -79,7 +80,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           icon={<Create/>}
           style={styles.btn}
           onClick={this.handleOpen} 
-          disabled = {this.props.message.val().type === TypeMessageJeu1.VERROU}
+          disabled = {!this.props.locked}
           primary={true}/>
         <Dialog
           title="Traiter le message"

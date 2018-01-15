@@ -95,5 +95,10 @@ export class NewMessage extends React.Component<MessageProps, any> {
     );
   }
 
+  envoyerEtFermerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
+    this.props.envoyerMessage(dest, contenu);
+    this.handleClose()
+  }
+
   
 }

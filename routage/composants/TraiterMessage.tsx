@@ -7,7 +7,7 @@ import {MessageCases} from './MessageCases';
 import {DialogDecoderMessage} from './DialogDecoderMessage';
 import {DialogTransmettreMessage} from './DialogTransmettreMessage';
 import Create from 'material-ui/svg-icons/content/create';
-import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
+import { MessageJeu1, TypeMessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { Mot } from '../../bibliotheque/binaire'
@@ -33,8 +33,8 @@ const styles = {
 
 interface MessageProps {
   message: MessageJeu1,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
   locked: boolean,
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }

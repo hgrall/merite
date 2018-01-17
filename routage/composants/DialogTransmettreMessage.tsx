@@ -2,18 +2,18 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { MessageJeu1 } from '../commun/communRoutage'
+import { MessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 import { Identifiant } from '../../bibliotheque/types/identifiant'
-import { Mot } from '../../bibliotheque/binaire'
+import { Mot } from '../../bibliotheque/binaire';
 
 interface messageProps {
     validation:() => void,
     message: MessageJeu1,
-    voisinFst: Identifiant<'sommet'>,
-    voisinSnd: Identifiant<'sommet'>,
+    voisinFst: FormatSommetJeu1,
+    voisinSnd: FormatSommetJeu1,
     envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   }
 /**

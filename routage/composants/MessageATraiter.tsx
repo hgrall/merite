@@ -8,7 +8,8 @@ import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import { Identifiant } from '../../bibliotheque/types/identifiant'
 import { Mot } from '../../bibliotheque/binaire';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
-import LockClose from 'material-ui/svg-icons/action/lock-outline'
+import LockClose from 'material-ui/svg-icons/action/lock-outline';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 const styles = {
   root: {
@@ -36,8 +37,8 @@ const styles = {
 };
 interface MessageProps {
     message: MessageJeu1,
-    voisinFst: Identifiant<'sommet'>,
-    voisinSnd: Identifiant<'sommet'>,
+    voisinFst: FormatSommetJeu1,
+    voisinSnd: FormatSommetJeu1,
     envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   }
 

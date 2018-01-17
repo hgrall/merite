@@ -61,8 +61,8 @@ interface FormState {
 	dom: FormatSommetJeu1,
 	util: FormatUtilisateur,
 	messages: Array<MessageJeu1>,
-	voisinFst: Identifiant<'sommet'>,
-	voisinSnd: Identifiant<'sommet'>,
+	voisinFst: FormatSommetJeu1,
+	voisinSnd: FormatSommetJeu1,
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -75,8 +75,8 @@ export class Routage extends React.Component<any, FormState> {
 		messages: [],
 		dom: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		util: {ID: creerIdentifiant('utilisateur',''), pseudo:[]},
-		voisinFst: creerIdentifiant('sommet',''),
-		voisinSnd: creerIdentifiant('sommet',''),
+		voisinFst: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]}
 	}
 
 	constructor(props: any) {
@@ -144,16 +144,16 @@ export class Routage extends React.Component<any, FormState> {
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
 			this.config = creerConfigurationJeu1(c);
 
-			let voisinFst = creerIdentifiant('sommet','');
-			let voisinSnd = creerIdentifiant('sommet','');
+			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
+			let voisinSnd : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let fst = true;
 			for (let i =0 ; i<4; i++) {
 				if (this.config.val().voisins.table['DOM-'+i]) {
 					if (fst) {
-						voisinFst = this.config.val().voisins.table['DOM-'+i].ID;
+						voisinFst = this.config.val().voisins.table['DOM-'+i];
 						fst = false;
 					} else {
-						voisinSnd = this.config.val().voisins.table['DOM-'+i].ID;
+						voisinSnd = this.config.val().voisins.table['DOM-'+i];
 					}
 				}
 			}

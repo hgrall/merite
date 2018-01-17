@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MessageATraiter } from './MessageATraiter';
-import { MessageJeu1 } from '../commun/communRoutage';
+import { MessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage';
 import {Identifiant} from '../../bibliotheque/types/identifiant';
 import { Mot } from '../../bibliotheque/binaire';
 
@@ -16,8 +16,8 @@ const styles = {
 
 interface MessageProps {
   messages: Array<MessageJeu1>,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
 }
 

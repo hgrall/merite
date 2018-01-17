@@ -12,9 +12,11 @@ import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
 import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
 import { creerMot, Mot } from '../bibliotheque/binaire'
 import { MessageBox } from './composants/MessageBox';
+import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1 } from './commun/communRoutage';
+import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur } from './commun/communRoutage';
+import { Deux } from '../bibliotheque/types/mutable';
 
 const styles = {
 	container: {
@@ -46,14 +48,18 @@ const styles = {
 	},
 	message: {
 		alignSelf: 'center' as 'center'
+	},
+	dom : {
+		display: "flex" as 'flex',
+		sflexWrap: "wrap" as 'wrap',
 	}
 };
 
 type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
 interface FormState { 
-	dom: Identifiant<'sommet'>,
-	util: Identifiant<'utilisateur'>,
+	dom: FormatSommetJeu1,
+	util: FormatUtilisateur,
 	messages: Array<MessageJeu1>,
 	voisinFst: Identifiant<'sommet'>,
 	voisinSnd: Identifiant<'sommet'>,
@@ -67,8 +73,8 @@ export class Routage extends React.Component<any, FormState> {
 
 	state: FormState = {
 		messages: [],
-		dom: creerIdentifiant('sommet',''),
-		util: creerIdentifiant('utilisateur',''),
+		dom: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		util: {ID: creerIdentifiant('utilisateur',''), pseudo:[]},
 		voisinFst: creerIdentifiant('sommet',''),
 		voisinSnd: creerIdentifiant('sommet',''),
 	}
@@ -82,8 +88,8 @@ export class Routage extends React.Component<any, FormState> {
 	envoiMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
-			ID_emetteur: this.state.util,
-			ID_origine: this.state.dom,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
 			ID_destination: dest,
 			type: TypeMessageJeu1.INIT,
 			contenu: contenu,
@@ -153,9 +159,9 @@ export class Routage extends React.Component<any, FormState> {
 			}
 
 			this.setState({
-				dom: this.config.val().centre.ID,
+				dom: this.config.val().centre,
 				messages: [],
-				util: this.config.val().utilisateur.ID,
+				util: this.config.val().utilisateur,
 				voisinFst: voisinFst,
 				voisinSnd: voisinSnd
 			});
@@ -172,10 +178,12 @@ export class Routage extends React.Component<any, FormState> {
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
 				<Regles />
-				<p>
-				Domaine : {this.state.dom.val} 
-				 Utilisateur : {this.state.util.val}
-				</p>
+				<div style={styles.dom}>
+				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
+				</div>
+				<div style={styles.dom}>
+				Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+				</div>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
 					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>

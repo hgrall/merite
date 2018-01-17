@@ -12,7 +12,7 @@ import {
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
 import {} from '../../bibliotheque/outils';
-import { binaire } from '../../bibliotheque/binaire';
+import { binaire , Mot} from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
@@ -71,8 +71,17 @@ class LienJeu1 extends LienWebSocket<
  * - serveur de canaux  
  */
 
-const anneau: ReseauJeu1 = creerAnneauJeu1([binaire(0), binaire(1), binaire(2), binaire(3)]);
+let domaines = [binaire(0), binaire(1), binaire(2), binaire(3)];
+const anneau: ReseauJeu1 = creerAnneauJeu1(domaines);
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
+
+let list: Array<number> = [1, 2, 3];
+//initialise les points a zero
+export var pointsParDomaine : Array<number> = [];
+for (let i in domaines){
+	pointsParDomaine[i]=0;
+}
+
 
 const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
 	binaire(0),
@@ -89,6 +98,7 @@ const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerP
 ]);
 
 export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
+
 
 
 export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<

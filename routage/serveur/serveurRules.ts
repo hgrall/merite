@@ -5,7 +5,7 @@ import { TableIdentificationMutable, creerTableIdentificationImmutable } from '.
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
 import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE} from './serveurRoutage'
+import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, pointsParDomaine} from './serveurRoutage'
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 
@@ -113,6 +113,8 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
     if (verrouilleur === emetteur){
       if (consigne(origine, emetteur, contenu)){
+        //mise a jour des points
+
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
           ID_emetteur: emetteur,
@@ -137,6 +139,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
     }
 }
 
+//Verifie que le message envoye par l'utilisateur est correct
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
   // verifie que la consigne est correcte
   // renvoie un booleen

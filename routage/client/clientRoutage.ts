@@ -28,9 +28,10 @@ import {
     FormatErreurJeu1, EtiquetteErreurJeu1,
     ErreurJeu1, creerErreurJeu1,
     PopulationLocaleMutable, creerPopulationLocale, 
-    Utilisateur, creerUtilisateur, TypeMessageJeu1, creerMessageInitial
+    Utilisateur, creerUtilisateur, TypeMessageJeu1, creerMessageInitial, sommetInconnu
 } from '../commun/communRoutage';
 
+import { conversionDate } from '../../bibliotheque/types/date'
 
 
 
@@ -91,12 +92,16 @@ idDomDest : Identifiant<'sommet'>,
 idMessage : Identifiant<'message'>,
 contenu : Mot,
  ):void{
-
-     let msg = creerMessageInitial(idUtil,idDom,contenu);
-
-     //verouille un msg en transit
-    msg.pourVerrouiller(idUtil,idDomDest);
-
+    let msg = new MessageJeu1({
+        ID: idMessage,
+        ID_emetteur: idUtil,
+        ID_origine:idDom,
+        ID_destination: sommetInconnu,
+        type: TypeMessageJeu1.VERROU,
+        contenu: contenu,
+        date: conversionDate(new Date())
+      })
+    
 };
 
 /*

@@ -229,7 +229,8 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
       break;
     case TypeMessageJeu1.VERROU:
       // TODO tester erreurs.
-      // TODO ajouter log
+	  // TODO ajouter log
+	  console.log('demande verouillage message');
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     case TypeMessageJeu1.SUIVANT:

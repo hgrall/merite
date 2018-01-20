@@ -15,8 +15,9 @@ import { MessageBox } from './composants/MessageBox';
 import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur } from './commun/communRoutage';
+import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
 import { Deux } from '../bibliotheque/types/mutable';
+import { verouiller } from './client/clientRoutage';
 
 const styles = {
 	container: {
@@ -95,6 +96,20 @@ export class Routage extends React.Component<any, FormState> {
 			contenu: contenu,
 			date: conversionDate(new Date())
 		  }))
+	}
+
+	verrou = (idMessage : Identifiant<'message'>,
+	contenu : Mot) => {
+		let msg = new MessageJeu1({
+			ID: idMessage,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: sommetInconnu,
+			type: TypeMessageJeu1.VERROU,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		  })
+		this.canal.envoyerMessage(msg);
 	}
 
 	componentWillMount(): void {
@@ -187,7 +202,12 @@ export class Routage extends React.Component<any, FormState> {
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
 					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
-					<MessageBox envoyerMessage={this.envoiMessage} messages={this.state.messages} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<MessageBox 
+						envoyerMessage={this.envoiMessage}
+						verrou={this.verrou}
+						messages={this.state.messages}
+						voisinFst={this.state.voisinFst}
+						voisinSnd={this.state.voisinSnd}/>
 				</Paper>
 			</div>
 		);

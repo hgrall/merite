@@ -21,6 +21,8 @@ export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, 
 
 // verouille dans un domaine le message pour un utilisateur 
 function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>, utilisateur: Identifiant<'utilisateur'>) : void {
+  console.log(tableVerrouillageMessagesParDomaine.representation());
+  console.log(tableVerrouillageMessagesParDomaine.valeur(domaine));
   tableVerrouillageMessagesParDomaine.valeur(domaine).ajouter(message, utilisateur);
 }
 
@@ -66,8 +68,10 @@ export function accuserReception(msg: MessageJeu1): void {
 
 export function verrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
+  console.log(tableVerrouillageMessagesParDomaine.valeur(origine));
+  console.log(tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id));
   if (verrouilleur === PERSONNE) { // verification que le serveur n'est pas verouillé
-      verrou(dest, id, emetteur); 
+      verrou(origine, id, emetteur); 
       miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
   } 
 }

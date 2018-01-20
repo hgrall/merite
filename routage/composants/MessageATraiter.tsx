@@ -40,13 +40,13 @@ interface MessageProps {
     voisinFst: FormatSommetJeu1,
     voisinSnd: FormatSommetJeu1,
     envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+    verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
   }
 
 interface MessageState {
   locked: boolean
 }
 
-const Messages = [];
 
 export class MessageATraiter extends React.Component<MessageProps, MessageState> {
   
@@ -57,20 +57,25 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
       })
   }
 
+  verrou = () => {
+    this.props.verrou(this.props.message.val().ID, this.props.message.val().contenu);
+    this.setState({
+      locked: !this.state.locked
+    })
+  }
+
   public render() {
     return (
       <div style={styles.root}>
        <Paper zDepth={2}>
-        <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
+        <EnvoyePar source={this.props.message.val().ID_origine.val}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
           {this.state.locked ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
           label={this.state.locked? "Deverouiller" : "Verouiller"}
           style={styles.btn}
-          onClick={() => this.setState({
-            locked: !this.state.locked
-          })} 
+          onClick={this.verrou} 
           primary={true}/>
           <TraiterMessage 
             message={this.props.message}

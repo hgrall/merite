@@ -62,7 +62,7 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           onRequestClose={this.handleClose}
         >
           A qui veux tu transmettre le message ? 
-          <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
+          <EnvoyePar source={this.props.message.val().ID_origine.val}/>
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <br />
           <BarreEnvoi 

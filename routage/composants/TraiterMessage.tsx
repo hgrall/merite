@@ -91,7 +91,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
           open={this.state.open}
         >
-          <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
+          <EnvoyePar source={this.props.message.val().ID_origine.val}/>
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.

@@ -138,10 +138,36 @@ export class Routage extends React.Component<any, FormState> {
 					break;
 				case TypeMessageJeu1.ACTIF:
 					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aActiver();
+							}
+							else {
+								return msg;
+							}
+						}),
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
 					break;
 				case TypeMessageJeu1.INACTIF:
-					console.log('message inactif');
-					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aDesactiver();
+							}
+							else {
+								return msg;
+							}
+						}),
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
 					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie

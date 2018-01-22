@@ -71,17 +71,19 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
         <EnvoyePar source={this.props.message.val().ID_origine.val}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
-          {this.state.locked ? <LockClose/> : <LockOpen/>}
+            {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.ACTIF ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
-          label={this.state.locked? "Deverouiller" : "Verouiller"}
-          style={styles.btn}
-          onClick={this.verrou} 
-          primary={true}/>
+            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Deverouiller" : "Verouiller"}
+            style={styles.btn}
+            onClick={this.verrou} 
+            primary={true}
+            disabled={this.props.message.val().type === TypeMessageJeu1.INACTIF}
+          />
           <TraiterMessage 
             message={this.props.message}
             voisinFst={this.props.voisinFst}
             voisinSnd={this.props.voisinSnd} 
-            locked={this.state.locked}
+            locked={this.props.message.val().type === TypeMessageJeu1.ACTIF}
             envoyerMessage={this.props.envoyerMessage}/>
         </div>
        </Paper>

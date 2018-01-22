@@ -318,6 +318,32 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
     });
   }
 
+  aActiver(): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.ACTIF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  aDesactiver(): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.INACTIF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
   // 5. Client : tester un message en FIN.
   aEssayer(contenu: Mot): MessageJeu1 {
     let msg = this.val();

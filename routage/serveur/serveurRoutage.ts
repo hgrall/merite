@@ -221,16 +221,10 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
-      // TODO tester erreurs
-	  // TODO ajouter log
-	  console.log('message recu ----------------',)
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;
     case TypeMessageJeu1.VERROU:
-      // TODO tester erreurs.
-	  // TODO ajouter log
-	  console.log('demande verouillage message');
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
     case TypeMessageJeu1.SUIVANT:

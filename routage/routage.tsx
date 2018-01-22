@@ -139,6 +139,10 @@ export class Routage extends React.Component<any, FormState> {
 				case TypeMessageJeu1.ACTIF:
 					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
 					break;
+				case TypeMessageJeu1.INACTIF:
+					console.log('message inactif');
+					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
+					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
 					break;

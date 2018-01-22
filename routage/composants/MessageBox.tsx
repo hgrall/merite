@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MessageATraiter } from './MessageATraiter';
-import { MessageJeu1 } from '../commun/communRoutage';
+import { MessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage';
 import {Identifiant} from '../../bibliotheque/types/identifiant';
 import { Mot } from '../../bibliotheque/binaire';
 
@@ -16,9 +16,10 @@ const styles = {
 
 interface MessageProps {
   messages: Array<MessageJeu1>,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>,
-  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
+  verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
 }
 
 export class MessageBox extends React.Component<MessageProps, any> {
@@ -31,8 +32,14 @@ export class MessageBox extends React.Component<MessageProps, any> {
     var voisinFst= this.props.voisinFst;
     var voisinSnd = this.props.voisinSnd;
     var envoyerMessage = this.props.envoyerMessage;
+    var verrou = this.props.verrou;
     var messageList = this.props.messages.map(function(mes){
-      return <MessageATraiter message={mes} voisinFst={voisinFst} voisinSnd={voisinSnd} envoyerMessage={envoyerMessage}/>;
+      return <MessageATraiter 
+        message={mes}
+        voisinFst={voisinFst}
+        voisinSnd={voisinSnd}
+        envoyerMessage={envoyerMessage}
+        verrou={verrou}/>;
     })
     return (
       <div>

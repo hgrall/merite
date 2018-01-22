@@ -19,14 +19,14 @@ const caseNoire = {
 interface CaseProps {
   colored: number,
   locked: boolean,
-  changeColor: (n : number) => void,
-  id: number
+  changeColor?: (n : number) => void,
+  id?: number
 }
 
 export class Case extends React.Component<CaseProps, any> {
     changeColor = () => {
         console.log(this.props.locked);
-        if (this.props.locked == false) {
+        if (this.props.locked == false && this.props.changeColor && this.props.id) {
             this.props.changeColor(this.props.id)
         }
       };

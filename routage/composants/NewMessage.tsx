@@ -9,6 +9,7 @@ import {BarreEnvoi} from './BarreEnvoi';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { creerMot, Mot } from '../../bibliotheque/binaire'
 import { Deux } from '../../bibliotheque/types/mutable';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 
 const styles = {
@@ -20,8 +21,8 @@ const styles = {
 
 interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1
 }
 
 /**

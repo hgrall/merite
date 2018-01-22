@@ -5,6 +5,8 @@ import { Identifiant } from '../../bibliotheque/types/identifiant'
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import { Mot } from '../../bibliotheque/binaire';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
+import { IdentifiantCases } from './IdentifiantCases';
 /**
  * Dialog with action buttons. The actions are passed in as an array of React objects,
  * in this example [FlatButtons](/#/components/flat-button).
@@ -33,8 +35,8 @@ const styles = {
 };
 interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
   contenu: Mot
 }
 export class BarreEnvoi extends React.Component<MessageProps, any> {
@@ -44,24 +46,24 @@ export class BarreEnvoi extends React.Component<MessageProps, any> {
       <div style={styles.root}>
         <div style={styles.arrowContainer}>
           Envoyer au domaine : 
-          {this.props.voisinFst.val}
+          <IdentifiantCases int={this.props.voisinFst.domaine}/>
           <IconButton
           tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
-            onClick={() => this.props.envoyerMessage(this.props.voisinFst, this.props.contenu)}
+            onClick={() => this.props.envoyerMessage(this.props.voisinFst.ID, this.props.contenu)}
           >
           <ArrowBack/> 
         </IconButton>
         </div> 
         <div style={styles.arrowContainer}>
           Envoyer au domaine : 
-          {this.props.voisinSnd.val}
+          <IdentifiantCases int={this.props.voisinSnd.domaine}/>
           <IconButton
             tooltip="Envoyer"
             iconStyle={styles.largeIcon}
             style={styles.large}
-            onClick={() => this.props.envoyerMessage(this.props.voisinSnd, this.props.contenu)}
+            onClick={() => this.props.envoyerMessage(this.props.voisinSnd.ID, this.props.contenu)}
           >
             <ArrowForward/>
           </IconButton>

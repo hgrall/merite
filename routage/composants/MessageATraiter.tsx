@@ -8,7 +8,8 @@ import { MessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
 import { Identifiant } from '../../bibliotheque/types/identifiant'
 import { Mot } from '../../bibliotheque/binaire';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
-import LockClose from 'material-ui/svg-icons/action/lock-outline'
+import LockClose from 'material-ui/svg-icons/action/lock-outline';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 const styles = {
   root: {
@@ -36,16 +37,16 @@ const styles = {
 };
 interface MessageProps {
     message: MessageJeu1,
-    voisinFst: Identifiant<'sommet'>,
-    voisinSnd: Identifiant<'sommet'>,
-    envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+    voisinFst: FormatSommetJeu1,
+    voisinSnd: FormatSommetJeu1,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
+    verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
   }
 
 interface MessageState {
   locked: boolean
 }
 
-const Messages = [];
 
 export class MessageATraiter extends React.Component<MessageProps, MessageState> {
   
@@ -56,26 +57,33 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
       })
   }
 
+  verrou = () => {
+    this.props.verrou(this.props.message.val().ID, this.props.message.val().contenu);
+    this.setState({
+      locked: !this.state.locked
+    })
+  }
+
   public render() {
     return (
       <div style={styles.root}>
        <Paper zDepth={2}>
-        <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
+        <EnvoyePar source={this.props.message.val().ID_origine.val}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
-          {this.state.locked ? <LockClose/> : <LockOpen/>}
+            {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
-          label={this.state.locked? "Deverouiller" : "Verouiller"}
-          style={styles.btn}
-          onClick={() => this.setState({
-            locked: !this.state.locked
-          })} 
-          primary={true}/>
+            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Deverouiller" : "Verouiller"}
+            style={styles.btn}
+            onClick={this.verrou} 
+            primary={true}
+            disabled={this.props.message.val().type === TypeMessageJeu1.INACTIF}
+          />
           <TraiterMessage 
             message={this.props.message}
             voisinFst={this.props.voisinFst}
             voisinSnd={this.props.voisinSnd} 
-            locked={this.state.locked}
+            locked={this.props.message.val().type === TypeMessageJeu1.ACTIF}
             envoyerMessage={this.props.envoyerMessage}/>
         </div>
        </Paper>

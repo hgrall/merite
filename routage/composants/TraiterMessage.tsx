@@ -36,7 +36,7 @@ interface MessageProps {
   voisinFst: FormatSommetJeu1,
   voisinSnd: FormatSommetJeu1,
   locked: boolean,
-  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
 }
 
 export class TraiterMessage extends React.Component<MessageProps, any> {

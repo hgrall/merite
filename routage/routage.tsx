@@ -86,7 +86,7 @@ export class Routage extends React.Component<any, FormState> {
 		this.messageErreur = 'Aucune erreur';
 	}
 
-	envoiMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
+	envoiMessageInit = (dest: Identifiant<'sommet'>, contenu: Mot) => {
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
 			ID_emetteur: this.state.util.ID,
@@ -96,6 +96,18 @@ export class Routage extends React.Component<any, FormState> {
 			contenu: contenu,
 			date: conversionDate(new Date())
 		  }))
+	}
+
+	envoiMessage = (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => {
+		this.canal.envoyerMessage(new MessageJeu1({
+			ID: id,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: dest,
+			type: TypeMessageJeu1.SUIVANT,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		}))
 	}
 
 	verrou = (idMessage : Identifiant<'message'>,
@@ -231,7 +243,7 @@ export class Routage extends React.Component<any, FormState> {
 				</div>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<NewMessage envoyerMessage={this.envoiMessageInit} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}

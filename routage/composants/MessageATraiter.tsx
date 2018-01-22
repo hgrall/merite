@@ -39,7 +39,7 @@ interface MessageProps {
     message: MessageJeu1,
     voisinFst: FormatSommetJeu1,
     voisinSnd: FormatSommetJeu1,
-    envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
     verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
   }
 
@@ -71,7 +71,7 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
         <EnvoyePar source={this.props.message.val().ID_origine.val}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
-            {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.ACTIF ? <LockClose/> : <LockOpen/>}
+            {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
             label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Deverouiller" : "Verouiller"}
             style={styles.btn}

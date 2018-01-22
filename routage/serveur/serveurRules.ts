@@ -98,8 +98,10 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
 
 export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  if (verrouilleur === emetteur) { // verification que le serveur est verouillé par l'emetteur
+  if (verrouilleur.val === emetteur.val) { // verification que le serveur est verouillé par l'emetteur
+    console.log('message verouille par cet utilisateur');
     tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
+    console.log('tableverrouillage', tableVerrouillageMessagesParDomaine.valeur(origine))
     verrou(dest, id, PERSONNE); 
     diffusion(date, emetteur, id, origine, dest, contenu);
   } 

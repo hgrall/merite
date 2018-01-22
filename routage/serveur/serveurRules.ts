@@ -93,6 +93,20 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
     }));
   });
 }
+function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
+  creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
+    connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+      ID: id,
+      ID_emetteur: emetteur,
+      ID_origine: origine,
+      ID_destination: origine,
+      type: TypeMessageJeu1.IGNOR,
+      contenu: contenu,
+      date: date
+    }));
+  });
+}
+
 
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
@@ -103,6 +117,7 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
     tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
     console.log('tableverrouillage', tableVerrouillageMessagesParDomaine.valeur(origine))
     verrou(dest, id, PERSONNE); 
+    detruire(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
     diffusion(date, emetteur, id, origine, dest, contenu);
   } 
 }

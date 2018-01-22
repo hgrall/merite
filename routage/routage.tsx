@@ -188,6 +188,20 @@ export class Routage extends React.Component<any, FormState> {
 					// l'utilisateur perd la partie 
 					break;
 				case TypeMessageJeu1.IGNOR:
+					console.log('destruction du message');
+					this.state.messages.splice(this.state.messages.findIndex(function (msg) {
+						if (msg.val().ID.val === m.ID.val) {
+							return true;
+						}
+						return false;
+					}),1);
+					this.setState({
+						messages: this.state.messages,
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
 					// l'utilisateur détruit le message à la demande du serveur 
 					break;
 				default:

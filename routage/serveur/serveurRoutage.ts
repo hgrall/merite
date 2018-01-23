@@ -222,7 +222,8 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
       break;
     case TypeMessageJeu1.VERROU:
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);

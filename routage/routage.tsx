@@ -191,6 +191,11 @@ export class Routage extends React.Component<any, FormState> {
 					this.setState({textDialog: 'Le message a été envoyé !'});
 					this.handleOpen();
 					break;
+				case TypeMessageJeu1.SUCCES_TRANSIT:
+					// le message a bien été transmis
+					this.setState({ textDialog: 'Le message a été transmis !' });
+					this.handleOpen();
+					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
 					break;

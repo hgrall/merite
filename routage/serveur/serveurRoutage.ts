@@ -229,10 +229,10 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
 	case TypeMessageJeu1.SUIVANT:
-      console.log('message a transmettre');
       serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      // TODO tester erreurs.
-      // TODO ajouter log
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
+
       break;
     case TypeMessageJeu1.ESSAI:
       // TODO tester erreurs.

@@ -38,7 +38,8 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
   }
 
   envoyerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
-    this.props.envoyerMessage(dest, this.props.message.val().ID, contenu)
+    this.props.envoyerMessage(dest, this.props.message.val().ID, contenu);
+    this.handleClose();
   }
 
   render() {

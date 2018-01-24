@@ -93,7 +93,13 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
     }));
   });
 }
+
+export function detruireMessageDomaine(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  detruire(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
+}
+
 function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
+  tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
   creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
     connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
       ID: id,
@@ -113,11 +119,8 @@ function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Iden
 export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
   if (verrouilleur.val === emetteur.val) { // verification que le serveur est verouillé par l'emetteur
-    console.log('message verouille par cet utilisateur');
-    tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
-    console.log('tableverrouillage', tableVerrouillageMessagesParDomaine.valeur(origine))
-    verrou(dest, id, PERSONNE); 
     detruire(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
+    verrou(dest, id, PERSONNE); 
     diffusion(date, emetteur, id, origine, dest, contenu);
   } 
 }

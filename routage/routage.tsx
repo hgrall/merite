@@ -115,6 +115,11 @@ export class Routage extends React.Component<any, FormState> {
 		}))
 	}
 
+	detruireMessage = (msg: MessageJeu1) => {
+		console.log('destruction');
+		this.canal.envoyerMessage(msg.aIgnorer())
+	}
+
 	verrou = (idMessage : Identifiant<'message'>,
 	contenu : Mot) => {
 		let msg = new MessageJeu1({
@@ -292,6 +297,7 @@ export class Routage extends React.Component<any, FormState> {
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}
+						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}
 						voisinSnd={this.state.voisinSnd}/>

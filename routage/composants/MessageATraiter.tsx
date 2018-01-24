@@ -39,7 +39,8 @@ interface MessageProps {
     message: MessageJeu1,
     voisinFst: FormatSommetJeu1,
     voisinSnd: FormatSommetJeu1,
-  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
+    envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
+    detruireMessage: (msg: MessageJeu1) => void,
     verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
   }
 
@@ -82,7 +83,8 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
           <TraiterMessage 
             message={this.props.message}
             voisinFst={this.props.voisinFst}
-            voisinSnd={this.props.voisinSnd} 
+            voisinSnd={this.props.voisinSnd}
+            detruireMessage={this.props.detruireMessage}
             locked={this.props.message.val().type === TypeMessageJeu1.ACTIF}
             envoyerMessage={this.props.envoyerMessage}/>
         </div>

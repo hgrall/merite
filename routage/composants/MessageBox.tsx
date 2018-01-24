@@ -18,6 +18,7 @@ interface MessageProps {
   messages: Array<MessageJeu1>,
   voisinFst: FormatSommetJeu1,
   voisinSnd: FormatSommetJeu1,
+  detruireMessage: (msg: MessageJeu1) => void,
   verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
   envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
 }
@@ -33,9 +34,11 @@ export class MessageBox extends React.Component<MessageProps, any> {
     var voisinSnd = this.props.voisinSnd;
     var envoyerMessage = this.props.envoyerMessage;
     var verrou = this.props.verrou;
+    var detruireMessage = this.props.detruireMessage;
     var messageList = this.props.messages.map(function(mes){
       return <MessageATraiter 
         message={mes}
+        detruireMessage={detruireMessage}
         voisinFst={voisinFst}
         voisinSnd={voisinSnd}
         envoyerMessage={envoyerMessage}

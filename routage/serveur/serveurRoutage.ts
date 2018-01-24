@@ -245,8 +245,11 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
       serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
 	  // En cas de succes, envoie SUCCES a l'emetteur 
 	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
-
-      break;
+	  break;
+	case TypeMessageJeu1.IGNOR:
+		console.log('message a detruire');
+		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
+		break;
     case TypeMessageJeu1.ESSAI:
       // TODO tester erreurs.
       // TODO ajouter log

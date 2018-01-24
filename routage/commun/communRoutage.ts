@@ -472,15 +472,22 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
   return pop;
 }
 
+export type Consigne = {
+  ID_dom_cible : Identifiant<'sommet'>,
+  ID_util_cible: Identifiant<'utilisateur'>;
+  mot_cible: Mot
+}
+
 export interface FormatConfigurationJeu1 extends FormatConfigurationInitiale {
   readonly centre: FormatSommetJeu1;
   readonly population: FormatPopulationLocaleImmutable;
   readonly utilisateur: FormatUtilisateur;
   readonly voisins: FormatTableImmutable<FormatSommetJeu1>;
   readonly date: FormatDateFr;
+  readonly consigne: Consigne;
 }
 
-export type EtiquetteConfigurationJeu1 = 'centre' | 'population' | 'utilisateur' | 'voisins' | 'date';
+export type EtiquetteConfigurationJeu1 = 'centre' | 'population' | 'utilisateur' | 'voisins' | 'date' | 'consigne';
 
 export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1> {
   constructor(c: FormatConfigurationJeu1) {
@@ -500,6 +507,8 @@ export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, Fo
         return creerTableIdentificationImmutable('sommet', config.voisins).representation();
       case 'date':
         return creerDateEnveloppe(config.date).representation();
+      case 'consigne': 
+        return config.consigne.mot_cible.representation();
     }
     return jamais(e);
   }
@@ -522,7 +531,8 @@ export function composerConfigurationJeu1(
   n: FormatNoeudJeu1Immutable,
   pop: FormatPopulationLocaleImmutable,
   u: FormatUtilisateur,
-  date: FormatDateFr
+  date: FormatDateFr,
+  consigne: Consigne
 ): ConfigurationJeu1 {
   return new ConfigurationJeu1({
     configurationInitiale: Unite.ZERO,
@@ -530,7 +540,8 @@ export function composerConfigurationJeu1(
     population: pop,
     utilisateur: u,
     voisins: n.voisins,
-    date: date
+    date: date,
+    consigne: consigne
   });
 }
 

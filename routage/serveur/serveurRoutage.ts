@@ -90,6 +90,13 @@ const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerP
 	binaire(3)
 ]);
 
+const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
+	binaire(0),
+	binaire(1),
+	binaire(2),
+	binaire(3)
+]);
+
 export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 
 
@@ -181,7 +188,18 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let n = anneau.noeud(ID_dom);
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-	let config = composerConfigurationJeu1(n, pop, u, d.val());
+	let ID_dom_cible = ID_dom;
+	let ID_util_cible = ID_util;
+	// consigne 
+	let cible = {
+		ID_dom_cible,
+		ID_util_cible,
+		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom_cible).valeur(ID_util_cible)
+	}
+
+	let config = composerConfigurationJeu1(n, pop, u, d.val(), cible);
+	
+	// send cible
 	console.log(n.centre.ID);
 	console.log("- envoi au client d'adresse " + l.adresseClient());
 	console.log('  - de la configuration brute ' + config.brut());

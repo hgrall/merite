@@ -16,7 +16,7 @@ import { MessageBox } from './composants/MessageBox';
 import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
+import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
 import { Deux } from '../bibliotheque/types/mutable';
 import { verouiller } from './client/clientRoutage';
 
@@ -66,7 +66,8 @@ interface FormState {
 	voisinFst: FormatSommetJeu1,
 	voisinSnd: FormatSommetJeu1,
 	openDialog: boolean,
-	textDialog: string
+	textDialog: string,
+	consigne: Consigne
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -82,7 +83,11 @@ export class Routage extends React.Component<any, FormState> {
 		voisinFst: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
-		textDialog: ''
+		textDialog: '',
+		consigne: { ID_dom_cible: creerIdentifiant('sommet', ''),
+			ID_util_cible: creerIdentifiant('utilisateur', ''),
+			mot_cible: creerMot([])
+		}
 	}
 
 	constructor(props: any) {
@@ -254,7 +259,8 @@ export class Routage extends React.Component<any, FormState> {
 				messages: [],
 				util: this.config.val().utilisateur,
 				voisinFst: voisinFst,
-				voisinSnd: voisinSnd
+				voisinSnd: voisinSnd,
+				consigne: this.config.val().consigne
 			});
 			this.config.val().utilisateur.ID
 			console.log(this.config.net("centre"));
@@ -284,7 +290,7 @@ export class Routage extends React.Component<any, FormState> {
 		return (
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-				<Regles />
+				<Regles consigne={this.state.consigne }/>
 				<div style={styles.dom}>
 				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
 				</div>

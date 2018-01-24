@@ -63,6 +63,11 @@ export class NewMessage extends React.Component<MessageProps, any> {
     })
   }
 
+  envoyerEtFermerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
+    this.props.envoyerMessage(dest, contenu);
+    this.handleClose();
+  }
+
   render() {
     const actions = [
       <FlatButton
@@ -72,7 +77,7 @@ export class NewMessage extends React.Component<MessageProps, any> {
         onClick={this.handleClose}
       />
     ];
-
+    
     return (
       <div style={styles.container}>
         <RaisedButton
@@ -90,16 +95,9 @@ export class NewMessage extends React.Component<MessageProps, any> {
           Code ton message en cliquant sur les cases !
           <MessageCases message={this.state.message} changeColor={this.changeColor} locked={false}/>
           <br /> 
-          <BarreEnvoi envoyerMessage={this.props.envoyerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} contenu={this.state.message}/>
+          <BarreEnvoi envoyerMessage={this.envoyerEtFermerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} contenu={this.state.message}/>
         </Dialog>
       </div>
     );
   }
-
-  envoyerEtFermerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
-    this.props.envoyerMessage(dest, contenu);
-    this.handleClose()
-  }
-
-  
 }

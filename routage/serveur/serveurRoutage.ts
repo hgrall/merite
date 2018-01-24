@@ -1,9 +1,11 @@
-import { port1, port2, hote } from '../commun/communRoutage';
+import { port1, port2, hote, TableMutableMessagesParUtilisateurParDomaine, creerTableMutableMessageParUtilisateurParDomaine } from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
 import * as serveur from '../serveur/serveurRules';
 import { Identification, creerIdentificationParCompteur } from '../../bibliotheque/types/identifiant';
 import { Identifiant, creerIdentifiant, egaliteIdentifiant } from '../../bibliotheque/types/identifiant';
+import { creerTableImmutable } from '../../bibliotheque/types/table';
+
 import {
 	TableIdentificationMutable,
 	creerTableIdentificationMutableVide,
@@ -12,7 +14,7 @@ import {
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
 import {} from '../../bibliotheque/outils';
-import { binaire } from '../../bibliotheque/binaire';
+import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
@@ -203,10 +205,21 @@ export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMes
 		tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
 	});
 }
+export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
+{
+	anneau.iterer((id, n) => {
+		var tableDom : TableIdentificationMutable<'utilisateur', Mot, Mot>= creerTableIdentificationMutableVide('utilisateur', x => x);
+		let pop = utilisateursParDomaine.valeur(id);
+		creerTableImmutable(pop).iterer((cle, util) => {
+			tableDom.ajouter(util.ID, motAleatoire(12));
+		})
+		tableConsigneUtilisateurParDomaine.ajouter(id, tableDom);
+	});
+}
+
+console.log(tableConsigneUtilisateurParDomaine.representation());
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
-
-// TODO Consigne !
 
 /*
 * Config 2 - Traitement des messages
@@ -222,17 +235,21 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
       break;
     case TypeMessageJeu1.VERROU:
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
 	case TypeMessageJeu1.SUIVANT:
-      console.log('message a transmettre');
       serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      // TODO tester erreurs.
-      // TODO ajouter log
-      break;
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
+	  break;
+	case TypeMessageJeu1.IGNOR:
+		console.log('message a detruire');
+		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
+		break;
     case TypeMessageJeu1.ESSAI:
       // TODO tester erreurs.
       // TODO ajouter log

@@ -664,3 +664,13 @@ export type TableMutableUtilisateursParMessageParDomaine = TableIdentificationMu
 export function creerTableMutableUtilisateurParMessageParDomaine(): TableMutableUtilisateursParMessageParDomaine {
   return creerTableIdentificationMutableVide('sommet', x => x);
 }
+
+export type TableMutableMessagesParUtilisateurParDomaine = TableIdentificationMutable<
+  'sommet',
+  TableIdentificationMutable<'utilisateur', Mot, Mot>,
+  TableIdentificationMutable<'utilisateur', Mot, Mot>
+  >;
+
+export function creerTableMutableMessageParUtilisateurParDomaine(): TableMutableMessagesParUtilisateurParDomaine {
+  return creerTableIdentificationMutableVide('sommet', x => x);
+}

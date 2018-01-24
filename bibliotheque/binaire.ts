@@ -58,3 +58,11 @@ export function premiersBinaires(n: number): Mot[] {
   }
   return r.map((v, i, tab) => binaire(v));
 }
+
+export function motAleatoire(length: number): Mot {
+  let r = [];
+  for (let i = 0; i < length; i++) {
+    r.push(Math.floor(Math.random() * Math.floor(2)));
+  }
+  return creerMot(r);
+}

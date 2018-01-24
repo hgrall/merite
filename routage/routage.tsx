@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import Dialog from 'material-ui/Dialog';
 import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-
+import FlatButton from 'material-ui/FlatButton';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Regles } from './composants/Regles';
 import { NewMessage } from './composants/NewMessage';
@@ -64,6 +65,8 @@ interface FormState {
 	messages: Array<MessageJeu1>,
 	voisinFst: FormatSommetJeu1,
 	voisinSnd: FormatSommetJeu1,
+	openDialog: boolean,
+	textDialog: string
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -77,7 +80,9 @@ export class Routage extends React.Component<any, FormState> {
 		dom: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		util: {ID: creerIdentifiant('utilisateur',''), pseudo:[]},
 		voisinFst: {ID: creerIdentifiant('sommet',''), domaine:[]},
-		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]}
+		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		openDialog: false,
+		textDialog: ''
 	}
 
 	constructor(props: any) {
@@ -108,6 +113,11 @@ export class Routage extends React.Component<any, FormState> {
 			contenu: contenu,
 			date: conversionDate(new Date())
 		}))
+	}
+
+	detruireMessage = (msg: MessageJeu1) => {
+		console.log('destruction');
+		this.canal.envoyerMessage(msg.aIgnorer())
 	}
 
 	verrou = (idMessage : Identifiant<'message'>,
@@ -181,6 +191,16 @@ export class Routage extends React.Component<any, FormState> {
 						voisinSnd: this.state.voisinSnd,
 					})
 					break;
+				case TypeMessageJeu1.SUCCES_INIT:
+					// le message initial a bien été envoyé
+					this.setState({textDialog: 'Le message a été envoyé !'});
+					this.handleOpen();
+					break;
+				case TypeMessageJeu1.SUCCES_TRANSIT:
+					// le message a bien été transmis
+					this.setState({ textDialog: 'Le message a été transmis !' });
+					this.handleOpen();
+					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
 					break;
@@ -244,7 +264,23 @@ export class Routage extends React.Component<any, FormState> {
 		});
 	}
 
+	handleOpen = () => {
+		this.setState({ openDialog: true });
+	};
+
+	handleClose = () => {
+		this.setState({ openDialog: false });
+	};
+
 	public render() {
+		const actions = [
+			<FlatButton
+				label="OK"
+				primary={true}
+				onClick={this.handleClose}
+			/>
+		];
+
 		return (
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
@@ -261,11 +297,22 @@ export class Routage extends React.Component<any, FormState> {
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}
+						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}
 						voisinSnd={this.state.voisinSnd}/>
 				</Paper>
-			</div>
-		);
-	}
+				
+
+				<Dialog
+					actions={actions}
+					modal={false}
+					open={this.state.openDialog}
+					onRequestClose={this.handleClose}
+				>
+					{this.state.textDialog}
+        		</Dialog>
+				</div>
+    );
+  }
 }

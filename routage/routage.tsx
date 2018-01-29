@@ -211,14 +211,15 @@ export class Routage extends React.Component<any, FormState> {
 					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
-					console.log('Gagné')
+					this.setState({ textDialog: 'Le message a été décodé avec succès !' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.ECHEC_FIN:
 					// l'utilisateur perd la partie 
-					console.log('Perdu ...')
+					this.setState({ textDialog: 'Perdu ...' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.IGNOR:
-					console.log('destruction du message');
 					this.state.messages.splice(this.state.messages.findIndex(function (msg) {
 						if (msg.val().ID.val === m.ID.val) {
 							return true;

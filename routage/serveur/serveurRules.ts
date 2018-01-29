@@ -5,7 +5,7 @@ import { TableIdentificationMutable, creerTableIdentificationImmutable } from '.
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
 import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE} from './serveurRoutage'
+import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, tableConsigneUtilisateurParDomaine} from './serveurRoutage'
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 
@@ -95,10 +95,10 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
 }
 
 export function detruireMessageDomaine(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
-  detruire(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
+  detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
 }
 
-function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
+function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
   tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
   creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
     connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
@@ -119,7 +119,7 @@ function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Iden
 export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
   if (verrouilleur.val === emetteur.val) { // verification que le serveur est verouillé par l'emetteur
-    detruire(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
+    detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
     verrou(dest, id, PERSONNE); 
     diffusion(date, emetteur, id, origine, dest, contenu);
   } 
@@ -131,35 +131,43 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 
 export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-    if (verrouilleur === emetteur){
-      if (consigne(origine, emetteur, contenu)){
-        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
-          ID: id,
-          ID_emetteur: emetteur,
-          ID_origine: origine,
-          ID_destination: origine,
-          type: TypeMessageJeu1.SUCCES_FIN,
-          contenu: contenu,
-          date: date
-        }))
-      } else {
-        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
-          ID: id,
-          ID_emetteur: emetteur,
-          ID_origine: origine,
-          ID_destination: origine,
-          type: TypeMessageJeu1.ECHEC_FIN,
-          contenu: contenu,
-          date: date
-        }))
-      }
-      
+  if (verrouilleur.val === emetteur.val){
+    if (consigne(origine, emetteur, contenu)){
+      connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+        ID: id,
+        ID_emetteur: emetteur,
+        ID_origine: origine,
+        ID_destination: origine,
+        type: TypeMessageJeu1.SUCCES_FIN,
+        contenu: contenu,
+        date: date
+      }))
+    } else {
+      connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+        ID: id,
+        ID_emetteur: emetteur,
+        ID_origine: origine,
+        ID_destination: origine,
+        type: TypeMessageJeu1.ECHEC_FIN,
+        contenu: contenu,
+        date: date
+      }))
     }
+    detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
+  }
 }
 
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  // verifie que la consigne est correcte
-  // renvoie un booleen
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  let tContenu = contenu['structure'];
+  if (tConsigne.taille != tContenu.taille) {
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      return false;
+    }
+  }
   return true;
 }
 

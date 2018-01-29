@@ -36,6 +36,7 @@ interface MessageProps {
   voisinFst: FormatSommetJeu1,
   voisinSnd: FormatSommetJeu1,
   locked: boolean,
+  validation: (contenu: Mot, msg: MessageJeu1) => void,
   detruireMessage: (msg: MessageJeu1) => void,
   envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
 }
@@ -44,6 +45,13 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
   state = {
     open: false,
   };
+
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
+  }
 
   handleOpen = () => {
     this.setState({open: true});
@@ -55,9 +63,8 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
 
   render() {
     const actions = [
-      <DialogDecoderMessage message={this.props.message} validation={this.handleClose}/>,
+      <DialogDecoderMessage message={this.props.message} validation={this.props.validation}/>,
       <DialogTransmettreMessage message={this.props.message} 
-        validation={this.handleClose} 
         voisinFst={this.props.voisinFst} 
         voisinSnd={this.props.voisinSnd}
         envoyerMessage={this.props.envoyerMessage}/>,
@@ -92,7 +99,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
           open={this.state.open}
         >
-          <EnvoyePar source={this.props.message.val().ID_origine.val}/>
+          <EnvoyePar source={this.source()}/>
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.

@@ -36,13 +36,14 @@ const styles = {
   }
 };
 interface MessageProps {
-    message: MessageJeu1,
-    voisinFst: FormatSommetJeu1,
-    voisinSnd: FormatSommetJeu1,
-    envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
-    detruireMessage: (msg: MessageJeu1) => void,
-    verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
-  }
+  message: MessageJeu1,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
+  validation: (contenu: Mot, msg: MessageJeu1) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
+  detruireMessage: (msg: MessageJeu1) => void,
+  verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
+}
 
 interface MessageState {
   locked: boolean
@@ -58,6 +59,13 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
       })
   }
 
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
+  }
+
   verrou = () => {
     this.props.verrou(this.props.message.val().ID, this.props.message.val().contenu);
     this.setState({
@@ -69,7 +77,7 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
     return (
       <div style={styles.root}>
        <Paper zDepth={2}>
-        <EnvoyePar source={this.props.message.val().ID_origine.val}/>
+        <EnvoyePar source={this.source()}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
             {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}
@@ -84,6 +92,7 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
             message={this.props.message}
             voisinFst={this.props.voisinFst}
             voisinSnd={this.props.voisinSnd}
+            validation={this.props.validation}
             detruireMessage={this.props.detruireMessage}
             locked={this.props.message.val().type === TypeMessageJeu1.ACTIF}
             envoyerMessage={this.props.envoyerMessage}/>

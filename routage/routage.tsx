@@ -16,7 +16,7 @@ import { MessageBox } from './composants/MessageBox';
 import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
+import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
 import { Deux } from '../bibliotheque/types/mutable';
 import { verouiller } from './client/clientRoutage';
 
@@ -66,7 +66,8 @@ interface FormState {
 	voisinFst: FormatSommetJeu1,
 	voisinSnd: FormatSommetJeu1,
 	openDialog: boolean,
-	textDialog: string
+	textDialog: string,
+	consigne: Consigne
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -82,7 +83,11 @@ export class Routage extends React.Component<any, FormState> {
 		voisinFst: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
-		textDialog: ''
+		textDialog: '',
+		consigne: { ID_dom_cible: creerIdentifiant('sommet', ''),
+			ID_util_cible: creerIdentifiant('utilisateur', ''),
+			mot_cible: creerMot([])
+		}
 	}
 
 	constructor(props: any) {
@@ -116,8 +121,11 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	detruireMessage = (msg: MessageJeu1) => {
-		console.log('destruction');
 		this.canal.envoyerMessage(msg.aIgnorer())
+	}
+
+	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
+		this.canal.envoyerMessage(msg.aEssayer(contenu, this.state.util.ID))
 	}
 
 	verrou = (idMessage : Identifiant<'message'>,
@@ -203,12 +211,15 @@ export class Routage extends React.Component<any, FormState> {
 					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
+					this.setState({ textDialog: 'Le message a été décodé avec succès !' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.ECHEC_FIN:
 					// l'utilisateur perd la partie 
+					this.setState({ textDialog: 'Perdu ...' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.IGNOR:
-					console.log('destruction du message');
 					this.state.messages.splice(this.state.messages.findIndex(function (msg) {
 						if (msg.val().ID.val === m.ID.val) {
 							return true;
@@ -254,7 +265,8 @@ export class Routage extends React.Component<any, FormState> {
 				messages: [],
 				util: this.config.val().utilisateur,
 				voisinFst: voisinFst,
-				voisinSnd: voisinSnd
+				voisinSnd: voisinSnd,
+				consigne: this.config.val().consigne
 			});
 			this.config.val().utilisateur.ID
 			console.log(this.config.net("centre"));
@@ -284,7 +296,7 @@ export class Routage extends React.Component<any, FormState> {
 		return (
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-				<Regles />
+				<Regles consigne={this.state.consigne }/>
 				<div style={styles.dom}>
 				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
 				</div>
@@ -300,6 +312,7 @@ export class Routage extends React.Component<any, FormState> {
 						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}
+						validation={this.validerMessage}
 						voisinSnd={this.state.voisinSnd}/>
 				</Paper>
 				

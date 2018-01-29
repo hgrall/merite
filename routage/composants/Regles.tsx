@@ -4,6 +4,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
+import { Consigne } from '../commun/communRoutage'
 
 /**
  * Dialog with action buttons. The actions are passed in as an array of React objects,
@@ -12,13 +13,18 @@ import RaisedButton from 'material-ui/RaisedButton';
  * You can also close this dialog by clicking outside the dialog, or with the 'Esc' key.
  */
 
+
+interface ReglesProps {
+  consigne: Consigne
+}
+
 const styles = {
   boutonRegles: {
     margin: '10px'
   }
 };
 
-export class Regles extends React.Component<any, any> {
+export class Regles extends React.Component<ReglesProps, any> {
   state = {
     open: true,
   };
@@ -57,6 +63,13 @@ export class Regles extends React.Component<any, any> {
           onRequestClose={this.handleClose}
         >
           Les regles du jeu sont les suivantes ...
+          <br/>
+          ID_DOM_CIBLE : {this.props.consigne.ID_dom_cible.val}
+          <br/>
+          ID_UTIL_CIBLE : {this.props.consigne.ID_util_cible.val}
+          <br/>
+          MOT_CIBLE : {this.props.consigne.mot_cible['structure'].tableau.toString()}
+
         </Dialog>
       </div>
     );

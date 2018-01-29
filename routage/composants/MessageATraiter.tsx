@@ -59,6 +59,13 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
       })
   }
 
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
+  }
+
   verrou = () => {
     this.props.verrou(this.props.message.val().ID, this.props.message.val().contenu);
     this.setState({
@@ -70,7 +77,7 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
     return (
       <div style={styles.root}>
        <Paper zDepth={2}>
-        <EnvoyePar source={this.props.message.val().ID_origine.val}/>
+        <EnvoyePar source={this.source()}/>
         <MessageCases message={this.props.message.val().contenu} locked={true}/>
         <div style={styles.container}>
             {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}

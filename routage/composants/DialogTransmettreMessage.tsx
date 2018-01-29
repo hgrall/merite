@@ -36,6 +36,13 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
     this.handleClose();
   }
 
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val ) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
+  }
+
   render() {
     const actions = [
       <FlatButton
@@ -61,7 +68,7 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           onRequestClose={this.handleClose}
         >
           A qui veux tu transmettre le message ? 
-          <EnvoyePar source={this.props.message.val().ID_origine.val}/>
+          <EnvoyePar source={this.source()}/>
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <br />
           <BarreEnvoi 

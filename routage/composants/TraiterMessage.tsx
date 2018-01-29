@@ -46,6 +46,13 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
     open: false,
   };
 
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
+  }
+
   handleOpen = () => {
     this.setState({open: true});
   };
@@ -92,7 +99,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
           open={this.state.open}
         >
-          <EnvoyePar source={this.props.message.val().ID_origine.val}/>
+          <EnvoyePar source={this.source()}/>
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.

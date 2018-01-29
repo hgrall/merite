@@ -10,10 +10,9 @@ import { Identifiant } from '../../bibliotheque/types/identifiant'
 import { Mot } from '../../bibliotheque/binaire';
 
 interface messageProps {
-    validation:() => void,
-    message: MessageJeu1,
-    voisinFst: FormatSommetJeu1,
-    voisinSnd: FormatSommetJeu1,
+  message: MessageJeu1,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
   envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
   }
 /**
@@ -31,11 +30,6 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
   handleClose = () => {
     this.setState({open: false});
   };
-
-  valider = () => {
-    this.handleClose();
-    this.props.validation();  
-  }
 
   envoyerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
     this.props.envoyerMessage(dest, this.props.message.val().ID, contenu);

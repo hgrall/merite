@@ -269,8 +269,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
 		break;
     case TypeMessageJeu1.ESSAI:
-      // TODO tester erreurs.
-      // TODO ajouter log
+      console.log('message a verifier');
       serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     case TypeMessageJeu1.LIBE:

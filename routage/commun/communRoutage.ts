@@ -345,12 +345,12 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
   }
 
   // 5. Client : tester un message en FIN.
-  aEssayer(contenu: Mot): MessageJeu1 {
+  aEssayer(contenu: Mot, emetteur: Identifiant<'utilisateur'>): MessageJeu1 {
     let msg = this.val();
     return new MessageJeu1({
       ID: msg.ID,
-      ID_emetteur: msg.ID_emetteur,
-      ID_origine: sommetInconnu,
+      ID_emetteur: emetteur,
+      ID_origine: msg.ID_destination,
       ID_destination: sommetInconnu,
       type: TypeMessageJeu1.ESSAI,
       contenu: contenu,

@@ -121,8 +121,11 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	detruireMessage = (msg: MessageJeu1) => {
-		console.log('destruction');
 		this.canal.envoyerMessage(msg.aIgnorer())
+	}
+
+	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
+		this.canal.envoyerMessage(msg.aEssayer(contenu, this.state.util.ID))
 	}
 
 	verrou = (idMessage : Identifiant<'message'>,
@@ -208,9 +211,11 @@ export class Routage extends React.Component<any, FormState> {
 					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
+					console.log('Gagné')
 					break;
 				case TypeMessageJeu1.ECHEC_FIN:
 					// l'utilisateur perd la partie 
+					console.log('Perdu ...')
 					break;
 				case TypeMessageJeu1.IGNOR:
 					console.log('destruction du message');
@@ -306,6 +311,7 @@ export class Routage extends React.Component<any, FormState> {
 						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}
+						validation={this.validerMessage}
 						voisinSnd={this.state.voisinSnd}/>
 				</Paper>
 				

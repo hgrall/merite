@@ -5,7 +5,7 @@ import { TableIdentificationMutable, creerTableIdentificationImmutable } from '.
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
 import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, pointsParDomaine} from './serveurRoutage'
+import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, pointsParDomaine, tableConsigneUtilisateurParDomaine} from './serveurRoutage';
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 
@@ -67,8 +67,8 @@ export function accuserReception(msg: MessageJeu1): void {
 export function verrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
   if (verrouilleur === PERSONNE) { // verification que le serveur n'est pas verouillé
-      verrou(dest, id, emetteur); 
-      miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
+    verrou(origine, id, emetteur);
+    miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(origine));
   } 
 }
 
@@ -77,7 +77,7 @@ export function verrouiller(date : FormatDateFr,id : Identifiant<'message'>, eme
 function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
   let ar; 
   creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
-    if (emetteur == idU) {
+    if (emetteur.val == idU.val) {
       ar = TypeMessageJeu1.ACTIF
     } else {
       ar = TypeMessageJeu1.INACTIF
@@ -86,7 +86,7 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
       ID: id,
       ID_emetteur: emetteur,
       ID_origine: origine,
-      ID_destination: dest,
+      ID_destination: origine,
       type: ar,
       contenu: contenu,
       date: date
@@ -94,12 +94,32 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
   });
 }
 
+export function detruireMessageDomaine(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
+}
+
+function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
+  tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
+  creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
+    connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+      ID: id,
+      ID_emetteur: emetteur,
+      ID_origine: origine,
+      ID_destination: origine,
+      type: TypeMessageJeu1.IGNOR,
+      contenu: contenu,
+      date: date
+    }));
+  });
+}
+
+
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
 export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  if (verrouilleur === emetteur) { // verification que le serveur est verouillé par l'emetteur
-    tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
+  if (verrouilleur.val === emetteur.val) { // verification que le serveur est verouillé par l'emetteur
+    detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
     verrou(dest, id, PERSONNE); 
     diffusion(date, emetteur, id, origine, dest, contenu);
   } 
@@ -147,12 +167,22 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
       }
       
     }
-}
+    detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
+  }
+
 
 //Verifie que le message envoye par l'utilisateur est correct
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  // verifie que la consigne est correcte
-  // renvoie un booleen
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  let tContenu = contenu['structure'];
+  if (tConsigne.taille != tContenu.taille) {
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      return false;
+    }
+  }
   return true;
 }
 

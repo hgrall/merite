@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { MessageATraiter } from './MessageATraiter';
-import { MessageJeu1 } from '../commun/communRoutage';
+import { MessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage';
 import {Identifiant} from '../../bibliotheque/types/identifiant';
+import { Mot } from '../../bibliotheque/binaire';
 
 const styles = {
   root: {
@@ -15,9 +16,12 @@ const styles = {
 
 interface MessageProps {
   messages: Array<MessageJeu1>,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>,
-  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
+  validation: (contenu: Mot, msg: MessageJeu1) => void,
+  detruireMessage: (msg: MessageJeu1) => void,
+  verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
 }
 
 export class MessageBox extends React.Component<MessageProps, any> {
@@ -30,8 +34,18 @@ export class MessageBox extends React.Component<MessageProps, any> {
     var voisinFst= this.props.voisinFst;
     var voisinSnd = this.props.voisinSnd;
     var envoyerMessage = this.props.envoyerMessage;
+    var verrou = this.props.verrou;
+    var validation = this.props.validation;
+    var detruireMessage = this.props.detruireMessage;
     var messageList = this.props.messages.map(function(mes){
-      return <MessageATraiter message={mes} voisinFst={voisinFst} voisinSnd={voisinSnd} envoyerMessage={envoyerMessage}/>;
+      return <MessageATraiter
+        validation={validation}
+        message={mes}
+        detruireMessage={detruireMessage}
+        voisinFst={voisinFst}
+        voisinSnd={voisinSnd}
+        envoyerMessage={envoyerMessage}
+        verrou={verrou}/>;
     })
     return (
       <div>

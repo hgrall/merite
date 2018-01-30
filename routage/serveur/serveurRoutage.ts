@@ -1,9 +1,11 @@
-import { port1, port2, hote } from '../commun/communRoutage';
+import { port1, port2, hote, TableMutableMessagesParUtilisateurParDomaine, creerTableMutableMessageParUtilisateurParDomaine } from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
 import * as serveur from '../serveur/serveurRules';
 import { Identification, creerIdentificationParCompteur } from '../../bibliotheque/types/identifiant';
 import { Identifiant, creerIdentifiant, egaliteIdentifiant } from '../../bibliotheque/types/identifiant';
+import { creerTableImmutable } from '../../bibliotheque/types/table';
+
 import {
 	TableIdentificationMutable,
 	creerTableIdentificationMutableVide,
@@ -12,7 +14,11 @@ import {
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
 import {} from '../../bibliotheque/outils';
+<<<<<<< HEAD
 import { binaire , Mot} from '../../bibliotheque/binaire';
+=======
+import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
+>>>>>>> 2fd43be53bab07486acbb6f59f6cbd6408da03c9
 import {} from '../../bibliotheque/communication';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
@@ -91,6 +97,13 @@ const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationP
 ]);
 
 const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
+	binaire(0),
+	binaire(1),
+	binaire(2),
+	binaire(3)
+]);
+
+const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
 	binaire(0),
 	binaire(1),
 	binaire(2),
@@ -189,7 +202,18 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let n = anneau.noeud(ID_dom);
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-	let config = composerConfigurationJeu1(n, pop, u, d.val());
+	let ID_dom_cible = ID_dom;
+	let ID_util_cible = ID_util;
+	// consigne 
+	let cible = {
+		ID_dom_cible,
+		ID_util_cible,
+		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom_cible).valeur(ID_util_cible)
+	}
+
+	let config = composerConfigurationJeu1(n, pop, u, d.val(), cible);
+	
+	// send cible
 	console.log(n.centre.ID);
 	console.log("- envoi au client d'adresse " + l.adresseClient());
 	console.log('  - de la configuration brute ' + config.brut());
@@ -213,10 +237,21 @@ export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMes
 		tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
 	});
 }
+export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
+{
+	anneau.iterer((id, n) => {
+		var tableDom : TableIdentificationMutable<'utilisateur', Mot, Mot>= creerTableIdentificationMutableVide('utilisateur', x => x);
+		let pop = utilisateursParDomaine.valeur(id);
+		creerTableImmutable(pop).iterer((cle, util) => {
+			tableDom.ajouter(util.ID, motAleatoire(12));
+		})
+		tableConsigneUtilisateurParDomaine.ajouter(id, tableDom);
+	});
+}
+
+console.log(tableConsigneUtilisateurParDomaine.representation());
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
-
-// TODO Consigne !
 
 /*
 * Config 2 - Traitement des messages
@@ -231,26 +266,31 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
+<<<<<<< HEAD
       // TODO tester erreurs
 	  // TODO ajouter log
 	  console.log('message recu ----------------',)
 	  console.log('POINTS PAR DOMAINE  serveurRoutage  :  '+pointsParDomaine);
+=======
+>>>>>>> 2fd43be53bab07486acbb6f59f6cbd6408da03c9
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
       break;
     case TypeMessageJeu1.VERROU:
-      // TODO tester erreurs.
-      // TODO ajouter log
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
-    case TypeMessageJeu1.SUIVANT:
+	case TypeMessageJeu1.SUIVANT:
       serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      // TODO tester erreurs.
-      // TODO ajouter log
-      break;
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
+	  break;
+	case TypeMessageJeu1.IGNOR:
+		console.log('message a detruire');
+		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
+		break;
     case TypeMessageJeu1.ESSAI:
-      // TODO tester erreurs.
-      // TODO ajouter log
+      console.log('message a verifier');
       serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     case TypeMessageJeu1.LIBE:

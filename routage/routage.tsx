@@ -1,8 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import Dialog from 'material-ui/Dialog';
 import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-
+import FlatButton from 'material-ui/FlatButton';
 import { MuiThemeProvider } from 'material-ui/styles';
 import { Regles } from './composants/Regles';
 import { NewMessage } from './composants/NewMessage';
@@ -10,11 +11,14 @@ import { BarreEnvoi } from './composants/BarreEnvoi';
 import {Identifiant, creerIdentifiant} from '../bibliotheque/types/identifiant'
 import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
 import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
-import { creerMot } from '../bibliotheque/binaire'
+import { creerMot, Mot } from '../bibliotheque/binaire'
 import { MessageBox } from './composants/MessageBox';
+import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1 } from './commun/communRoutage';
+import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
+import { Deux } from '../bibliotheque/types/mutable';
+import { verouiller } from './client/clientRoutage';
 
 const styles = {
 	container: {
@@ -46,17 +50,24 @@ const styles = {
 	},
 	message: {
 		alignSelf: 'center' as 'center'
+	},
+	dom : {
+		display: "flex" as 'flex',
+		sflexWrap: "wrap" as 'wrap',
 	}
 };
 
 type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
 interface FormState { 
-	dom: Identifiant<'sommet'>,
-	util: Identifiant<'utilisateur'>,
+	dom: FormatSommetJeu1,
+	util: FormatUtilisateur,
 	messages: Array<MessageJeu1>,
-	voisinFst: Identifiant<'sommet'>,
-	voisinSnd: Identifiant<'sommet'>,
+	voisinFst: FormatSommetJeu1,
+	voisinSnd: FormatSommetJeu1,
+	openDialog: boolean,
+	textDialog: string,
+	consigne: Consigne
   }
 
 export class Routage extends React.Component<any, FormState> {
@@ -67,10 +78,16 @@ export class Routage extends React.Component<any, FormState> {
 
 	state: FormState = {
 		messages: [],
-		dom: creerIdentifiant('sommet',''),
-		util: creerIdentifiant('utilisateur',''),
-		voisinFst: creerIdentifiant('sommet',''),
-		voisinSnd: creerIdentifiant('sommet',''),
+		dom: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		util: {ID: creerIdentifiant('utilisateur',''), pseudo:[]},
+		voisinFst: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
+		openDialog: false,
+		textDialog: '',
+		consigne: { ID_dom_cible: creerIdentifiant('sommet', ''),
+			ID_util_cible: creerIdentifiant('utilisateur', ''),
+			mot_cible: creerMot([])
+		}
 	}
 
 	constructor(props: any) {
@@ -79,16 +96,50 @@ export class Routage extends React.Component<any, FormState> {
 		this.messageErreur = 'Aucune erreur';
 	}
 
-	envoiMessage = (dest: Identifiant<'sommet'>) => {
+	envoiMessageInit = (dest: Identifiant<'sommet'>, contenu: Mot) => {
 		this.canal.envoyerMessage(new MessageJeu1({
 			ID: creerIdentifiant('message',''),
-			ID_emetteur: this.state.util,
-			ID_origine: this.state.dom,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
 			ID_destination: dest,
 			type: TypeMessageJeu1.INIT,
-			contenu: creerMot([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]),
+			contenu: contenu,
 			date: conversionDate(new Date())
 		  }))
+	}
+
+	envoiMessage = (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => {
+		this.canal.envoyerMessage(new MessageJeu1({
+			ID: id,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: dest,
+			type: TypeMessageJeu1.SUIVANT,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		}))
+	}
+
+	detruireMessage = (msg: MessageJeu1) => {
+		this.canal.envoyerMessage(msg.aIgnorer())
+	}
+
+	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
+		this.canal.envoyerMessage(msg.aEssayer(contenu, this.state.util.ID))
+	}
+
+	verrou = (idMessage : Identifiant<'message'>,
+	contenu : Mot) => {
+		let msg = new MessageJeu1({
+			ID: idMessage,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: sommetInconnu,
+			type: TypeMessageJeu1.VERROU,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		  })
+		this.canal.envoyerMessage(msg);
 	}
 
 	componentWillMount(): void {
@@ -117,14 +168,71 @@ export class Routage extends React.Component<any, FormState> {
 					break;
 				case TypeMessageJeu1.ACTIF:
 					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aActiver();
+							}
+							else {
+								return msg;
+							}
+						}),
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
+					break;
+				case TypeMessageJeu1.INACTIF:
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aDesactiver();
+							}
+							else {
+								return msg;
+							}
+						}),
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
+					break;
+				case TypeMessageJeu1.SUCCES_INIT:
+					// le message initial a bien été envoyé
+					this.setState({textDialog: 'Le message a été envoyé !'});
+					this.handleOpen();
+					break;
+				case TypeMessageJeu1.SUCCES_TRANSIT:
+					// le message a bien été transmis
+					this.setState({ textDialog: 'Le message a été transmis !' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.SUCCES_FIN:
 					// l'utilisateur gagne la partie
+					this.setState({ textDialog: 'Le message a été décodé avec succès !' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.ECHEC_FIN:
 					// l'utilisateur perd la partie 
+					this.setState({ textDialog: 'Perdu ...' });
+					this.handleOpen();
 					break;
 				case TypeMessageJeu1.IGNOR:
+					this.state.messages.splice(this.state.messages.findIndex(function (msg) {
+						if (msg.val().ID.val === m.ID.val) {
+							return true;
+						}
+						return false;
+					}),1);
+					this.setState({
+						messages: this.state.messages,
+						dom: this.state.dom,
+						util: this.state.util,
+						voisinFst: this.state.voisinFst,
+						voisinSnd: this.state.voisinSnd,
+					})
 					// l'utilisateur détruit le message à la demande du serveur 
 					break;
 				default:
@@ -138,26 +246,27 @@ export class Routage extends React.Component<any, FormState> {
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
 			this.config = creerConfigurationJeu1(c);
 
-			let voisinFst = creerIdentifiant('sommet','');
-			let voisinSnd = creerIdentifiant('sommet','');
+			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
+			let voisinSnd : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let fst = true;
 			for (let i =0 ; i<4; i++) {
 				if (this.config.val().voisins.table['DOM-'+i]) {
 					if (fst) {
-						voisinFst = this.config.val().voisins.table['DOM-'+i].ID;
+						voisinFst = this.config.val().voisins.table['DOM-'+i];
 						fst = false;
 					} else {
-						voisinSnd = this.config.val().voisins.table['DOM-'+i].ID;
+						voisinSnd = this.config.val().voisins.table['DOM-'+i];
 					}
 				}
 			}
 
 			this.setState({
-				dom: this.config.val().centre.ID,
+				dom: this.config.val().centre,
 				messages: [],
-				util: this.config.val().utilisateur.ID,
+				util: this.config.val().utilisateur,
 				voisinFst: voisinFst,
-				voisinSnd: voisinSnd
+				voisinSnd: voisinSnd,
+				consigne: this.config.val().consigne
 			});
 			this.config.val().utilisateur.ID
 			console.log(this.config.net("centre"));
@@ -167,21 +276,56 @@ export class Routage extends React.Component<any, FormState> {
 		});
 	}
 
+	handleOpen = () => {
+		this.setState({ openDialog: true });
+	};
+
+	handleClose = () => {
+		this.setState({ openDialog: false });
+	};
+
 	public render() {
+		const actions = [
+			<FlatButton
+				label="OK"
+				primary={true}
+				onClick={this.handleClose}
+			/>
+		];
+
 		return (
 			<div style={styles.container}>
 				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-				<Regles />
-				<p>
-				Domaine : {this.state.dom.val}  
-				Utilisateur : {this.state.util.val}
-				</p>
+				<Regles consigne={this.state.consigne }/>
+				<div style={styles.dom}>
+				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
+				</div>
+				<div style={styles.dom}>
+				Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+				</div>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage envoyerMessage={this.envoiMessage} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
-					<MessageBox envoyerMessage={this.envoiMessage} messages={this.state.messages} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<NewMessage envoyerMessage={this.envoiMessageInit} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<MessageBox 
+						envoyerMessage={this.envoiMessage}
+						verrou={this.verrou}
+						detruireMessage={this.detruireMessage}
+						messages={this.state.messages}
+						voisinFst={this.state.voisinFst}
+						validation={this.validerMessage}
+						voisinSnd={this.state.voisinSnd}/>
 				</Paper>
-			</div>
-		);
-	}
+				
+
+				<Dialog
+					actions={actions}
+					modal={false}
+					open={this.state.openDialog}
+					onRequestClose={this.handleClose}
+				>
+					{this.state.textDialog}
+        		</Dialog>
+				</div>
+    );
+  }
 }

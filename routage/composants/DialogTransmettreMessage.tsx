@@ -2,17 +2,18 @@ import * as React from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import { MessageJeu1 } from '../commun/communRoutage'
+import { MessageJeu1, FormatSommetJeu1 } from '../commun/communRoutage'
 import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 import { Identifiant } from '../../bibliotheque/types/identifiant'
+import { Mot } from '../../bibliotheque/binaire';
+
 interface messageProps {
-    validation:() => void,
-    message: MessageJeu1,
-    voisinFst: Identifiant<'sommet'>,
-    voisinSnd: Identifiant<'sommet'>,
-    envoyerMessage: (dest: Identifiant<'sommet'>) => void,
+  message: MessageJeu1,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1,
+  envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
   }
 
 export class DialogTransmettreMessage extends React.Component<messageProps, any> {
@@ -28,9 +29,16 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
     this.setState({open: false});
   };
 
-  valider = () => {
+  envoyerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
+    this.props.envoyerMessage(dest, this.props.message.val().ID, contenu);
     this.handleClose();
-    this.props.validation();  
+  }
+
+  source = () => {
+    if (this.props.message.val().ID_origine.val == this.props.voisinFst.ID.val ) {
+      return this.props.voisinFst;
+    }
+    return this.props.voisinSnd;
   }
 
   render() {
@@ -58,10 +66,15 @@ export class DialogTransmettreMessage extends React.Component<messageProps, any>
           onRequestClose={this.handleClose}
         >
           A qui veux tu transmettre le message ? 
-          <EnvoyePar source={this.props.message.val().ID_emetteur.val}/>
-          <MessageCases message={this.props.message}/>
+          <EnvoyePar source={this.source()}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <br />
-          <BarreEnvoi voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} envoyerMessage={this.props.envoyerMessage}/>
+          <BarreEnvoi 
+            voisinFst={this.props.voisinFst} 
+            voisinSnd={this.props.voisinSnd} 
+            envoyerMessage={this.envoyerMessage} 
+            contenu={this.props.message.val().contenu}
+          />
         </Dialog>
       </div>
     );

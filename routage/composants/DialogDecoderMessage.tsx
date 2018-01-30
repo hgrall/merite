@@ -4,17 +4,19 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import {MessageCases} from './MessageCases';
 import { MessageJeu1 } from '../commun/communRoutage'
+import { Mot, creerMot} from '../../bibliotheque/binaire';
 
 interface messageProps {
-    validation:() => void,
-    message: MessageJeu1
-  }
+  validation: (contenu: Mot, msg: MessageJeu1) => void,
+  message: MessageJeu1
+}
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
 export class DialogDecoderMessage extends React.Component<messageProps, any> {
   state = {
     open: false,
+    text: ''
   };
 
   handleOpen = () => {
@@ -27,7 +29,11 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   valider = () => {
     this.handleClose();
-    this.props.validation();  
+    this.props.validation(creerMot(this.state.text.split('').map((x) => parseInt(x))), this.props.message); 
+  }
+
+  message = (event : any) => {
+    this.setState({ text: event.target.value });
   }
 
   render() {
@@ -61,10 +67,13 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
           onRequestClose={this.handleClose}
         >
           Quel est le message ? 
+          <br/>
+          ex : 001001
           <br />
-          <MessageCases message={this.props.message}/>
+          <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <TextField
             hintText="Decode ici le message"
+            onChange={this.message}
           />
         </Dialog>
       </div>

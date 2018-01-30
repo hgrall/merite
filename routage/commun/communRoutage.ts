@@ -308,13 +308,39 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
     });
   }
 
-  // 5. Client : tester un message en FIN.
-  aEssayer(contenu: Mot): MessageJeu1 {
+  aActiver(): MessageJeu1 {
     let msg = this.val();
     return new MessageJeu1({
       ID: msg.ID,
       ID_emetteur: msg.ID_emetteur,
-      ID_origine: sommetInconnu,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.ACTIF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  aDesactiver(): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.INACTIF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  // 5. Client : tester un message en FIN.
+  aEssayer(contenu: Mot, emetteur: Identifiant<'utilisateur'>): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: emetteur,
+      ID_origine: msg.ID_destination,
       ID_destination: sommetInconnu,
       type: TypeMessageJeu1.ESSAI,
       contenu: contenu,
@@ -436,15 +462,22 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
   return pop;
 }
 
+export type Consigne = {
+  ID_dom_cible : Identifiant<'sommet'>,
+  ID_util_cible: Identifiant<'utilisateur'>;
+  mot_cible: Mot
+}
+
 export interface FormatConfigurationJeu1 extends FormatConfigurationInitiale {
   readonly centre: FormatSommetJeu1;
   readonly population: FormatPopulationLocaleImmutable;
   readonly utilisateur: FormatUtilisateur;
   readonly voisins: FormatTableImmutable<FormatSommetJeu1>;
   readonly date: FormatDateFr;
+  readonly consigne: Consigne;
 }
 
-export type EtiquetteConfigurationJeu1 = 'centre' | 'population' | 'utilisateur' | 'voisins' | 'date';
+export type EtiquetteConfigurationJeu1 = 'centre' | 'population' | 'utilisateur' | 'voisins' | 'date' | 'consigne';
 
 export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, FormatConfigurationJeu1, EtiquetteConfigurationJeu1> {
   constructor(c: FormatConfigurationJeu1) {
@@ -464,6 +497,8 @@ export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, Fo
         return creerTableIdentificationImmutable('sommet', config.voisins).representation();
       case 'date':
         return creerDateEnveloppe(config.date).representation();
+      case 'consigne': 
+        return config.consigne.mot_cible.representation();
     }
     return jamais(e);
   }
@@ -486,7 +521,8 @@ export function composerConfigurationJeu1(
   n: FormatNoeudJeu1Immutable,
   pop: FormatPopulationLocaleImmutable,
   u: FormatUtilisateur,
-  date: FormatDateFr
+  date: FormatDateFr,
+  consigne: Consigne
 ): ConfigurationJeu1 {
   return new ConfigurationJeu1({
     configurationInitiale: Unite.ZERO,
@@ -494,7 +530,8 @@ export function composerConfigurationJeu1(
     population: pop,
     utilisateur: u,
     voisins: n.voisins,
-    date: date
+    date: date,
+    consigne: consigne
   });
 }
 
@@ -626,5 +663,15 @@ export type TableMutableUtilisateursParMessageParDomaine = TableIdentificationMu
 >;
 
 export function creerTableMutableUtilisateurParMessageParDomaine(): TableMutableUtilisateursParMessageParDomaine {
+  return creerTableIdentificationMutableVide('sommet', x => x);
+}
+
+export type TableMutableMessagesParUtilisateurParDomaine = TableIdentificationMutable<
+  'sommet',
+  TableIdentificationMutable<'utilisateur', Mot, Mot>,
+  TableIdentificationMutable<'utilisateur', Mot, Mot>
+  >;
+
+export function creerTableMutableMessageParUtilisateurParDomaine(): TableMutableMessagesParUtilisateurParDomaine {
   return creerTableIdentificationMutableVide('sommet', x => x);
 }

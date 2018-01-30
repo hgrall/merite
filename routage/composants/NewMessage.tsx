@@ -7,6 +7,9 @@ import {EnvoyePar} from './EnvoyePar';
 import {MessageCases} from './MessageCases';
 import {BarreEnvoi} from './BarreEnvoi'; 
 import { Identifiant } from '../../bibliotheque/types/identifiant';
+import { creerMot, Mot } from '../../bibliotheque/binaire'
+import { Deux } from '../../bibliotheque/types/mutable';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 
 const styles = {
@@ -17,9 +20,9 @@ const styles = {
 }
 
 interface MessageProps {
-  envoyerMessage: (dest: Identifiant<'sommet'>) => void,
-  voisinFst: Identifiant<'sommet'>,
-  voisinSnd: Identifiant<'sommet'>
+  envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
+  voisinFst: FormatSommetJeu1,
+  voisinSnd: FormatSommetJeu1
 }
 
 /**
@@ -29,21 +32,13 @@ export class NewMessage extends React.Component<MessageProps, any> {
 
   state = {
     open: false,
-    message: {
-      corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-      locked : false,
-      source : ''
-    }
+    message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
   };
 
   handleOpen = () => {
     this.setState({
       open: true,
-      message: {
-        corps : [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        locked : false,
-        source : ''
-      }
+      message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
     });
   };
 
@@ -55,13 +50,22 @@ export class NewMessage extends React.Component<MessageProps, any> {
   };
 
   changeColor = (n:number) => {
-  
-    let message = this.state.message;
-    message.corps[n] = (this.state.message.corps[n] === 0)? 1 : 0;
+    let tab: Array<Deux> = [];
+    // recopie du tableau
+    for (let i of this.state.message['structure'].tableau) {
+      tab.push(i);
+    }
+    // modification de la case correspondante
+    tab[n] = (this.state.message['structure'].tableau[n] === 0)? 1 : 0;
     this.setState({
       open: true,
-      message: message
+      message: creerMot(tab)
     })
+  }
+
+  envoyerEtFermerMessage = (dest: Identifiant<'sommet'>, contenu: Mot) => {
+    this.props.envoyerMessage(dest, contenu);
+    this.handleClose();
   }
 
   render() {
@@ -73,7 +77,7 @@ export class NewMessage extends React.Component<MessageProps, any> {
         onClick={this.handleClose}
       />
     ];
-
+    
     return (
       <div style={styles.container}>
         <RaisedButton
@@ -89,13 +93,11 @@ export class NewMessage extends React.Component<MessageProps, any> {
           onRequestClose={this.handleClose}
         >
           Code ton message en cliquant sur les cases !
-          {/* <MessageCases message={this.state.message} changeColor={this.changeColor}/> */}
+          <MessageCases message={this.state.message} changeColor={this.changeColor} locked={false}/>
           <br /> 
-          <BarreEnvoi envoyerMessage={this.props.envoyerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd}/>
+          <BarreEnvoi envoyerMessage={this.envoyerEtFermerMessage} voisinFst={this.props.voisinFst} voisinSnd={this.props.voisinSnd} contenu={this.state.message}/>
         </Dialog>
       </div>
     );
   }
-
-  
 }

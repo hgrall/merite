@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { IdentifiantCases } from './IdentifiantCases';
+import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 const styles = {
   margin: {
@@ -6,8 +8,8 @@ const styles = {
   }
 };
 interface MessageProps {
-    source: string
-  }
+  source: FormatSommetJeu1
+}
 
 const Messages = [];
 
@@ -19,7 +21,7 @@ export class EnvoyePar extends React.Component<MessageProps, any> {
 
   public render() {
     return (
-        <div style={styles.margin}>Envoyé par : {this.props.source}</div>
+        <div style={styles.margin}>Envoyé par : <IdentifiantCases int={this.props.source.domaine} /></div>
     );
   }
 }

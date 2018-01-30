@@ -1,4 +1,10 @@
-import { port1, port2, hote, TableMutableMessagesParUtilisateurParDomaine, creerTableMutableMessageParUtilisateurParDomaine } from '../commun/communRoutage';
+import {
+	port1,
+	port2,
+	hote,
+	TableMutableMessagesParUtilisateurParDomaine,
+	creerTableMutableMessageParUtilisateurParDomaine
+} from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
 import * as serveur from '../serveur/serveurRules';
@@ -16,6 +22,7 @@ import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/type
 import {} from '../../bibliotheque/outils';
 import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
+import { NOMBRE_DE_DOMAINES } from '../config';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
@@ -38,6 +45,7 @@ import {
 	TypeMessageJeu1,
 	creerMessageEnveloppe
 } from '../commun/communRoutage';
+import { Deux } from '../../bibliotheque/types/mutable';
 
 class ServeurJeu1 extends ServeurLiensWebSocket<
 	FormatErreurJeu1,
@@ -73,7 +81,14 @@ class LienJeu1 extends LienWebSocket<
  * - serveur de canaux  
  */
 
-const anneau: ReseauJeu1 = creerAnneauJeu1([binaire(0), binaire(1), binaire(2), binaire(3)]);
+// Création du nombre de domaines défini dans le fichier config.ts à la racine du dossier routage
+let tableauReseau = [];
+for (let i = 0; i < NOMBRE_DE_DOMAINES; i++) {
+	tableauReseau.push(binaire(i));
+}
+
+const anneau: ReseauJeu1 = creerAnneauJeu1(tableauReseau);
+
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
 
 const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
@@ -99,11 +114,10 @@ const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemble
 
 export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 
-
 export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
-  'utilisateur',
-  LienJeu1,
-  LienJeu1
+	'utilisateur',
+	LienJeu1,
+	LienJeu1
 >('utilisateur', x => x);
 
 const repertoireHtml: string = shell.pwd() + '/build';
@@ -190,15 +204,15 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
 	let ID_dom_cible = ID_dom;
 	let ID_util_cible = ID_util;
-	// consigne 
+	// consigne
 	let cible = {
 		ID_dom_cible,
 		ID_util_cible,
 		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom_cible).valeur(ID_util_cible)
-	}
+	};
 
 	let config = composerConfigurationJeu1(n, pop, u, d.val(), cible);
-	
+
 	// send cible
 	console.log(n.centre.ID);
 	console.log("- envoi au client d'adresse " + l.adresseClient());
@@ -208,7 +222,6 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
 	utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
 	return true;
-
 });
 
 /*-
@@ -226,11 +239,11 @@ export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMes
 export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
 {
 	anneau.iterer((id, n) => {
-		var tableDom : TableIdentificationMutable<'utilisateur', Mot, Mot>= creerTableIdentificationMutableVide('utilisateur', x => x);
+		var tableDom: TableIdentificationMutable<'utilisateur', Mot, Mot> = creerTableIdentificationMutableVide('utilisateur', x => x);
 		let pop = utilisateursParDomaine.valeur(id);
 		creerTableImmutable(pop).iterer((cle, util) => {
 			tableDom.ajouter(util.ID, motAleatoire(12));
-		})
+		});
 		tableConsigneUtilisateurParDomaine.ajouter(id, tableDom);
 	});
 }
@@ -243,43 +256,68 @@ export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateu
 * Config 2 - Traitement des messages
 */
 
-
 serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
+	let msg: MessageJeu1 = creerMessageEnveloppe(m);
+	console.log("* Traitement d'un message");
+	console.log('- brut : ' + msg.brut());
 
-  let msg: MessageJeu1 = creerMessageEnveloppe(m);
-  console.log("* Traitement d'un message");
-  console.log('- brut : ' + msg.brut());
-
-  switch (m.type) {
-    case TypeMessageJeu1.INIT:
-      serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-	  // En cas de succes, envoie SUCCES a l'emetteur 
-	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-      break;
-    case TypeMessageJeu1.VERROU:
-      serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      break;
-	case TypeMessageJeu1.SUIVANT:
-      serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-	  // En cas de succes, envoie SUCCES a l'emetteur 
-	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
-	  break;
-	case TypeMessageJeu1.IGNOR:
-		console.log('message a detruire');
-		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
-		break;
-    case TypeMessageJeu1.ESSAI:
-      console.log('message a verifier');
-      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
-      break;
-    case TypeMessageJeu1.LIBE:
-      // TODO tester erreurs.
-      // TODO ajouter log
-      serveur.deverrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-      break;
-    default:
-  }
-
+	switch (m.type) {
+		case TypeMessageJeu1.INIT:
+			serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
+			// En cas de succes, envoie SUCCES a l'emetteur
+			connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
+			break;
+		case TypeMessageJeu1.VERROU:
+			serveur.verrouiller(
+				msg.val().date,
+				msg.val().ID,
+				msg.val().ID_emetteur,
+				msg.val().ID_origine,
+				msg.val().ID_destination,
+				msg.val().contenu
+			);
+			break;
+		case TypeMessageJeu1.SUIVANT:
+			serveur.transmettre(
+				msg.val().date,
+				msg.val().ID,
+				msg.val().ID_emetteur,
+				msg.val().ID_origine,
+				msg.val().ID_destination,
+				msg.val().contenu
+			);
+			// En cas de succes, envoie SUCCES a l'emetteur
+			connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
+			break;
+		case TypeMessageJeu1.IGNOR:
+			console.log('message a detruire');
+			serveur.detruireMessageDomaine(
+				msg.val().date,
+				msg.val().ID,
+				msg.val().ID_emetteur,
+				msg.val().ID_destination,
+				msg.val().ID_destination,
+				msg.val().contenu
+			);
+			break;
+		case TypeMessageJeu1.ESSAI:
+			console.log('message a verifier');
+			serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
+			break;
+		case TypeMessageJeu1.LIBE:
+			// TODO tester erreurs.
+			// TODO ajouter log
+			serveur.deverrouiller(
+				msg.val().date,
+				msg.val().ID,
+				msg.val().ID_emetteur,
+				msg.val().ID_origine,
+				msg.val().ID_destination,
+				msg.val().contenu
+			);
+			break;
+		default:
+	}
 });
 
 serveurCanaux.enregistrerTraitementFermeture((l: LienJeu1, r: number, desc: string) => {

@@ -35,16 +35,6 @@ import {
   Identifiant
 } from '../../bibliotheque/types/identifiant';
 
-// import {
-//     FormatMessage, Message,
-//     FormatConfigurationInitiale, Configuration,
-//     FormatErreurRedhibitoire, ErreurRedhibitoire,
-//     Sommet, ReseauImmutable, AssemblageReseau,
-//     creerCentreSansVoisins,
-//     NoeudEnveloppeMutable, NoeudEnveloppeImmutable, NoeudMutable, NoeudImmutable, FormatNoeudImmutable, FormatNoeudMutable, EtiquetteNoeud,
-//     creerAssemblageReseauEnAnneau
-// } from "../../bibliotheque/communication";
-
 import { jamais } from '../../bibliotheque/outils';
 
 import { Mot, creerMot } from '../../bibliotheque/binaire';

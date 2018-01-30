@@ -17,7 +17,7 @@ export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, 
     let id: Identifiant<'message'> = identificationMessages.identifier('message')// incrementation du compteur
     verrou(idDomDest, id, PERSONNE); // creation du message dans la table de verouillage
     diffusion(date, idUtil,id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
-}
+  }
 
 // verouille dans un domaine le message pour un utilisateur 
 function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>, utilisateur: Identifiant<'utilisateur'>) : void {
@@ -113,7 +113,17 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
     if (verrouilleur === emetteur){
       if (consigne(origine, emetteur, contenu)){
-        //mise a jour des points
+        //mise a jour des points pour l'emetteur s'il a entre le bon domaine
+        var domEmetteur = parseInt(origine.val.substring(4,origine.val.length));
+        pointsParDomaine[domEmetteur]+=1;
+        console.log("POINTS servuerRules verifier :"+pointsParDomaine);
+
+        //maj des points pour le receveur s'il decode correctement
+        
+        
+        var domRecepteurString = connexions.valeur(emetteur).configuration().net("centre");
+        var domRecepteur = parseInt(domRecepteurString.substring(4,domRecepteurString.length));
+        pointsParDomaine[domRecepteur]+=1;
 
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,

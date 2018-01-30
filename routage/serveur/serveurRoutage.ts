@@ -234,6 +234,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
       // TODO tester erreurs
 	  // TODO ajouter log
 	  console.log('message recu ----------------',)
+	  console.log('POINTS PAR DOMAINE  serveurRoutage  :  '+pointsParDomaine);
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
       break;

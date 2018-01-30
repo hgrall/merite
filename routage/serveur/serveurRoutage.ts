@@ -22,7 +22,7 @@ import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/type
 import {} from '../../bibliotheque/outils';
 import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
-import { NOMBRE_DE_DOMAINES } from '../config';
+import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE } from '../config';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
@@ -91,26 +91,17 @@ const anneau: ReseauJeu1 = creerAnneauJeu1(tableauReseau);
 
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
 
-const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
-	binaire(0),
-	binaire(1),
-	binaire(2),
-	binaire(3)
-]);
+// tmp - Création du nombre d'utilisateurs par domaine
+let tableauDomaine = [];
+for (let i = 0; i < UTILISATEURS_PAR_DOMAINE; i++) {
+	tableauDomaine.push(binaire(i));
+}
 
-const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
-	binaire(0),
-	binaire(1),
-	binaire(2),
-	binaire(3)
-]);
+const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
 
-const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
-	binaire(0),
-	binaire(1),
-	binaire(2),
-	binaire(3)
-]);
+const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
+
+const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
 
 export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 

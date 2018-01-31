@@ -94,10 +94,6 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
   });
 }
 
-export function detruireMessageDomaine(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
-  detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
-}
-
 function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
   tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
   creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
@@ -173,8 +169,20 @@ function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilis
 
 export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  if (verrouilleur === emetteur) { // verification que le serveur est bien verouille par l'emetteur concerne 
-      verrou(dest, id, PERSONNE); 
-      miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
-  } 
+  if (verrouilleur.val === emetteur.val) { // verification que le serveur est bien verouille par l'emetteur concerne 
+    console.log('verrou enleve');  
+  verrou(dest, id, PERSONNE); 
+    creerTableIdentificationImmutable('utilisateur', utilisateurParDomaine(origine)).iterer((idU, u) => {
+      console.log(idU);
+      connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+        ID: id,
+        ID_emetteur: emetteur,
+        ID_origine: origine,
+        ID_destination: origine,
+        type: TypeMessageJeu1.LIBE,
+        contenu: contenu,
+        date: date
+      }));
+    });
+  }
 }

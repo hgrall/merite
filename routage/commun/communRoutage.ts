@@ -291,12 +291,12 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
   }
 
   // 4. Client : Ignorer un message en TRANSIT (IGNOR).
-  aIgnorer(): MessageJeu1 {
+  aIgnorer(emetteur : Identifiant<'utilisateur'>): MessageJeu1 {
     let msg = this.val();
     return new MessageJeu1({
       ID: msg.ID,
-      ID_emetteur: msg.ID_emetteur,
-      ID_origine: msg.ID_origine,
+      ID_emetteur: emetteur,
+      ID_origine: msg.ID_destination,
       ID_destination: msg.ID_destination,
       type: TypeMessageJeu1.IGNOR,
       contenu: msg.contenu,
@@ -339,6 +339,19 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
       ID_origine: msg.ID_origine,
       ID_destination: msg.ID_destination,
       type: TypeMessageJeu1.INACTIF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  aDeverrouiller(): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.LIBE,
       contenu: msg.contenu,
       date: msg.date
     });

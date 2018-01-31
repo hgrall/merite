@@ -122,7 +122,16 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	detruireMessage = (msg: MessageJeu1) => {
-		this.canal.envoyerMessage(msg.aIgnorer())
+		this.state.messages.splice(this.state.messages.findIndex(function (m) {
+			if (m.val().ID.val === msg.val().ID.val) {
+				return true;
+			}
+			return false;
+		}), 1);
+		this.setState({
+			messages: this.state.messages
+		})
+		this.canal.envoyerMessage(msg.aIgnorer(this.state.util.ID))
 	}
 
 	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
@@ -177,11 +186,20 @@ export class Routage extends React.Component<any, FormState> {
 							else {
 								return msg;
 							}
-						}),
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
+						})
+					})
+					break;
+				case TypeMessageJeu1.LIBE:
+					// le message est déverrouiller 
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aDeverrouiller();
+							}
+							else {
+								return msg;
+							}
+						})
 					})
 					break;
 				case TypeMessageJeu1.INACTIF:
@@ -228,11 +246,7 @@ export class Routage extends React.Component<any, FormState> {
 						return false;
 					}),1);
 					this.setState({
-						messages: this.state.messages,
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
+						messages: this.state.messages
 					})
 					// l'utilisateur détruit le message à la demande du serveur 
 					break;

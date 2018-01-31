@@ -265,18 +265,12 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 	  // En cas de succes, envoie SUCCES a l'emetteur 
 	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
 	  break;
-	case TypeMessageJeu1.IGNOR:
-		console.log('message a detruire');
-		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
-		break;
-    case TypeMessageJeu1.ESSAI:
-      console.log('message a verifier');
-      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
+	  case TypeMessageJeu1.IGNOR: 
+	  console.log('ignore');
+	  serveur.deverrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
-    case TypeMessageJeu1.LIBE:
-      // TODO tester erreurs.
-      // TODO ajouter log
-      serveur.deverrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
+    case TypeMessageJeu1.ESSAI:
+      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     default:
   }

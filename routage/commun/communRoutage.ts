@@ -473,8 +473,8 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
 }
 
 export type Consigne = {
-  ID_dom_cible : Identifiant<'sommet'>,
-  ID_util_cible: Identifiant<'utilisateur'>;
+  ID_dom_cible : FormatSommetJeu1,
+  ID_util_cible: FormatUtilisateur;
   mot_cible: Mot
 }
 

@@ -82,7 +82,7 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
         <div style={styles.container}>
             {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
-            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Deverouiller" : "Verouiller"}
+            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Déverrouiller" : "Verrouiller"}
             style={styles.btn}
             onClick={this.verrou} 
             primary={true}

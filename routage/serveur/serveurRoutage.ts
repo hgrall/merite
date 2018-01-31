@@ -188,13 +188,14 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let n = anneau.noeud(ID_dom);
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-	let ID_dom_cible = ID_dom;
-	let ID_util_cible = ID_util;
+	
+	let ID_dom_cible = n.centre;
+	let ID_util_cible = u;
 	// consigne 
 	let cible = {
 		ID_dom_cible,
 		ID_util_cible,
-		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom_cible).valeur(ID_util_cible)
+		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom).valeur(ID_util)
 	}
 
 	let config = composerConfigurationJeu1(n, pop, u, d.val(), cible);

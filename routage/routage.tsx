@@ -84,8 +84,9 @@ export class Routage extends React.Component<any, FormState> {
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
 		textDialog: '',
-		consigne: { ID_dom_cible: creerIdentifiant('sommet', ''),
-			ID_util_cible: creerIdentifiant('utilisateur', ''),
+		consigne: {
+			ID_dom_cible: { ID: creerIdentifiant('sommet', ''), domaine: [] },
+			ID_util_cible: { ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
 			mot_cible: creerMot([])
 		}
 	}
@@ -305,7 +306,11 @@ export class Routage extends React.Component<any, FormState> {
 				</div>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage envoyerMessage={this.envoiMessageInit} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<NewMessage 
+						envoyerMessage={this.envoiMessageInit} 
+						voisinFst={this.state.voisinFst} 
+						voisinSnd={this.state.voisinSnd}
+						consigne={this.state.consigne}/>
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}

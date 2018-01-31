@@ -152,6 +152,20 @@ export class Routage extends React.Component<any, FormState> {
 		this.canal.envoyerMessage(msg);
 	}
 
+	deverrouiller = (idMessage: Identifiant<'message'>,
+		contenu: Mot) => {
+		let msg = new MessageJeu1({
+			ID: idMessage,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: this.state.dom.ID,
+			type: TypeMessageJeu1.IGNOR,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		})
+		this.canal.envoyerMessage(msg);
+	}
+
 	componentWillMount(): void {
 		console.log('* Initialisation après montage du corps');
 
@@ -328,6 +342,7 @@ export class Routage extends React.Component<any, FormState> {
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}
+						deverrouiller={this.deverrouiller}
 						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}

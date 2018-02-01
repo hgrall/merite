@@ -1,0 +1,234 @@
+* Sprints 
+
+** Sprint 1 
+
+(Hervé, Benjamin)
+- début : 17 juillet 2017
+- fin : 27 juillet 2017
+
+- Logique terminée pour le tchat
+- Développement de la bibliothèque
+  - Serveur d'applications
+  - Serveur de connexions par Web Socket
+  - Clients associés
+  - Types de données utiles : enveloppes, tables,identifiants
+
+- Reste à faire : 
+  - interface graphique à améliorer
+    - colonne de messages avec les messages émis à gauche et ceux reçus à droite
+    - couleur / utilisateur
+  - diffusion vers tous les voisins
+  - définition d'un réseau complètement
+  - déploiement sur le cloud
+  - couverture des tests
+
+** Sprint 2
+(Hervé, Benjamin)
+- début : 27 juillet 2017
+- fin : 4 août 2017
+
+- Configuration terminée pour le jeu 1
+- Evolution de la bibliothèque : passage en version 1
+- Initiation à Angular 2
+
+- Reste à faire :
+  - logique du jeu 1
+  - interface graphique du tchat et du jeu 1
+
+
+
+
+
+
+* Types
+
+** Identifiants
+- type Identifiant<Sorte> où Sorte est un type littéral (un singleton dont l'unique valeur est une string) 
+- convention / nom des variables : ID_xxx
+- structure : {val : string, sorte : Sorte} 
+
+** Théorie des enveloppes
+
+Les structures de données sont des variantes d'enveloppes.
+- Etat : type TIN
+- Observation : type TEX (souvent un JSON)
+
+* Conception
+
+** Architecture
+
+La stratégie générale est de masquer complètement la partie technique 
+en fournissant un environnement de développement : 
+- frameworks et bibliothèques dédiés, avec du code écrit en Français 
+  et des abstractions manipulables aisément.
+
+- L'application est définie dans une seule page, par exemple build/clientTchat1.html.
+- Au chargement, une connexion (par Web Socket) est établie avec le serveur.
+- Le serveur répond en envoyant une configuration, normale ou erronée.
+- Le client se configure.
+- Le client communique.
+- Le client se déconnecte. 
+
+*** source
+
+- bibliotheque
+- X (chat, jeuN_...) 
+  - client
+  - commun
+  - serveur
+- test (avec general.ts répertoriant les tests)
+  - bibliotheque
+  - X
+    - client
+    - commun
+    - serveur
+    
+*** exécutables (js)
+
+- répertoire build
+  - même structure que les sources
+  - js à embarquer : chat.appli.js (cf. webpack.config.js)
+
+*** dépendances
+
+- plateforme node js
+
+Modules principaux
+- Express js : définition des serveurs
+  - Cf. bibliotheque/serveurVuesDynamiques.ts
+- websocket : utilisation du protocole Web Socket côté serveur
+  - Cf. bibliotheque/serveur.ts  
+- webpack : production du script js embarqué en incorporant les modules utilisés
+  - Cf. webpack.config.js
+- mocha et chai pour les tests
+  - Cf. le répertoire test
+  - Cf. le seul exemple dans test/chat/commun
+Installations
+> npm install
+
+Initialement (pour les tests) :
+> npm install mocha chai ts-node --save-dev
+> npm install @types/chai @types/mocha --save-dev
+
+* Application de tchat (chat en anglais)
+
+** Règles chimiques
+
+chat dans un réseau
+
+*** Serveur
+
+Etat
+- Noeud(c : Sommet, voisins : Sommet[])
+- NoeudConnecte(c : sommet, vosins : sommet[], canal : LiaisonClientServeur)
+
+Canaux
+- initier(ret : CanalRetour)
+- activer(ret : CanalRetour, canal : LiaisonClientServeur)
+- communiquer(canal : LiaisonClientServeur, msg : Message)
+
+Règles pour la connexion
+- initier(ret) & Appli(page) -> ret(page) & Appli(page)
+- activer(ret, k) & Noeud(c, voisins) -> ret(c, voisins) & NoeudConnecte(c, voisins, k)
+- activer(ret, k) & non(Noeud(_, _)) -> ret(RESEAU_COMPLET)
+- communiquer(k, FIN) & NoeudConnecte(c, voisins, k) -> Noeud(c, voisins)
+
+Règles pour la communication
+- communiquer(k, msg) & NoeudConnecte(msg.emetteur, voisins, k) 
+  & (msg.destination in voisins) & NoeudConnecte(msg.destination, u, l)
+  -> k(AR(msg)) & l(Transit(msg))
+  & NoeudConnecte(msg.emetteur, voisins, k) & NoeudConnecte(msg.destination, u, l)
+
+TODO ajouter les cas d'erreurs.
+
+
+
+
+** Fonctionnement
+
+- Produire les exécutables
+  - > npm run build
+  - cf. package.json, partie scripts et tsconfig.json pour les options de compilation
+
+- Lancement des serveurs
+  - > node build/tchat/serveur/serveurTchat.js
+  - serveur 1 (serveur de l'application) : écoute de l'adresse merite:3000  
+  - serveur 2 (serveur des canaux de communication par Web socket)  : écoute de l'adresse merite:1110
+  - Le nom merite est résolu dans /etc/hosts en l'adresse IP 127.0.0.1.
+
+- Chargement de l'application dans un navigateur : merite:3000
+
+- Lancement des tests
+  - > npm run test
+
+** Configuration
+
+- Le réseau est configurable : il s'agit d'un anneau dont le nombre de noeuds peut varier.
+  - Cf. chat/serveur/serveurTchat.ts
+
+* Jeu 1 : adressage et routage
+
+
+** Organisation du réseau
+
+- Réseau en anneau
+  - Noeuds : des domaines
+- pays : ensemble fixé d'individus
+- individu :
+  - pseudo
+  - pays d'appartenance
+  - message à envoyer : destinataire (pseudo, pays), contenu
+  - message à recevoir : contenu seul
+
+** Messages
+
+On utilise l'alphabet binaire pour éviter les interprétations
+sémantiques.  Les pseudos et les pays sont représentés par des mots de
+longueur variable. Le contenu est un mot de longueur fixe.  La longueur
+d'une trame est strictement supérieure à la somme de
+- la longueur maximale d'un pseudo,
+- la longueur maximale d'un pays,
+- la longueur du contenu.
+
+** Règles chimiques
+
+*** Serveur
+
+Etat
+- Noeud(p : Pays, voisins : Pays*)
+- Pop(p : Pays, h : Habitant*)
+- PopConnectee(p : Pays, l : (Habitant x LiaisonClientServeur)*) TODO
+- Consigne(p : Pays, h : Habitant, c : Messages)
+
+Canaux
+- initier(ret : CanalRetour)
+- activer(ret : CanalRetour, canal : LiaisonClientServeur)
+- communiquer(canal : LiaisonClientServeur, msg : Message)
+
+Règles pour la connexion
+- initier(ret) & Appli(page) -> ret(page) & Appli(page)
+- activer(ret, k) 
+  & Noeud(pays, voisins) & Pop(pays, h) & PopConnectee(pays, liste)
+  & Consigne(pays, h, c)
+  -> ret(pays, voisins, h, c)
+  & Noeud(pays, voisins) & PopConnectee(pays, (h, k).liste)
+  & Consigne(pays, h, c)  
+- activer(ret, k) & non(Pop(_, _)) -> ret(RESEAU_COMPLET)
+- communiquer(k, FIN) & NoeudConnecte(c, voisins, k) -> Noeud(c, voisins)
+
+Règles pour la communication
+- communiquer(k, msg) 
+  & PopConnecte(msg.emetteur, liste) & (k in liste) TODO
+  & PopConnectee(msg.destinataire, d)
+  & File(file) & (msg.id in 
+  & Noeud(msg.emetteur,  
+  & (msg.destination in voisins) & NoeudConnecte(msg.destination, u, l)
+  -> k(AR(msg)) & l(Transit(msg))
+  & NoeudConnecte(msg.emetteur, voisins, k) & NoeudConnecte(msg.destination, u, l)
+
+TODO ajouter les cas d'erreurs.
+
+*** Client
+
+
+** TODO Configuration

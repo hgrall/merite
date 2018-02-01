@@ -10,6 +10,7 @@ import { Mot } from '../../bibliotheque/binaire';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockClose from 'material-ui/svg-icons/action/lock-outline';
 import { FormatSommetJeu1 } from '../commun/communRoutage';
+import { deverouiller } from '../client/clientRoutage';
 
 const styles = {
   root: {
@@ -43,6 +44,7 @@ interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
   detruireMessage: (msg: MessageJeu1) => void,
   verrou: (idMessage : Identifiant<'message'>, contenu : Mot) => void,
+  deverrouiller: (idMessage: Identifiant<'message'>, contenu: Mot) => void,
 }
 
 interface MessageState {
@@ -54,9 +56,6 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
   
   constructor(props: any){
       super(props);
-      this.state= ({
-        locked: false
-      })
   }
 
   source = () => {
@@ -68,9 +67,10 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
 
   verrou = () => {
     this.props.verrou(this.props.message.val().ID, this.props.message.val().contenu);
-    this.setState({
-      locked: !this.state.locked
-    })
+  }
+
+  deverrouiller = () => {
+    this.props.deverrouiller(this.props.message.val().ID, this.props.message.val().contenu);
   }
 
   public render() {
@@ -82,9 +82,9 @@ export class MessageATraiter extends React.Component<MessageProps, MessageState>
         <div style={styles.container}>
             {this.props.message.val().type === TypeMessageJeu1.ACTIF || this.props.message.val().type === TypeMessageJeu1.INACTIF ? <LockClose/> : <LockOpen/>}
           <RaisedButton 
-            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Deverouiller" : "Verouiller"}
+            label={this.props.message.val().type === TypeMessageJeu1.ACTIF ? "Déverrouiller" : "Verrouiller"}
             style={styles.btn}
-            onClick={this.verrou} 
+              onClick={this.props.message.val().type === TypeMessageJeu1.ACTIF ? this.deverrouiller : this.verrou} 
             primary={true}
             disabled={this.props.message.val().type === TypeMessageJeu1.INACTIF}
           />

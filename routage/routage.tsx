@@ -84,8 +84,9 @@ export class Routage extends React.Component<any, FormState> {
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
 		textDialog: '',
-		consigne: { ID_dom_cible: creerIdentifiant('sommet', ''),
-			ID_util_cible: creerIdentifiant('utilisateur', ''),
+		consigne: {
+			ID_dom_cible: { ID: creerIdentifiant('sommet', ''), domaine: [] },
+			ID_util_cible: { ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
 			mot_cible: creerMot([])
 		}
 	}
@@ -121,7 +122,16 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	detruireMessage = (msg: MessageJeu1) => {
-		this.canal.envoyerMessage(msg.aIgnorer())
+		this.state.messages.splice(this.state.messages.findIndex(function (m) {
+			if (m.val().ID.val === msg.val().ID.val) {
+				return true;
+			}
+			return false;
+		}), 1);
+		this.setState({
+			messages: this.state.messages
+		})
+		this.canal.envoyerMessage(msg.aIgnorer(this.state.util.ID))
 	}
 
 	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
@@ -139,6 +149,20 @@ export class Routage extends React.Component<any, FormState> {
 			contenu: contenu,
 			date: conversionDate(new Date())
 		  })
+		this.canal.envoyerMessage(msg);
+	}
+
+	deverrouiller = (idMessage: Identifiant<'message'>,
+		contenu: Mot) => {
+		let msg = new MessageJeu1({
+			ID: idMessage,
+			ID_emetteur: this.state.util.ID,
+			ID_origine: this.state.dom.ID,
+			ID_destination: this.state.dom.ID,
+			type: TypeMessageJeu1.IGNOR,
+			contenu: contenu,
+			date: conversionDate(new Date())
+		})
 		this.canal.envoyerMessage(msg);
 	}
 
@@ -176,11 +200,20 @@ export class Routage extends React.Component<any, FormState> {
 							else {
 								return msg;
 							}
-						}),
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
+						})
+					})
+					break;
+				case TypeMessageJeu1.LIBE:
+					// le message est déverrouiller 
+					this.setState({
+						messages: this.state.messages.map(function (msg) {
+							if (msg.val().ID.val === m.ID.val) {
+								return msg.aDeverrouiller();
+							}
+							else {
+								return msg;
+							}
+						})
 					})
 					break;
 				case TypeMessageJeu1.INACTIF:
@@ -227,11 +260,7 @@ export class Routage extends React.Component<any, FormState> {
 						return false;
 					}),1);
 					this.setState({
-						messages: this.state.messages,
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
+						messages: this.state.messages
 					})
 					// l'utilisateur détruit le message à la demande du serveur 
 					break;
@@ -305,10 +334,15 @@ export class Routage extends React.Component<any, FormState> {
 				</div>
 				<Paper zDepth={2} style={styles.paper}>
 					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage envoyerMessage={this.envoiMessageInit} voisinFst={this.state.voisinFst} voisinSnd={this.state.voisinSnd}/>
+					<NewMessage 
+						envoyerMessage={this.envoiMessageInit} 
+						voisinFst={this.state.voisinFst} 
+						voisinSnd={this.state.voisinSnd}
+						consigne={this.state.consigne}/>
 					<MessageBox 
 						envoyerMessage={this.envoiMessage}
 						verrou={this.verrou}
+						deverrouiller={this.deverrouiller}
 						detruireMessage={this.detruireMessage}
 						messages={this.state.messages}
 						voisinFst={this.state.voisinFst}

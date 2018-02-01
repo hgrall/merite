@@ -193,14 +193,15 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	let n = anneau.noeud(ID_dom);
 	let pop = utilisateursParDomaine.valeur(ID_dom);
 	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-	let ID_dom_cible = ID_dom;
-	let ID_util_cible = ID_util;
-	// consigne
+	
+	let ID_dom_cible = n.centre;
+	let ID_util_cible = u;
+	// consigne 
 	let cible = {
 		ID_dom_cible,
 		ID_util_cible,
-		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom_cible).valeur(ID_util_cible)
-	};
+		mot_cible: tableConsigneUtilisateurParDomaine.valeur(ID_dom).valeur(ID_util)
+	}
 
 	let config = composerConfigurationJeu1(n, pop, u, d.val(), cible);
 
@@ -248,67 +249,63 @@ export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateu
 */
 
 serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
-	let msg: MessageJeu1 = creerMessageEnveloppe(m);
-	console.log("* Traitement d'un message");
-	console.log('- brut : ' + msg.brut());
 
-	switch (m.type) {
-		case TypeMessageJeu1.INIT:
-			serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
-			// En cas de succes, envoie SUCCES a l'emetteur
-			connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-			break;
-		case TypeMessageJeu1.VERROU:
-			serveur.verrouiller(
-				msg.val().date,
-				msg.val().ID,
-				msg.val().ID_emetteur,
-				msg.val().ID_origine,
-				msg.val().ID_destination,
-				msg.val().contenu
-			);
-			break;
-		case TypeMessageJeu1.SUIVANT:
-			serveur.transmettre(
-				msg.val().date,
-				msg.val().ID,
-				msg.val().ID_emetteur,
-				msg.val().ID_origine,
-				msg.val().ID_destination,
-				msg.val().contenu
-			);
-			// En cas de succes, envoie SUCCES a l'emetteur
-			connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
-			break;
-		case TypeMessageJeu1.IGNOR:
-			console.log('message a detruire');
-			serveur.detruireMessageDomaine(
-				msg.val().date,
-				msg.val().ID,
-				msg.val().ID_emetteur,
-				msg.val().ID_destination,
-				msg.val().ID_destination,
-				msg.val().contenu
-			);
-			break;
-		case TypeMessageJeu1.ESSAI:
-			console.log('message a verifier');
-			serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
-			break;
-		case TypeMessageJeu1.LIBE:
-			// TODO tester erreurs.
-			// TODO ajouter log
-			serveur.deverrouiller(
-				msg.val().date,
-				msg.val().ID,
-				msg.val().ID_emetteur,
-				msg.val().ID_origine,
-				msg.val().ID_destination,
-				msg.val().contenu
-			);
-			break;
-		default:
-	}
+  let msg: MessageJeu1 = creerMessageEnveloppe(m);
+  console.log("* Traitement d'un message");
+  console.log('- brut : ' + msg.brut());
+
+  switch (m.type) {
+    case TypeMessageJeu1.INIT:
+	  serveur.initier(
+		msg.val().date,
+		  msg.val().ID_emetteur,
+		  msg.val().ID_origine,
+		  msg.val().ID_destination, 
+		  msg.val().contenu);
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
+      break;
+    case TypeMessageJeu1.VERROU:
+      serveur.verrouiller(
+		  msg.val().date,
+		  msg.val().ID,
+		  msg.val().ID_emetteur,
+		  msg.val().ID_origine,
+		  msg.val().ID_destination,
+		  msg.val().contenu);
+      break;
+	case TypeMessageJeu1.SUIVANT:
+      serveur.transmettre(
+		  msg.val().date,
+		  msg.val().ID,
+		  msg.val().ID_emetteur,
+		  msg.val().ID_origine,
+		  msg.val().ID_destination,
+		  msg.val().contenu);
+	  // En cas de succes, envoie SUCCES a l'emetteur 
+	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
+	  break;
+	  case TypeMessageJeu1.IGNOR: 
+	  serveur.deverrouiller(
+		  msg.val().date,
+		  msg.val().ID,
+		  msg.val().ID_emetteur,
+		  msg.val().ID_origine,
+		  msg.val().ID_destination,
+		  msg.val().contenu);
+      break;
+    case TypeMessageJeu1.ESSAI:
+      serveur.verifier(
+		  msg.val().date,
+		  msg.val().ID,
+		  msg.val().ID_emetteur,
+		  msg.val().ID_origine,
+		  msg.val().contenu);
+      break;
+    default:
+  }
+
+
 });
 
 serveurCanaux.enregistrerTraitementFermeture((l: LienJeu1, r: number, desc: string) => {

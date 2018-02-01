@@ -11,6 +11,15 @@
 - Langage Typescript : 2.4.1
 - Visual Studio Code : 1.15
 
+** v1m2 - Déploiement - 2018/02/01
+
+- http://localhost:8080/ ou http://essai-deploiement-18-02-01.herokuapp.com/
+
+- Principales modifications
+  - utilisation d'un seul serveur http
+  - web sockets sur la même url que celle de connexion
+
+
 * Configuration
 
 Le répertoire de travail est "v1m0" (qui contient ce readme).

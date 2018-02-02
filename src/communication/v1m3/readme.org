@@ -1,0 +1,83 @@
+* Historique
+
+** Version 1.0 de l'application : 6 septembre 2017
+
+- développement du 17 juillet au 6 septembre (moins trois semaines de vacances)
+- développeur : Hervé Grall
+- licence : cf. le dépôt Github
+
+** Versions des outils principaux
+
+- Langage Typescript : 2.4.1
+- Visual Studio Code : 1.15
+
+** v1m2 - Déploiement - 2018/02/01
+
+- http://localhost:8080/ ou http://essai-deploiement-18-02-01.herokuapp.com/
+
+- Principales modifications
+  - utilisation d'un seul serveur http
+  - web sockets sur la même url que celle de connexion
+
+* Configuration
+
+Le répertoire de travail est "v1m0" (qui contient ce readme).
+
+
+** Installation des paquets
+
+Utilisation de "package.json" qui déclare les modules utilisables dans
+le code (via les directives "import")
+- Remarque : les paquets installés globalement fournissent les outils
+  utilisables à partir d'un shell.
+
+> npm install
+
+Un répertoire "./node_modules" est alors créé : il contient tous les
+modules externes du projet.
+
+** Lancement de l'éditeur
+
+Dans notre cas : Visual Studio Code (bien adapté à Typescript)
+
+> code &
+
+Puis ouvrir le dossier "v1m0".
+
+* Compilation, test et intégration
+
+> npm run build
+
+Il s'agit d'une version de développement.
+
+* Exécution
+
+Lancement des serveurs
+
+> node build/tchat/serveur/serveurTchat.js
+
+Dans un navigateur :
+- ouvrir quatre onglets à l'adresse "merite:3000".
+
+Le fichier de configuration "/etc/hosts" résout l'adresse symbolique en
+l'adresse physique correcte :
+
+> ::ffff:127.0.0.1        merite
+
+Les discussions peuvent commencer.
+- réseau de quatre noeuds en anneau
+
+
+* TODO Conception, architecture
+
+Voir le readme dans le répertoire parent.
+
+* TODO Améliorations
+
+- Diffusion sans répétition des messages
+- Entrée des messages en position fixe
+- Ajout de tests
+- Génération d'une version livrable (dite de production)
+- Déploiement sur un serveur externe
+
+

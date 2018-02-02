@@ -1,0 +1,47 @@
+{
+    "name": "demo-chat",  
+    "version": "0.3.0",
+    "version": "1.0.0",
+    "description": "Communication via web socket avec partage d'une biliotheque.",
+    "engines": {
+	"node": "8.9.1"
+    },
+    "main": "index.js",
+    "scripts": {
+	"start": "node index.js",
+	"test": "node test.js"
+    },
+    "dependencies": {
+	"@types/react": "^16.0.1",
+	"@types/react-custom-scrollbars": "^4.0.1",
+	"@types/react-dom": "^16.0.0",
+	"@types/react-textarea-autosize": "^4.3.1",
+	"ejs": "^2.5.6",
+	"express": "^4.15.3",
+	"immutable": "^3.8.1",
+	"intl": "^1.2.5",
+	"react": "^16.0.0",
+	"react-custom-scrollbars": "^4.1.2",
+	"react-dom": "^16.0.0",
+	"react-textarea-autosize": "^5.1.0",
+	"rxjs": "^5.4.2",
+	"shelljs": "^0.7.8",
+	"styled-components": "^2.1.2",
+	"websocket": "^1.0.24"
+    },
+    "devDependencies": {
+	"request": "^2.81.0",
+	"tape": "^4.7.0"
+    },
+    "repository": {
+	"type": "git",
+	"url": "https://github.com/heroku/node-js-getting-started"
+    },
+    "keywords": [
+	"node",
+	"heroku",
+	"express"
+    ],
+    "license": "MIT"
+}
+

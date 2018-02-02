@@ -177,8 +177,8 @@ TODO ajouter les cas d'erreurs.
 - individu :
   - pseudo
   - pays d'appartenance
-  - message à envoyer : destinataire (pseudo, pays), contenu
-  - message à recevoir : contenu seul
+  - message à envoyer (consigne) : destinataire (pseudo, pays), contenu
+  - message à recevoir (résultat) : contenu seul
 
 ** Messages
 

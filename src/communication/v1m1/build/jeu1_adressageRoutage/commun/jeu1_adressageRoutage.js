@@ -15,7 +15,7 @@ var types_1 = require("../../bibliotheque/types");
 var outils_1 = require("../../bibliotheque/outils");
 var binaire_1 = require("../../bibliotheque/binaire");
 exports.hote = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-exports.port1 = 3001; // port de la essource 1 (serveur d'applications)
+exports.port1 = 3001; // port de la ressource 1 (serveur d'applications)
 exports.port2 = 1111; // port de la ressouce 2 (serveur de connexions)
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
 exports.sommetInconnu = { val: "*", sorte: 'sommet' };
@@ -95,29 +95,25 @@ function creerNoeudJeu1Immutable(n) {
 }
 exports.creerNoeudJeu1Immutable = creerNoeudJeu1Immutable;
 /*
-Protocole : cf. structure.org
+TODO Protocole : cf. structure.org
 */
 var TypeMessageJeu1;
 (function (TypeMessageJeu1) {
     TypeMessageJeu1[TypeMessageJeu1["INIT"] = 0] = "INIT";
-    TypeMessageJeu1[TypeMessageJeu1["SUCCES_INIT"] = 1] = "SUCCES_INIT";
-    TypeMessageJeu1[TypeMessageJeu1["VERROU"] = 2] = "VERROU";
-    TypeMessageJeu1[TypeMessageJeu1["ACTIF"] = 3] = "ACTIF";
-    TypeMessageJeu1[TypeMessageJeu1["SUCCES_ACTIF"] = 4] = "SUCCES_ACTIF";
-    TypeMessageJeu1[TypeMessageJeu1["INACTIF"] = 5] = "INACTIF";
-    TypeMessageJeu1[TypeMessageJeu1["TRANSIT"] = 6] = "TRANSIT";
-    TypeMessageJeu1[TypeMessageJeu1["IGNOR"] = 7] = "IGNOR";
-    TypeMessageJeu1[TypeMessageJeu1["FIN"] = 8] = "FIN";
-    TypeMessageJeu1[TypeMessageJeu1["ESSAI"] = 9] = "ESSAI";
-    TypeMessageJeu1[TypeMessageJeu1["SUCCES_TRANSIT"] = 10] = "SUCCES_TRANSIT";
-    TypeMessageJeu1[TypeMessageJeu1["ECHEC_TRANSIT"] = 11] = "ECHEC_TRANSIT";
-    TypeMessageJeu1[TypeMessageJeu1["SUCCES_FIN"] = 12] = "SUCCES_FIN";
-    TypeMessageJeu1[TypeMessageJeu1["ECHEC_FIN"] = 13] = "ECHEC_FIN";
-    TypeMessageJeu1[TypeMessageJeu1["ERREUR_CONNEXION"] = 14] = "ERREUR_CONNEXION";
-    TypeMessageJeu1[TypeMessageJeu1["ERREUR_EMET"] = 15] = "ERREUR_EMET";
-    TypeMessageJeu1[TypeMessageJeu1["ERREUR_DEST"] = 16] = "ERREUR_DEST";
-    TypeMessageJeu1[TypeMessageJeu1["ERREUR_TYPE"] = 17] = "ERREUR_TYPE";
-    TypeMessageJeu1[TypeMessageJeu1["INTERDICTION"] = 18] = "INTERDICTION";
+    TypeMessageJeu1[TypeMessageJeu1["VERROU"] = 1] = "VERROU";
+    TypeMessageJeu1[TypeMessageJeu1["SUIVANT"] = 2] = "SUIVANT";
+    TypeMessageJeu1[TypeMessageJeu1["ESSAI"] = 3] = "ESSAI";
+    TypeMessageJeu1[TypeMessageJeu1["LIBE"] = 4] = "LIBE";
+    TypeMessageJeu1[TypeMessageJeu1["TRANSIT"] = 5] = "TRANSIT";
+    TypeMessageJeu1[TypeMessageJeu1["ACTIF"] = 6] = "ACTIF";
+    TypeMessageJeu1[TypeMessageJeu1["GAGNE"] = 7] = "GAGNE";
+    TypeMessageJeu1[TypeMessageJeu1["PERDU"] = 8] = "PERDU";
+    TypeMessageJeu1[TypeMessageJeu1["DESTRUCT"] = 9] = "DESTRUCT";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_CONNEXION"] = 10] = "ERREUR_CONNEXION";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_EMET"] = 11] = "ERREUR_EMET";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_DEST"] = 12] = "ERREUR_DEST";
+    TypeMessageJeu1[TypeMessageJeu1["ERREUR_TYPE"] = 13] = "ERREUR_TYPE";
+    TypeMessageJeu1[TypeMessageJeu1["INTERDICTION"] = 14] = "INTERDICTION"; // TODO
 })(TypeMessageJeu1 = exports.TypeMessageJeu1 || (exports.TypeMessageJeu1 = {}));
 // Structure immutable
 var MessageJeu1 = /** @class */ (function (_super) {
@@ -146,6 +142,7 @@ var MessageJeu1 = /** @class */ (function (_super) {
         var cm = this.net('contenu');
         return idm + " - " + datem + ", de " + dem + " à " + am + " (" + typem + ") - " + cm;
     };
+    // TODO ajouter les méthodes qui sont pratiques
     // Client : envoyer au serveur avec une destination (un domaine).
     MessageJeu1.prototype.avecAdresse = function (id_destination) {
         var msg = this.val();
@@ -212,8 +209,8 @@ var MessageJeu1 = /** @class */ (function (_super) {
         });
     };
     // 4. Client : Ignorer un message en TRANSIT (IGNOR).
-    MessageJeu1.prototype.aIgnorer = function () {
-        var msg = this.val();
+    /*aIgnorer(): MessageJeu1 {
+        let msg = this.val();
         return new MessageJeu1({
             ID: msg.ID,
             ID_emetteur: msg.ID_emetteur,
@@ -223,10 +220,10 @@ var MessageJeu1 = /** @class */ (function (_super) {
             contenu: msg.contenu,
             date: msg.date
         });
-    };
+    }*/
     // 5. Client : Consulter un message en TRANSIT (FIN).
-    MessageJeu1.prototype.aConsulter = function () {
-        var msg = this.val();
+    /*aConsulter(): MessageJeu1 {
+        let msg = this.val();
         return new MessageJeu1({
             ID: msg.ID,
             ID_emetteur: msg.ID_emetteur,
@@ -236,7 +233,7 @@ var MessageJeu1 = /** @class */ (function (_super) {
             contenu: msg.contenu,
             date: msg.date
         });
-    };
+    }*/
     // 5. Client : tester un message en FIN.
     MessageJeu1.prototype.aEssayer = function (contenu) {
         var msg = this.val();

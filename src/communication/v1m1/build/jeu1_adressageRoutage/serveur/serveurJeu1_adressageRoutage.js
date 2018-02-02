@@ -38,6 +38,11 @@ var LienJeu1 = /** @class */ (function (_super) {
  * - répertoire principal
  * - serveur d'applications
  * - serveur de canaux
+ * Correspondance avec la spécification :
+ * - !Population(idDomaine, listeUtilisateurs)
+ * - canaux définis par connexions et type des messages
+ * Remarque : le réseau n'est pas pris en compte dans la spécification
+ * car il manque des règles pour contrôler la communication.
  */
 var anneau = jeu1_adressageRoutage_1.creerAnneauJeu1([binaire_1.binaire(0), binaire_1.binaire(1), binaire_1.binaire(2), binaire_1.binaire(3)]);
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
@@ -69,10 +74,10 @@ serveurAppli.demarrer();
 * Configuration du serveur de canaux
 */
 /*
-* Config 1 - Traitemetn des connexions
+* Config 1 - Traitement des connexions
 */
 serveurCanaux.enregistrerTraitementConnexion(function (l) {
-    var ids;
+    var ids; // Couple
     try {
         ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
     }
@@ -113,7 +118,12 @@ serveurCanaux.enregistrerTraitementConnexion(function (l) {
 /*
 * Etat du serveur - Partie 2 (messages) :
 * - Identification des messages
-* - Messages(idDomaine, idMessage, PERSONNE | idUtilisateur) : table
+* - Table de verouillage : id sommet -> id message -> (PERSONNE | id utilisateur)
+* - TODO à compléter ! Par exemple : consigne
+*
+* Correspondance avec la spécification
+* - IdentificationMsg(id) pour l'identification des messages (identificationMessages)
+* - Verrou(idDomaine, idMessage, PERSONNE | idUtilisateur)*
 */
 var identificationMessages = types_1.creerIdentificationParCompteur("MSG-");
 var tableVerrouillageMessagesParDomaine = jeu1_adressageRoutage_1.creerTableMutableUtilisateurParMessageParDomaine();
@@ -122,11 +132,12 @@ var tableVerrouillageMessagesParDomaine = jeu1_adressageRoutage_1.creerTableMuta
         tableVerrouillageMessagesParDomaine.ajouter(id, types_1.creerTableIdentificationMutableVide('message', function (x) { return x; }));
     });
 }
-var PERSONNE = types_1.creerIdentifiant('utilisateur', 'LIBRE');
-// TODO Consigne !
+var PERSONNE = types_1.creerIdentifiant('utilisateur', 'LIBRE'); // sorte + valeur de l'identifiant
 /*
 * Config 2 - Traitement des messages
 */
+// Fonctions utiles utilisées dans le traitement des messages
+// TODO à revoir et compléter
 function diffuser(msg) {
     var utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_destination);
     types_1.creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer(function (idU, u) {
@@ -137,12 +148,14 @@ function accuserReception(msg) {
     connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg);
 }
 function verrouiller(msg) {
-    var utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_origine);
-    types_1.creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer(function (idU, u) {
-        var ar = (types_1.egaliteIdentifiant(idU, msg.val().ID_emetteur)) ?
-            jeu1_adressageRoutage_1.TypeMessageJeu1.ACTIF : jeu1_adressageRoutage_1.TypeMessageJeu1.INACTIF;
+    /* TODO
+    let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_origine);
+    creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
+        let ar = (egaliteIdentifiant(idU, msg.val().ID_emetteur)) ?
+            TypeMessageJeu1.ACTIF : TypeMessageJeu1.INACTIF;
         connexions.valeur(idU).envoyerAuClientDestinataire(msg.avecAccuseReception(ar));
     });
+    */
 }
 serveurCanaux.enregistrerTraitementMessages(function (l, m) {
     console.log('TODO traitement messages');
@@ -156,8 +169,8 @@ serveurCanaux.enregistrerTraitementMessages(function (l, m) {
             // TODO ajouter log            
             msg = msg.avecIdentifiant(identificationMessages.identifier('message'));
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-            accuserReception(msg.avecAccuseReception(jeu1_adressageRoutage_1.TypeMessageJeu1.SUCCES_INIT));
-            diffuser(msg.sansEmetteurPourTransit());
+            accuserReception(msg.avecAccuseReception(jeu1_adressageRoutage_1.TypeMessageJeu1.INIT)); // TODO / spec
+            diffuser(msg.sansEmetteurPourTransit()); // TODO / spec
             break;
         case jeu1_adressageRoutage_1.TypeMessageJeu1.VERROU:
             // TODO tester erreurs.
@@ -176,7 +189,7 @@ serveurCanaux.enregistrerTraitementMessages(function (l, m) {
             // TODO ajouter log
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-            accuserReception(msg.avecAccuseReception(jeu1_adressageRoutage_1.TypeMessageJeu1.SUCCES_ACTIF));
+            accuserReception(msg.avecAccuseReception(jeu1_adressageRoutage_1.TypeMessageJeu1.ACTIF)); // TODO Convention : AR avec même type qu'à l'émission
             diffuser(msg.sansEmetteurPourTransit());
             break;
         default:

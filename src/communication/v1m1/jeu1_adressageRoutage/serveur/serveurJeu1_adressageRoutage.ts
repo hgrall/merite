@@ -49,6 +49,11 @@ class LienJeu1
  * - répertoire principal
  * - serveur d'applications
  * - serveur de canaux  
+ * Correspondance avec la spécification : 
+ * - !Population(idDomaine, listeUtilisateurs)
+ * - canaux définis par connexions et type des messages
+ * Remarque : le réseau n'est pas pris en compte dans la spécification 
+ * car il manque des règles pour contrôler la communication.
  */
 
 const anneau: ReseauJeu1
@@ -100,11 +105,11 @@ serveurAppli.demarrer();
 */
 
 /*
-* Config 1 - Traitemetn des connexions
+* Config 1 - Traitement des connexions
 */
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-    let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+    let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]; // Couple
     try {
         ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
     } catch (e) {
@@ -154,7 +159,12 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 /*
 * Etat du serveur - Partie 2 (messages) :
 * - Identification des messages
-* - Messages(idDomaine, idMessage, PERSONNE | idUtilisateur) : table
+* - Table de verouillage : id sommet -> id message -> (PERSONNE | id utilisateur)
+* - TODO à compléter ! Par exemple : consigne
+*  
+* Correspondance avec la spécification
+* - IdentificationMsg(id) pour l'identification des messages (identificationMessages)
+* - Verrou(idDomaine, idMessage, PERSONNE | idUtilisateur)*
 */
 const identificationMessages: Identification<'message'> = creerIdentificationParCompteur("MSG-");
 const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine
@@ -165,13 +175,14 @@ const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessagePar
     });
 
 }
-const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
-
-// TODO Consigne !
+const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE'); // sorte + valeur de l'identifiant
 
 /*
 * Config 2 - Traitement des messages
 */
+
+// Fonctions utiles utilisées dans le traitement des messages
+// TODO à revoir et compléter
 
 function diffuser(msg: MessageJeu1): void {
     let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_destination);
@@ -185,12 +196,14 @@ function accuserReception(msg: MessageJeu1): void {
 }
 
 function verrouiller(msg: MessageJeu1): void {
+    /* TODO
     let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_origine);
     creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
         let ar = (egaliteIdentifiant(idU, msg.val().ID_emetteur)) ?
             TypeMessageJeu1.ACTIF : TypeMessageJeu1.INACTIF;
         connexions.valeur(idU).envoyerAuClientDestinataire(msg.avecAccuseReception(ar));
     });
+    */
 }
 
 serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) => {
@@ -208,8 +221,8 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
             // TODO ajouter log            
             msg = msg.avecIdentifiant(identificationMessages.identifier('message'));
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-            accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
-            diffuser(msg.sansEmetteurPourTransit());
+            accuserReception(msg.avecAccuseReception(TypeMessageJeu1.INIT)); // TODO / spec
+            diffuser(msg.sansEmetteurPourTransit()); // TODO / spec
             break;
         case TypeMessageJeu1.VERROU:
             // TODO tester erreurs.
@@ -227,7 +240,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
             // TODO ajouter log
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_origine).retirer(msg.val().ID);
             tableVerrouillageMessagesParDomaine.valeur(msg.val().ID_destination).ajouter(msg.val().ID, PERSONNE);
-            accuserReception(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_ACTIF));
+            accuserReception(msg.avecAccuseReception(TypeMessageJeu1.ACTIF)); // TODO Convention : AR avec même type qu'à l'émission
             diffuser(msg.sansEmetteurPourTransit());
             break;
         default:

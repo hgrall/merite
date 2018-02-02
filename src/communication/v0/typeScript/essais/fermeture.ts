@@ -11,6 +11,10 @@ for(let c in obj){
 
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+a
+b
+*/
 
 tab = [];
 
@@ -20,6 +24,10 @@ for(const c in obj){
 
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+a
+b
+*/
 
 tab = [];
 
@@ -31,4 +39,8 @@ for(c in obj){
 
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+b
+b
+*/
 

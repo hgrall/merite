@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var communication_1 = require("../../bibliotheque/communication");
 var types_1 = require("../../bibliotheque/types");
 var outils_1 = require("../../bibliotheque/outils");
-exports.hote = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
+exports.hote = "192.168.1.18"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
 exports.port1 = 3000; // port de la essource 1 (serveur d'applications)
 exports.port2 = 1110; // port de la ressouce 2 (serveur de connexions)
 // La structure JSON décrivant le sommet est en lecture seulement. 

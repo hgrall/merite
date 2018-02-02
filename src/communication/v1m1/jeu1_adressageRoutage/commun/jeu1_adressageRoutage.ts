@@ -25,7 +25,7 @@ import { jamais } from "../../bibliotheque/outils";
 import { Mot, creerMot } from "../../bibliotheque/binaire";
 
 export const hote: string = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3001; // port de la essource 1 (serveur d'applications)
+export const port1 = 3001; // port de la ressource 1 (serveur d'applications)
 export const port2: number = 1111; // port de la ressouce 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
@@ -37,7 +37,7 @@ export const utilisateurInconnu: Identifiant<'utilisateur'> = { val: "*", sorte:
 //   découvrir la population des domaines voisins.
 
 export interface FormatSommetJeu1 extends FormatIdentifiableImmutable<'sommet'> {
-    readonly domaine: ReadonlyArray<Deux>
+    readonly domaine: ReadonlyArray<Deux> // tableau formé de 0 et de 1
 }
 
 export type EtiquetteSommetJeu1 = 'ID' | 'domaine';
@@ -65,6 +65,8 @@ export class SommetJeu1
 export function creerSommetJeu1(s: FormatSommetJeu1): SommetJeu1 {
     return new SommetJeu1(s);
 }
+
+// Rappel : un noeud a pour centre un sommet et pour voisins des sommets.
 
 export type FormatNoeudJeu1Mutable = FormatNoeudMutable<FormatSommetJeu1>;
 export type NoeudJeu1Mutable = NoeudMutable<FormatSommetJeu1>;
@@ -115,35 +117,33 @@ export function creerNoeudJeu1Immutable(n: FormatNoeudJeu1Immutable): NoeudJeu1I
     return new NoeudJeu1EnveloppeImmutable(n);
 }
 
+// Un réseau est un assemblage de noeuds. Pour le construire, on utilise des noeuds mutables.
+
 export type ReseauJeu1 = ReseauImmutable<FormatSommetJeu1>;
 
 export type AssemblageReseauJeu1
     = AssemblageReseau<FormatSommetJeu1>;
 
 /*
-Protocole : cf. structure.org
+TODO Protocole : cf. structure.org
 */
 
 export enum TypeMessageJeu1 {
     INIT,
-    SUCCES_INIT,
     VERROU,
-    ACTIF,
-    SUCCES_ACTIF,
-    INACTIF,
-    TRANSIT,
-    IGNOR,
-    FIN,
+    SUIVANT,
     ESSAI,
-    SUCCES_TRANSIT,
-    ECHEC_TRANSIT,
-    SUCCES_FIN,
-    ECHEC_FIN,
+    LIBE,
+    TRANSIT,
+    ACTIF,
+    GAGNE,
+    PERDU,
+    DESTRUCT,
     ERREUR_CONNEXION, // TODO
-    ERREUR_EMET,
-    ERREUR_DEST,
-    ERREUR_TYPE,
-    INTERDICTION
+    ERREUR_EMET, // TODO
+    ERREUR_DEST, // TODO
+    ERREUR_TYPE, // TODO
+    INTERDICTION // TODO
 }
 
 
@@ -191,6 +191,7 @@ export class MessageJeu1 extends
         return idm + " - " + datem + ", de " + dem + " à " + am + " (" + typem + ") - " + cm;
     }
 
+    // TODO ajouter les méthodes qui sont pratiques
 
     // Client : envoyer au serveur avec une destination (un domaine).
     avecAdresse(id_destination: Identifiant<'sommet'>): MessageJeu1 {
@@ -262,7 +263,7 @@ export class MessageJeu1 extends
     }
 
     // 4. Client : Ignorer un message en TRANSIT (IGNOR).
-    aIgnorer(): MessageJeu1 {
+    /*aIgnorer(): MessageJeu1 {
         let msg = this.val();
         return new MessageJeu1({
             ID: msg.ID,
@@ -273,10 +274,10 @@ export class MessageJeu1 extends
             contenu: msg.contenu,
             date: msg.date
         });
-    }
+    }*/
 
     // 5. Client : Consulter un message en TRANSIT (FIN).
-    aConsulter(): MessageJeu1 {
+    /*aConsulter(): MessageJeu1 {
         let msg = this.val();
         return new MessageJeu1({
             ID: msg.ID,
@@ -287,7 +288,7 @@ export class MessageJeu1 extends
             contenu: msg.contenu,
             date: msg.date
         });
-    }
+    }*/
 
     // 5. Client : tester un message en FIN.
     aEssayer(contenu: Mot): MessageJeu1 {
@@ -367,7 +368,7 @@ Exemple de description d'une configuration - TODO à actualiser
 */
 
 export interface FormatUtilisateur extends FormatIdentifiableImmutable<'utilisateur'> {
-    readonly pseudo: ReadonlyArray<Deux>, // TODO ajouter d'autres caractéristiques
+    readonly pseudo: ReadonlyArray<Deux>, // tableau de chiffres binaires (0, 1)
 }
 
 export type EtiquetteUtilisateur = 'ID' | 'nom';
@@ -627,7 +628,7 @@ export function assemblerPopulationParDomaine(
 export type TableMutableUtilisateursParMessageParDomaine =
     TableIdentificationMutable<'sommet',
     TableIdentificationMutable<'message', Identifiant<'utilisateur'>, Identifiant<'utilisateur'>>,
-    TableIdentificationMutable<'message', Identifiant<'utilisateur'>, Identifiant<'utilisateur'>>>;
+    TableIdentificationMutable<'message', Identifiant<'utilisateur'>, Identifiant<'utilisateur'>> >;
 
 export function creerTableMutableUtilisateurParMessageParDomaine(): TableMutableUtilisateursParMessageParDomaine {
     return creerTableIdentificationMutableVide('sommet', (x) => x);

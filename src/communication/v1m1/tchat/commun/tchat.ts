@@ -17,7 +17,7 @@ import {
 } from "../../bibliotheque/types";
 import { jamais } from "../../bibliotheque/outils";
 
-export const hote: string = "merite"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
+export const hote: string = "192.168.1.18"; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1 - ici : "merite"
 export const port1 = 3000; // port de la essource 1 (serveur d'applications)
 export const port2: number = 1110; // port de la ressouce 2 (serveur de connexions)
 

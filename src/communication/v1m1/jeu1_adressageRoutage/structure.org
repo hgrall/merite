@@ -161,7 +161,8 @@ Requis
 - MiseAJourAprèsVerrouillage(
   - idMessage, idUtilisateur,
     idDomaineOrigine, idDomaineDestination, contenu,
-  - listeUtilisateurs)
+  - listeUtilisateurs) // Ajout de la liste pour réaliser une itération
+                       //   sur ses éléments.
 - !Population(idDomaine, listeUtilisateurs)
 - Consigne(idDomaineDestinataire, idUtilisateurDestinataire, contenu) 
 

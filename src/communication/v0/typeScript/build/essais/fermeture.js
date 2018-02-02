@@ -11,6 +11,10 @@ for (var c_1 in obj) {
 }
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+a
+b
+*/
 tab = [];
 var _loop_2 = function (c_2) {
     tab.push((function (x) { return c_2; }));
@@ -20,6 +24,10 @@ for (var c_2 in obj) {
 }
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+a
+b
+*/
 tab = [];
 // problème
 var c;
@@ -28,4 +36,8 @@ for (c in obj) {
 }
 console.log(tab[0]("coco"));
 console.log(tab[1]("coco"));
+/*
+b
+b
+*/
 //# sourceMappingURL=fermeture.js.map

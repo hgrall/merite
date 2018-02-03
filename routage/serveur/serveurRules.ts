@@ -5,9 +5,10 @@ import { TableIdentificationMutable, creerTableIdentificationImmutable } from '.
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
 import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, pointsParDomaine, tableConsigneUtilisateurParDomaine} from './serveurRoutage';
+import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, tableConsigneUtilisateurParDomaine,pointsParDomaine} from './serveurRoutage';
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
+import {creerPointsParDomaine, ajouterPointsParDomaine} from '../serveur/statistiques';
 
 /*
 * Traitement des messages
@@ -17,6 +18,11 @@ export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, 
     let id: Identifiant<'message'> = identificationMessages.identifier('message')// incrementation du compteur
     verrou(idDomDest, id, PERSONNE); // creation du message dans la table de verouillage
     diffusion(date, idUtil,id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
+    
+    //si msg correctement envoye
+    if(consigne(idDomOrigine,idUtil,contenu)){
+      ajouterPointsParDomaine(idDomOrigine,pointsParDomaine);
+    }
   }
 
 // verouille dans un domaine le message pour un utilisateur 
@@ -129,21 +135,15 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 // message si celui-ci est verrouillé par l’utilisateur et indique 
 // qu’il a gagné le cas échéant.
 
-export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+export function verifier(points: Array<number> = [],date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+  //recepteur du message
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  console.log('POINTS PAR DOMAINE  serveurRules verifier debut  :  '+pointsParDomaine);
 
     if (verrouilleur.val === emetteur.val){
       if (consigne(origine, emetteur, contenu)){
-        //mise a jour des points pour l'emetteur s'il a entre le bon message
-        var domEmetteur = parseInt(origine.val.substring(4,origine.val.length));
-        pointsParDomaine[domEmetteur]+=1;
-        console.log("POINTS servuerRules verifier :"+pointsParDomaine);
 
         //maj des points pour le receveur s'il decode correctement
-        var domRecepteurString = connexions.valeur(emetteur).configuration().net("centre");
-        var domRecepteur = parseInt(domRecepteurString.substring(4,domRecepteurString.length));
-        pointsParDomaine[domRecepteur]+=1;
+        ajouterPointsParDomaine(origine,pointsParDomaine);
 
         //envoi reponse
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
@@ -157,6 +157,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
         }))
       } else {
         console.log("ECHEC VERFIICATION");
+        console.log('POINTS POUR ECHEC'+ pointsParDomaine);
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
           ID_emetteur: emetteur,
@@ -177,15 +178,23 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
 //Verifie que le message envoye par l'utilisateur est correct
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
   let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  console.log("ORIGINE  : "+origine.val);
+  console.log("EMETTEUR   :  "+emetteur.val);
+  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
   let tContenu = contenu['structure'];
-  if (tConsigne.taille != tContenu.taille) {
+  console.log("CONTENU  :  "+tContenu.tableau.toString());
+  //pour ne pas prendre en compte les 4 caract de l'adresse dans le Mot
+  if (tConsigne.taille != (tContenu.taille-4)) {
+    console.log("TAILLE DIFFERENTE  ");
     return false;
   }
   for (let i = 0; i < tConsigne.taille; i++) {
-    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i+4]) {
+      console.log("CARACTERE DIFFERENTE  ");
       return false;
     }
   }
+  console.log("TOUT VA BIEN  ");
   return true;
 }
 

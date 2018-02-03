@@ -39,6 +39,10 @@ import {
 	creerMessageEnveloppe
 } from '../commun/communRoutage';
 
+import {creerPointsParDomaine, ajouterPointsParDomaine} from '../serveur/statistiques';
+
+
+
 class ServeurJeu1 extends ServeurLiensWebSocket<
 	FormatErreurJeu1,
 	FormatErreurJeu1,
@@ -77,12 +81,10 @@ let domaines = [binaire(0), binaire(1), binaire(2), binaire(3)];
 const anneau: ReseauJeu1 = creerAnneauJeu1(domaines);
 //const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
 
-let list: Array<number> = [1, 2, 3];
-//initialise les points a zero
-export var pointsParDomaine : Array<number> = [];
-for (let i in domaines){
-	pointsParDomaine[i]=0;
-}
+
+//Tableau de points par domaine
+export var pointsParDomaine = creerPointsParDomaine(domaines);
+
 
 
 const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, [
@@ -269,10 +271,12 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 	  // En cas de succes, envoie SUCCES a l'emetteur 
 	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
       break;
-    case TypeMessageJeu1.VERROU:
+	case TypeMessageJeu1.VERROU:
+	console.log('message verrou');
       serveur.verrouiller(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
       break;
 	case TypeMessageJeu1.SUIVANT:
+	console.log('message suivant');
       serveur.transmettre(msg.val().date, msg.val().ID, msg.val().ID_emetteur,msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
 	  // En cas de succes, envoie SUCCES a l'emetteur 
 	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_TRANSIT));
@@ -283,7 +287,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		break;
     case TypeMessageJeu1.ESSAI:
 	  console.log('message a verifier');
-      serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
+      serveur.verifier(pointsParDomaine,msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     case TypeMessageJeu1.LIBE:
       // TODO tester erreurs.

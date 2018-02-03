@@ -4,7 +4,9 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Consigne } from '../commun/communRoutage'
+import { Consigne } from '../commun/communRoutage'; 
+import { ConsigneDom } from './Consigne';
+import { IdentifiantCases } from './IdentifiantCases';
 
 
 
@@ -58,12 +60,7 @@ export class Regles extends React.Component<ReglesProps, any> {
         >
           Les regles du jeu sont les suivantes ...
           <br/>
-          ID_DOM_CIBLE : {this.props.consigne.ID_dom_cible.val}
-          <br/>
-          ID_UTIL_CIBLE : {this.props.consigne.ID_util_cible.val}
-          <br/>
-          MOT_CIBLE : {this.props.consigne.mot_cible['structure'].tableau.toString()}
-
+          <ConsigneDom consigne={this.props.consigne}/>
         </Dialog>
       </div>
     );

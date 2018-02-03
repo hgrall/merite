@@ -119,7 +119,6 @@ function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Iden
   });
 }
 
-
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
 export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
@@ -135,16 +134,12 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 // message si celui-ci est verrouillé par l’utilisateur et indique 
 // qu’il a gagné le cas échéant.
 
-export function verifier(points: Array<number> = [],date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
   //recepteur du message
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
 
     if (verrouilleur.val === emetteur.val){
       if (consigne(origine, emetteur, contenu)){
-
-        //maj des points pour le receveur s'il decode correctement
-        ajouterPointsParDomaine(origine,pointsParDomaine);
-
         //envoi reponse
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
@@ -176,7 +171,9 @@ export function verifier(points: Array<number> = [],date: FormatDateFr, id : Ide
 
 
 //Verifie que le message envoye par l'utilisateur est correct
-function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+//ATTENTION : NE TESTE PAS SI LE MESSAGE A BIEN ETE DECODE PAR LE RECEVEUR !!!
+// NE TESTE PAS NON PLUS SI A ETE ENVOYE A LA BONNE PERSONNE
+/* function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
   let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
   console.log("ORIGINE  : "+origine.val);
   console.log("EMETTEUR   :  "+emetteur.val);
@@ -194,14 +191,54 @@ function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilis
       return false;
     }
   }
-  console.log("TOUT VA BIEN  ");
+  console.log("LE CONTENU DU MSG ENVOYE EST BON  ");
+  ajouterPointsParDomaine(origine,pointsParDomaine);
+  return true;
+}*/
+
+function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  let tContenu = contenu['structure'];
+  console.log("ORIGINE  : "+origine.val);
+  console.log("EMETTEUR   :  "+emetteur.val);
+  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
+  console.log("CONTENU  :  "+tContenu.tableau.toString());
+  if (tConsigne.taille != tContenu.taille) {
+    console.log("TAILLE DIFFERENTE  ");
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      console.log("CARACTERE DIFFERENTE  ");
+      return false;
+    }
+  }
+  console.log("LE CONTENU DU MSG ENVOYE EST BON  ");
+  ajouterPointsParDomaine(origine,pointsParDomaine);
   return true;
 }
+
+
+
 
 export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
   if (verrouilleur === emetteur) { // verification que le serveur est bien verouille par l'emetteur concerne 
       verrou(dest, id, PERSONNE); 
-      miseAJourAprèsVerrouillage(date, id, emetteur, origine, dest, contenu, utilisateurParDomaine(dest));
+      creerTableIdentificationImmutable('utilisateur', utilisateurParDomaine(origine)).iterer((idU, u) => {
+        console.log(idU);
+        connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.LIBE,
+          contenu: contenu,
+          date: date
+        }));
+      });
   } 
+
+
+
 }

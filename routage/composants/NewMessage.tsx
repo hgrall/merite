@@ -9,7 +9,9 @@ import {BarreEnvoi} from './BarreEnvoi';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { creerMot, Mot } from '../../bibliotheque/binaire'
 import { Deux } from '../../bibliotheque/types/mutable';
-import { FormatSommetJeu1 } from '../commun/communRoutage';
+import { FormatSommetJeu1, Consigne } from '../commun/communRoutage';
+import { ConsigneDom } from './Consigne';
+
 
 
 const styles = {
@@ -22,7 +24,8 @@ const styles = {
 interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   voisinFst: FormatSommetJeu1,
-  voisinSnd: FormatSommetJeu1
+  voisinSnd: FormatSommetJeu1, 
+  consigne: Consigne
 }
 
 /**
@@ -92,6 +95,7 @@ export class NewMessage extends React.Component<MessageProps, any> {
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
+          <ConsigneDom consigne={this.props.consigne}/>
           Code ton message en cliquant sur les cases !
           <MessageCases message={this.state.message} changeColor={this.changeColor} locked={false}/>
           <br /> 

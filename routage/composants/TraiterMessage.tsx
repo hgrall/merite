@@ -69,7 +69,7 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
         voisinSnd={this.props.voisinSnd}
         envoyerMessage={this.props.envoyerMessage}/>,
       <FlatButton
-        label="Jeter"
+        label="Cacher"
         secondary={true}
         onClick={(e) => this.props.detruireMessage(this.props.message)}
       />,

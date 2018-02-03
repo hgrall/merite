@@ -131,20 +131,21 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 
 export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-    if (verrouilleur === emetteur){
+  console.log('POINTS PAR DOMAINE  serveurRules verifier debut  :  '+pointsParDomaine);
+
+    if (verrouilleur.val === emetteur.val){
       if (consigne(origine, emetteur, contenu)){
-        //mise a jour des points pour l'emetteur s'il a entre le bon domaine
+        //mise a jour des points pour l'emetteur s'il a entre le bon message
         var domEmetteur = parseInt(origine.val.substring(4,origine.val.length));
         pointsParDomaine[domEmetteur]+=1;
         console.log("POINTS servuerRules verifier :"+pointsParDomaine);
 
         //maj des points pour le receveur s'il decode correctement
-        
-        
         var domRecepteurString = connexions.valeur(emetteur).configuration().net("centre");
         var domRecepteur = parseInt(domRecepteurString.substring(4,domRecepteurString.length));
         pointsParDomaine[domRecepteur]+=1;
 
+        //envoi reponse
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
           ID_emetteur: emetteur,
@@ -155,6 +156,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
           date: date
         }))
       } else {
+        console.log("ECHEC VERFIICATION");
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
           ID_emetteur: emetteur,
@@ -169,6 +171,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
     }
     detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
   }
+
 
 
 //Verifie que le message envoye par l'utilisateur est correct

@@ -14,11 +14,7 @@ import {
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
 import {} from '../../bibliotheque/outils';
-<<<<<<< HEAD
-import { binaire , Mot} from '../../bibliotheque/binaire';
-=======
 import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
->>>>>>> 2fd43be53bab07486acbb6f59f6cbd6408da03c9
 import {} from '../../bibliotheque/communication';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
@@ -266,13 +262,9 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 
   switch (m.type) {
     case TypeMessageJeu1.INIT:
-<<<<<<< HEAD
       // TODO tester erreurs
 	  // TODO ajouter log
 	  console.log('message recu ----------------',)
-	  console.log('POINTS PAR DOMAINE  serveurRoutage  :  '+pointsParDomaine);
-=======
->>>>>>> 2fd43be53bab07486acbb6f59f6cbd6408da03c9
       serveur.initier(msg.val().date, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().ID_destination, msg.val().contenu);
 	  // En cas de succes, envoie SUCCES a l'emetteur 
 	  connexions.valeur(msg.val().ID_emetteur).envoyerAuClientDestinataire(msg.avecAccuseReception(TypeMessageJeu1.SUCCES_INIT));
@@ -290,7 +282,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		serveur.detruireMessageDomaine(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_destination, msg.val().ID_destination, msg.val().contenu);
 		break;
     case TypeMessageJeu1.ESSAI:
-      console.log('message a verifier');
+	  console.log('message a verifier');
       serveur.verifier(msg.val().date, msg.val().ID, msg.val().ID_emetteur, msg.val().ID_origine, msg.val().contenu);
       break;
     case TypeMessageJeu1.LIBE:

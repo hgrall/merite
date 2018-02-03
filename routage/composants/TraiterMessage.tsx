@@ -103,8 +103,8 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.
-          Sinon, transmet le a la personne concernee.
-          Si le message est erronee, mets le a la poubelle.
+          Sinon, transmets le a la personne concernee.
+          Si le message est errone, mets le a la poubelle.
         </Dialog>
       </div>
     );

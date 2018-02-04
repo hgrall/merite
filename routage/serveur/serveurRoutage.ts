@@ -247,7 +247,7 @@ export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisat
 		tableConsigneUtilisateurParDomaine.ajouter(id, tableDom);
 	});
 }
-
+console.log("TABLE CONSIGNE UTILISATEUR");
 console.log(tableConsigneUtilisateurParDomaine.representation());
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');

@@ -2,6 +2,7 @@ import { TableauImmutable, FormatTableauImmutable } from './types/tableau';
 import { Deux } from './types/mutable';
 
 import { jamais } from './outils';
+import { type } from 'os';
 
 export type FormatMot = FormatTableauImmutable<Deux>;
 
@@ -24,7 +25,8 @@ export class Mot extends TableauImmutable<Deux> {
   }
 
   tableauBinaire(): ReadonlyArray<Deux> {
-    return this.etat().tableau;
+    var self2 = this;
+    return self2.etat().tableau;
   }
 }
 
@@ -74,16 +76,30 @@ export function motAleatoire(length: number): Mot {
   return creerMot(r);
 }
 
+//Nombre aleatoire dans [0,max]  max inclus
 export function getRandomInt(max: number) {
+  max++;
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
-export function tableauBinaireAleatoire(nb : number){
-  var tableauAleat = binaire(getRandomInt(nb)).tableauBinaire();
+export function tableauBinaireAleatoire(nbMax : number, domActuel : number){
+  //comme on part de 0
+  nbMax--;
+  var nbAleat = getRandomInt(nbMax);
+  while(nbAleat===domActuel){
+    nbAleat = getRandomInt(nbMax);
+  }
+  var tableauAleat = binaire(nbAleat).tableauBinaire();
+  var tableauMax = binaire(nbMax).tableauBinaire();
+  tableauAleat = completerTableauParZeros(nbMax,tableauAleat);
+  return tableauAleat;
+}
+
+export function completerTableauParZeros(nb:number,tab:ReadonlyArray<Deux>){
   var tableauMax = binaire(nb).tableauBinaire();
   let zero = binaire(0).tableauBinaire();
-  while(tableauAleat.length!=tableauMax.length){
-    tableauAleat = zero.concat(tableauAleat);
+  while(tab.length!=tableauMax.length){
+    tab = zero.concat(tab);
   }
-  return tableauAleat;
+  return tab;
 }

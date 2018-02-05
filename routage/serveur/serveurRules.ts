@@ -200,6 +200,7 @@ function consigneEnvoi(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'u
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
   let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
   let tContenu = contenu['structure'];
+  let tAutre = contenu['structure'];
   console.log("ORIGINE  : "+origine.val);
   console.log("EMETTEUR   :  "+emetteur.val);
   console.log("CONSIGNE  :  "+tConsigne.tableau.toString());

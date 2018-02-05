@@ -27,13 +27,11 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
 
   valider = () => {
     this.handleClose();
-
-    var motEcrit = this.state.text.split('').map((x) => parseInt(x));
-
-    this.props.validation(creerMot(motEcrit), this.props.message); 
-    
-   // var motEnvoi = concatMot(motEcrit,this.props.message.val().contenu);
-    //this.props.validation(motEnvoi, this.props.message); 
+    //var motEcrit = this.state.text.split('').map((x) => parseInt(x));
+    var self = this;
+    //var motRecu = self.props.message.val();
+    this.props.validation(creerMot(self.state.text.split('').map((x) => parseInt(x))), self.props.message); 
+    //this.props.validation(creerMot(this.state.text.split('').map((x) => parseInt(x))), this.props.message); 
   }
 
   message = (event : any) => {
@@ -74,6 +72,7 @@ export class DialogDecoderMessage extends React.Component<messageProps, any> {
           <br/>
           ex : 001001
           <br />
+         
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
           <TextField
             hintText="Decode ici le message"

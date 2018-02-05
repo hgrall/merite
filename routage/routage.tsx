@@ -19,6 +19,7 @@ import Paper from 'material-ui/Paper';
 import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
 import { Deux } from '../bibliotheque/types/mutable';
 import { verouiller } from './client/clientRoutage';
+import { isUndefined, isNull } from 'util';
 
 const styles = {
 	container: {
@@ -135,6 +136,16 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
+		//var motRecu = msg.val().contenu.tableauBinaire();
+		/*let motRecu = msg.val().contenu;
+		console.log("RECU" + motRecu);
+		console.log("RECU" + typeof motRecu);
+		var motEcrit = contenu;
+		console.log("ECRIT" + motEcrit);
+		console.log("ECRIT" + typeof motEcrit);
+		//var totalMot = creerMot(motRecu.concat(motEcrit));
+		//var totalMot = concatMot(motEcrit,motRecu);
+		*/
 		this.canal.envoyerMessage(msg.aEssayer(contenu, this.state.util.ID))
 	}
 

@@ -245,11 +245,20 @@ export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisat
 		var tableDom: TableIdentificationMutable<'utilisateur', Mot, Mot> = creerTableIdentificationMutableVide('utilisateur', x => x);
 		let pop = utilisateursParDomaine.valeur(id);
 		creerTableImmutable(pop).iterer((cle, util) => {
-			var randomDom = tableauBinaireAleatoire(NOMBRE_DE_DOMAINES);
-			var randomUser = tableauBinaireAleatoire(UTILISATEURS_PAR_DOMAINE);
+			var domNb = parseInt(id.val.substr(4));
+			var domActuel = binaire(parseInt(id.val.substr(4))).tableauBinaire();
+			var utilNb = creerMot(util.pseudo).base10();
+			
+			//console.log("DOM ACTUEL : "+domNb+" en binaire : "+domActuel);
+			//console.log("UTIL ACTUEL  : "+utilNb);
+			var randomDom = tableauBinaireAleatoire(NOMBRE_DE_DOMAINES,domNb);
+			
+			var randomUser = tableauBinaireAleatoire(UTILISATEURS_PAR_DOMAINE,utilNb);
+			console.log("DOM  ACTUEL  : "+domNb+"  RANDOM  : "+randomDom);
+			console.log("UTIL ACTUEL  : "+utilNb+"  RANDOM  : "+randomUser);
 			var randomContenu = motAleatoire(12).tableauBinaire();
 			var consigneFinale = creerMot(randomDom.concat(randomUser,randomContenu));
-			console.log("BINAIRE CONSIGNE : "+consigneFinale.representation());
+			//console.log("BINAIRE CONSIGNE : "+consigneFinale.representation());
 			//tableDom.ajouter(util.ID, motAleatoire(longueurMotAleat));
 			tableDom.ajouter(util.ID, consigneFinale);
 		});

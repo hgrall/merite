@@ -51,6 +51,13 @@ export function binaire(n: number): Mot {
   );
 }
 
+export function concatMot(mot1: Mot, mot2: Mot): Mot {
+  var tab1 = mot1.val().tableau;
+  var tab2 = mot2.val().tableau;
+  var total = tab1.concat(tab2);
+  return creerMot(total);
+}
+
 export function premiersBinaires(n: number): Mot[] {
   let r = [];
   for (let i = 0; i < n; i++) {
@@ -65,4 +72,18 @@ export function motAleatoire(length: number): Mot {
     r.push(Math.floor(Math.random() * Math.floor(2)));
   }
   return creerMot(r);
+}
+
+export function getRandomInt(max: number) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
+export function tableauBinaireAleatoire(nb : number){
+  var tableauAleat = binaire(getRandomInt(nb)).tableauBinaire();
+  var tableauMax = binaire(nb).tableauBinaire();
+  let zero = binaire(0).tableauBinaire();
+  while(tableauAleat.length!=tableauMax.length){
+    tableauAleat = zero.concat(tableauAleat);
+  }
+  return tableauAleat;
 }

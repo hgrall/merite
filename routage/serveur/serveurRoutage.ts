@@ -20,9 +20,9 @@ import {
 import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/types/date';
 
 import {} from '../../bibliotheque/outils';
-import { binaire, Mot, motAleatoire } from '../../bibliotheque/binaire';
+import { binaire, Mot, motAleatoire, creerMot , tableauBinaireAleatoire} from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
-import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE } from '../config';
+import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
@@ -48,6 +48,8 @@ import {
 import { Deux } from '../../bibliotheque/types/mutable';
 
 import {creerPointsParDomaine, ajouterPointsParDomaine} from '../serveur/statistiques';
+import { config } from 'shelljs';
+import { log } from 'util';
 
 
 
@@ -204,6 +206,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	
 	let ID_dom_cible = n.centre;
 	let ID_util_cible = u;
+	
 	// consigne 
 	let cible = {
 		ID_dom_cible,
@@ -242,12 +245,21 @@ export const tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisat
 		var tableDom: TableIdentificationMutable<'utilisateur', Mot, Mot> = creerTableIdentificationMutableVide('utilisateur', x => x);
 		let pop = utilisateursParDomaine.valeur(id);
 		creerTableImmutable(pop).iterer((cle, util) => {
-			tableDom.ajouter(util.ID, motAleatoire(12));
+			var randomDom = tableauBinaireAleatoire(NOMBRE_DE_DOMAINES);
+			var randomUser = tableauBinaireAleatoire(UTILISATEURS_PAR_DOMAINE);
+			var randomContenu = motAleatoire(12).tableauBinaire();
+			var consigneFinale = creerMot(randomDom.concat(randomUser,randomContenu));
+			console.log("BINAIRE CONSIGNE : "+consigneFinale.representation());
+			//tableDom.ajouter(util.ID, motAleatoire(longueurMotAleat));
+			tableDom.ajouter(util.ID, consigneFinale);
 		});
 		tableConsigneUtilisateurParDomaine.ajouter(id, tableDom);
 	});
 }
-console.log("TABLE CONSIGNE UTILISATEUR");
+
+
+
+console.log("TABLE CONSIGNE");
 console.log(tableConsigneUtilisateurParDomaine.representation());
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');

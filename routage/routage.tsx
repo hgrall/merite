@@ -11,7 +11,7 @@ import { BarreEnvoi } from './composants/BarreEnvoi';
 import {Identifiant, creerIdentifiant} from '../bibliotheque/types/identifiant'
 import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
 import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
-import { creerMot, Mot } from '../bibliotheque/binaire'
+import { creerMot, Mot, concatMot } from '../bibliotheque/binaire'
 import { MessageBox } from './composants/MessageBox';
 import { IdentifiantCases } from './composants/IdentifiantCases';
 import AppBar from 'material-ui/AppBar';

@@ -12,10 +12,6 @@ import {EnvoyePar} from './EnvoyePar';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { Mot } from '../../bibliotheque/binaire'
 
-/**
- * A modal dialog can only be closed by selecting one of the actions.
- */
-
 const styles = {
   btn: {
     margin: '10px',

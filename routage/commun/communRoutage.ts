@@ -172,7 +172,7 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly date: FormatDateFr; // Emission
 }
 
-export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu';
+export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
 
 // Structure immutable
 export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> {
@@ -195,6 +195,8 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
         return msg.ID_destination.val;
       case 'contenu':
         return msg.contenu.representation();
+      case 'utilisateur':
+        return msg.ID_emetteur.val;
     }
     return jamais(e);
   }

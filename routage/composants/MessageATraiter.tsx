@@ -10,7 +10,6 @@ import { Mot } from '../../bibliotheque/binaire';
 import LockOpen from 'material-ui/svg-icons/action/lock-open';
 import LockClose from 'material-ui/svg-icons/action/lock-outline';
 import { FormatSommetJeu1 } from '../commun/communRoutage';
-import { deverouiller } from '../client/clientRoutage';
 
 const styles = {
   root: {

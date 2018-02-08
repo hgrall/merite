@@ -33,6 +33,7 @@ const styles = {
         padding: 30,
     }
 };
+
 interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   voisinFst: FormatSommetJeu1,

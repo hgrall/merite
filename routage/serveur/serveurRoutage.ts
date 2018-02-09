@@ -218,7 +218,6 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 		return true;
 	}
 	else {
-		
 		return false; 
 	}
 });

@@ -19,6 +19,8 @@ import Paper from 'material-ui/Paper';
 import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
 import { Deux } from '../bibliotheque/types/mutable';
 import { verouiller } from './client/clientRoutage';
+import { Link } from 'react-router-dom';
+import { RaisedButton } from 'material-ui/RaisedButton';
 
 const styles = {
 	container: {
@@ -29,6 +31,13 @@ const styles = {
 		position: 'absolute' as 'absolute',
 		left: '0',
 		right: '0'
+	},
+	notReady: {
+		display: 'flex' as 'flex',
+		flexDirection: 'column' as 'column',
+		justifyContent: 'center' as 'center',
+		alignItems: 'center' as 'center',
+		margin: '30px'
 	},
 	paper: {
 		flexShrink: 1,
@@ -69,6 +78,8 @@ interface FormState {
 	textDialog: string,
 	consigne: Consigne
   }
+// Etat initial - Le client ne connait pas sa configuration 
+let configReceived = false; 
 
 export class Routage extends React.Component<any, FormState> {
 	private adresseServeur: string;
@@ -273,6 +284,7 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement de la configuration');
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
+			configReceived = true;
 			this.config = creerConfigurationJeu1(c);
 
 			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
@@ -321,45 +333,58 @@ export class Routage extends React.Component<any, FormState> {
 				onClick={this.handleClose}
 			/>
 		];
+		
+		if (configReceived) {
+			return (
+				<div style={styles.container}>
+					<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
+					<Regles consigne={this.state.consigne }/>
+					<div style={styles.dom}>
+					Domaine : <IdentifiantCases int={this.state.dom.domaine} />
+					</div>
+					<div style={styles.dom}>
+					Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+					</div>
+					<Paper zDepth={2} style={styles.paper}>
+						<h3 style={styles.title}>Messages à traiter</h3>
+						<NewMessage 
+							envoyerMessage={this.envoiMessageInit} 
+							voisinFst={this.state.voisinFst} 
+							voisinSnd={this.state.voisinSnd}
+							consigne={this.state.consigne}/>
+						<MessageBox 
+							envoyerMessage={this.envoiMessage}
+							verrou={this.verrou}
+							deverrouiller={this.deverrouiller}
+							detruireMessage={this.detruireMessage}
+							messages={this.state.messages}
+							voisinFst={this.state.voisinFst}
+							validation={this.validerMessage}
+							voisinSnd={this.state.voisinSnd}/>
+					</Paper>
+					
 
-		return (
-			<div style={styles.container}>
-				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-				<Regles consigne={this.state.consigne }/>
-				<div style={styles.dom}>
-				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
-				</div>
-				<div style={styles.dom}>
-				Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
-				</div>
-				<Paper zDepth={2} style={styles.paper}>
-					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage 
-						envoyerMessage={this.envoiMessageInit} 
-						voisinFst={this.state.voisinFst} 
-						voisinSnd={this.state.voisinSnd}
-						consigne={this.state.consigne}/>
-					<MessageBox 
-						envoyerMessage={this.envoiMessage}
-						verrou={this.verrou}
-						deverrouiller={this.deverrouiller}
-						detruireMessage={this.detruireMessage}
-						messages={this.state.messages}
-						voisinFst={this.state.voisinFst}
-						validation={this.validerMessage}
-						voisinSnd={this.state.voisinSnd}/>
-				</Paper>
-				
+					<Dialog
+						actions={actions}
+						modal={false}
+						open={this.state.openDialog}
+						onRequestClose={this.handleClose}
+					>
+						{this.state.textDialog}
+					</Dialog>
+					</div>
+			);
+		}
+		else {
+			return (
+				<div style={styles.notReady}>
+					<p> Le jeu n'est pas encore pret ! </p>
+					<br/>
+					<Link to='/' >Retour</Link>
+					
 
-				<Dialog
-					actions={actions}
-					modal={false}
-					open={this.state.openDialog}
-					onRequestClose={this.handleClose}
-				>
-					{this.state.textDialog}
-        		</Dialog>
 				</div>
-    );
-  }
+			);
+		}
+  	}
 }

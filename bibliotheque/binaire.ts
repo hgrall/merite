@@ -78,23 +78,29 @@ export function motAleatoire(length: number): Mot {
 
 //Nombre aleatoire dans [0,max]  max inclus
 export function getRandomInt(max: number) {
-  max++;
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
-export function tableauBinaireAleatoire(nbMax : number, domActuel : number){
-  //comme on part de 0
-  nbMax--;
-  var nbAleat = getRandomInt(nbMax);
-  while(nbAleat===domActuel){
-    nbAleat = getRandomInt(nbMax);
+//nombre aleatoire different de actuel
+export function nombreAleatoire(max:number, actuel:number){
+  var nbAleat = getRandomInt(max);
+  while(nbAleat===actuel){
+    nbAleat = getRandomInt(max);
   }
+  return nbAleat;
+}
+
+//genere un tableau aleatoire 
+//actuel : element actuel qu'on genere automatique (user ou domaine)
+export function tableauBinaireAleatoire(nbMax : number, actuel : number){
+  var nbAleat = nombreAleatoire(nbMax,actuel);
   var tableauAleat = binaire(nbAleat).tableauBinaire();
   var tableauMax = binaire(nbMax).tableauBinaire();
   tableauAleat = completerTableauParZeros(nbMax,tableauAleat);
   return tableauAleat;
 }
 
+//complete un tableau Aleatoire par des zeros pour qu'il soit de la taille du nombre max
 export function completerTableauParZeros(nb:number,tab:ReadonlyArray<Deux>){
   var tableauMax = binaire(nb).tableauBinaire();
   let zero = binaire(0).tableauBinaire();

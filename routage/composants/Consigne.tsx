@@ -16,15 +16,19 @@ export class ConsigneDom extends React.Component<ConsigneProps, any> {
   render() {
     return (
       <div>
-       {//Domaine destinataire: <IdentifiantCases int={this.props.consigne.ID_dom_cible.domaine} />
+       {
+      // Domaine destinataire: <IdentifiantCases int={this.props.consigne.ID_dom_cible.domaine} />
        }
-       Domaine destinataire: {this.props.consigne.mot_cible['structure'].tableau.slice(0,binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length).toString()}
+       Domaine destinataire: <IdentifiantCases int={this.props.consigne[0].domaine} />
         <br/>
         {//Utilisateur destinataire: <IdentifiantCases int={this.props.consigne.ID_util_cible.pseudo} />
         }
-        Utilisateur destinataire: {this.props.consigne.mot_cible['structure'].tableau.slice(binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length,binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length+binaire(UTILISATEURS_PAR_DOMAINE).tableauBinaire().length).toString()}
+        
+        Utilisateur destinataire: <IdentifiantCases int={this.props.consigne[1].pseudo} />
         <br/>
-        Contenu du message à envoyer: {this.props.consigne.mot_cible['structure'].tableau.slice(binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length+binaire(UTILISATEURS_PAR_DOMAINE).tableauBinaire().length).toString()}
+        {//Contenu du message à envoyer: {this.props.consigne.mot_cible['structure'].tableau.toString()}
+        }
+        Contenu du message à envoyer: {this.props.consigne[2]['structure'].tableau.toString()}
       </div>
     );
   }

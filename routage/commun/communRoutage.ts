@@ -477,11 +477,14 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
   return pop;
 }
 
-export type Consigne = {
+/*export type Consigne = {
   ID_dom_cible : FormatSommetJeu1,
-  ID_util_cible: FormatUtilisateur;
+  ID_util_cible: FormatUtilisateur,
   mot_cible: Mot
-}
+}*/
+
+export type Consigne = [FormatSommetJeu1,FormatUtilisateur,Mot];
+
 
 export interface FormatConfigurationJeu1 extends FormatConfigurationInitiale {
   readonly centre: FormatSommetJeu1;
@@ -513,7 +516,8 @@ export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, Fo
       case 'date':
         return creerDateEnveloppe(config.date).representation();
       case 'consigne': 
-        return config.consigne.mot_cible.representation();
+        //return config.consigne.mot_cible.representation();
+        return config.consigne[2].representation();
     }
     return jamais(e);
   }
@@ -686,6 +690,7 @@ export type TableMutableMessagesParUtilisateurParDomaine = TableIdentificationMu
   TableIdentificationMutable<'utilisateur', Mot, Mot>,
   TableIdentificationMutable<'utilisateur', Mot, Mot>
   >;
+
 
 export function creerTableMutableMessageParUtilisateurParDomaine(): TableMutableMessagesParUtilisateurParDomaine {
   return creerTableIdentificationMutableVide('sommet', x => x);

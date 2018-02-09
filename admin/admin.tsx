@@ -1,12 +1,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-
+import { CanalClient, creerCanalClient } from '../bibliotheque/client';
+import { FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, EtiquetteMessageJeu1 } from '../routage/commun/communRoutage'
 // Material-UI
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
+import { hote, port2 } from '../routage/commun/communRoutage';
+import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 
 const styles = {
     container: {
@@ -45,12 +48,45 @@ const styles = {
     }
 };
 
+type CanalAdmin = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
+
 
 export class Admin extends React.Component<any, any> {
-    
-    public render() {
-        
+    private adresseServeur: string;
+    private canal: CanalAdmin;
+    private messageErreur: string;
+    private config : boolean;
 
+    constructor(props: any) {
+        super(props);
+        this.adresseServeur = hote + ':' + port2;
+        this.messageErreur = 'Aucune erreur';
+    }
+
+
+    componentWillMount(): void {
+        console.log('* Initialisation après montage du corps');
+
+        // Creation canal de communication 
+        this.canal = creerCanalClient(this.adresseServeur);
+
+        // Traitement des messages
+        this.canal.enregistrerTraitementMessageRecu(() => {
+        });
+
+        console.log('- du traitement de la configuration');
+        this.canal.enregistrerTraitementConfigurationRecue((config: FormatConfigurationJeu1) => {
+            if (config) {
+                this.config = true; 
+                return true;
+            } else {
+                this.config = false;
+                return false; 
+            }
+        });
+    }
+
+    public render() {
         return (
             <div style={styles.container}>
                 <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />

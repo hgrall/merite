@@ -35,6 +35,10 @@ import {
   Identifiant
 } from '../../bibliotheque/types/identifiant';
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 42a9dc13b24156d55a0cbff25306406b21f722f2
 import { jamais } from '../../bibliotheque/outils';
 
 import { Mot, creerMot } from '../../bibliotheque/binaire';
@@ -380,40 +384,6 @@ export function creerMessageInitial(id_emetteur: Identifiant<'utilisateur'>, id_
 export function creerMessageEnveloppe(msg: FormatMessageJeu1) {
   return new MessageJeu1(msg);
 }
-
-/* TODO gestion des erreurs
-
-
-export function creerMessageErreurConnexion(emetteur: string, messageErreur: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": emetteur,
-        "destinataire": emetteur,
-        "type": TypeMessageJeu1.ERREUR_CONNEXION,
-        "contenu": messageErreur,
-        "date": new Date()
-    });
-}
-
-export function creerMessageCommunication(emetteur: string, destinataire: string, texte: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": emetteur,
-        "destinataire": destinataire,
-        "type": TypeMessageJeu1.COM,
-        "contenu": texte,
-        "date": new Date()
-    });
-}
-
-export function creerMessageRetourErreur(original: MessageJeu1, codeErreur: TypeMessageJeu1, messageErreur: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": original.enJSON().emetteur,
-        "destinataire": original.enJSON().destinataire,
-        "type": codeErreur,
-        "contenu": messageErreur,
-        "date": original.enJSON().date
-    });
-}
-*/
 
 /*
 Exemple de description d'une configuration - TODO à actualiser

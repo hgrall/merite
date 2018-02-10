@@ -101,8 +101,6 @@ const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationP
 
 const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
 
-const utilisateursPourConsigneParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
-
 export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
 
 export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<

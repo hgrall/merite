@@ -26,7 +26,8 @@ interface CaseProps {
 export class Case extends React.Component<CaseProps, any> {
     changeColor = () => {
         console.log(this.props.locked);
-        if (this.props.locked == false && this.props.changeColor && this.props.id) {
+        if (this.props.locked == false && this.props.changeColor && this.props.id != undefined) {
+            console.log(this.props.id);
             this.props.changeColor(this.props.id)
         }
       };

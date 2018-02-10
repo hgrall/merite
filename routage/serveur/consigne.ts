@@ -69,7 +69,7 @@ export function copieTableConsigne(utilisateursParDomaine: PopulationParDomaineM
             tableCopie.ajouter(id, tableDom);
     });
     console.log("TABLE COPIEE");
-    console.log(tableCopie.representation());
+    //console.log(tableCopie.representation());
     return tableCopie;
 }
 
@@ -88,50 +88,41 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
     var cible = new Array<Array<Consigne>>();
     var tableConsigne = creerTableMutableMessageParUtilisateurParDomaine();
     tableConsigne = copieTableConsigne(utilisateursParDomaine,anneau,tableConsigneUtilisateurParDomaine);
-
     var dom:number = 0;
-
     var nbAleatDom = 0;
     var randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
     var nbAleatUtil = 0;
     var randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-
+    //Cas pour les dom de 0 à n-1 (cas special pour le dernier dom s'il ne reste a choisir que lui-meme)
     for(dom;dom<NOMBRE_DE_DOMAINES-1;dom++){
         let row:Consigne[]  = new Array<Consigne>();  
         for(var util:number=0;util<UTILISATEURS_PAR_DOMAINE;util++){
             //initialisation
-            if(dom!== NOMBRE_DE_DOMAINES-1){
-                //Domaine cible aleatoire : while tant que le domaine est egal a celui en cours
-                nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom);
+            //Domaine cible aleatoire : while tant que le domaine est egal a celui en cours
+            nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom);
+            randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
+            //tant que ce domaine n'existe pas dans la table de consigne, c'est qu'il a été attribué  
+            while(tableConsigne.valeur(randomDomId).estVide()){
+                nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom); //nbAleat different de dom
                 randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
-                //tant que ce domaine n'existe pas dans la table de consigne, c'est qu'il a été attribué  
-                while(tableConsigne.valeur(randomDomId).estVide()){
-                    nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom); //nbAleat different de dom
-                    randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
-                };
-                //Utlisateur cible aleatoire
+            };
+            //Utlisateur cible aleatoire
+            nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
+            randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
+            //tant que ce user est dans la table de consigne, il n'a pas été attribué donc s'il n'y est pas, c'est qu'il a ete attribue
+            while(!tableConsigne.valeur(randomDomId).contient(randomUtilId)){
                 nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
                 randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-                //tant que ce user est dans la table de consigne, il n'a pas été attribué
-                //donc s'il n'y est pas, c'est qu'il a ete attribue
-                while(!tableConsigne.valeur(randomDomId).contient(randomUtilId)){
-                    nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
-                    randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-                };
-            }else{
-            }
-            
+            };
             let ID_dom_cible = anneau.noeud(randomDomId).centre;
             let ID_util_cible = utilisateursParDomaine.utilisateur(randomDomId,randomUtilId);
             let mot_cible= tableConsigne.valeur(randomDomId).valeur(randomUtilId);
             row.push([ID_dom_cible,ID_util_cible,mot_cible]);
-
         //Retirer l'utilisateur choisi de la table de consigne
         tableConsigne.valeur(randomDomId).retirer(randomUtilId);
         }        
         cible.push(row);
     }//FIN DE LA BOUCLE SUR DOM : CAS DE DOM N
-
     let row:Consigne[]  = new Array<Consigne>();  
     //dom++;
     var domFinalID= creerIdentifiant('sommet',"DOM-"+dom);
@@ -144,46 +135,36 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
             reste.push([idDom,idUtil,mot]);
         });
     });
-
-    shuffle(reste);
-    /*
-    for(var i=0;i<reste.length;i++){ 
-        console.log("RESTE  "+reste[i][0].val);
-        console.log("RESTE  "+reste[i][1].val);
-        console.log("RESTE  "+reste[i][2].representation());
+    shuffle(reste); //comme attribution se fait ensuite dans l'ordre, pour mélanger un peu
+    /*for(var i=0;i<reste.length;i++){ 
+        console.log("RESTE  DOM:  "+reste[i][0].val+" UTIL: "+reste[i][1].val+" MOT :"+reste[i][2].representation());
     }*/
-    
     for(var i=0;i<reste.length;i++){ //reste.length == nb util dans dernier dom sans consigne
         if(reste[i][0].val === domFinalID.val){
             console.log("PERMUTATION  ");
             //Permutation avec un autre user
             var nbUtilActuel = parseInt(reste[i][1].val.substring(reste[i][1].val.lastIndexOf("-")+1));
-            console.log("NB UTIL ACTUEL  "+nbUtilActuel);
             //dom a permuter : choix aleatoire jusqua diffrent de dom actuel
             nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom);
             randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
             nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
             randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-            console.log("DOM ALEAT 1 "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil);
-           // while(tableConsigne.valeur(randomDomId).estVide()){
-               console.log("CIBLE DE ALEAT "+cible[nbAleatDom][nbAleatUtil][0].ID.val);
-             while(cible[nbAleatDom][nbAleatUtil][0].ID.val===domFinalID.val){
+            while(cible[nbAleatDom][nbAleatUtil][0].ID.val===domFinalID.val){
                 nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom); //nbAleat different de dom
                 randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
                 nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
                 randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-                console.log("DOM ALEAT WHILE  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil);
-            };
-            //
-            row.push(cible[nbAleatDom][nbAleatUtil]);
-            cible[nbAleatDom][nbAleatUtil]=[anneau.noeud(randomDomId).centre,
-                                            utilisateursParDomaine.utilisateur(randomDomId,randomUtilId),
+               // console.log("DOM ALEAT WHILE  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil);
+            };            
+            row.push(cible[nbAleatDom][nbAleatUtil]);                                
+            cible[nbAleatDom][nbAleatUtil]=[anneau.noeud(reste[i][0]).centre,
+                                            utilisateursParDomaine.utilisateur(reste[i][0],reste[i][1]),
                                             reste[i][2]
-                                            ];
-            tableConsigne.valeur(randomDomId).retirer(randomUtilId);         
+            ];                              
+            tableConsigne.valeur(reste[i][0]).retirer(reste[i][1]);       
         }else{ //attribution classique
             console.log("ATTRIBUTION CLASSIQUE ");
-            console.log("DOM "+reste[i][0].val+"UTIL "+reste[i][1].val+"MOT "+reste[i][2].representation());
+            //console.log("DOM "+reste[i][0].val+"  UTIL "+reste[i][1].val+"  MOT "+reste[i][2].representation());
             let ID_dom_cible = anneau.noeud(reste[i][0]).centre;
             let ID_util_cible = utilisateursParDomaine.utilisateur(reste[i][0],reste[i][1]);
             let mot_cible= tableConsigne.valeur(reste[i][0]).valeur(reste[i][1]);
@@ -192,18 +173,11 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
         }
     }
     cible.push(row);
-
     console.log("CIBLE   ");
-    //console.log(cible);
-
-    for(var i = 0; i<NOMBRE_DE_DOMAINES; i++){
+    /*for(var i = 0; i<NOMBRE_DE_DOMAINES; i++){
         for(var j=0; j<UTILISATEURS_PAR_DOMAINE; j++){
             console.log("Element : "+i+"-"+j);
-            console.log("Sommet  "+cible[i][j][0].ID.val);
-            console.log("Utilisateur  "+cible[i][j][1].ID.val);
-            console.log("Mot  "+cible[i][j][2].representation());
-        }
-    }
-
+            console.log("Sommet  : "+cible[i][j][0].ID.val+"Utilisateur  : "+cible[i][j][1].ID.val+"Mot  : "+cible[i][j][2].representation());
+        }}*/
     return cible;
 }

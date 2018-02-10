@@ -40,6 +40,7 @@ export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, 
     verrou(idDomDest, id, PERSONNE); // creation du message dans la table de verouillage
     diffusion(date, idUtil,id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
     //si msg correctement envoye
+    console.log("INITIER")
     ajouterMessageParDomaine(idDomOrigine,messagesEnvoyesParDomaine);
     //consigneEnvoi(idDomOrigine,idUtil,contenu);
   }
@@ -51,6 +52,7 @@ function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>,
 
 // Diffusion d’un message à tous les utilisateurs d’un domaine (reception)
 function diffusion(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>,idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot) : void {
+  console.log("DIFFUSION")
   ajouterMessageParDomaine(idDomaineDestination,messagesRecusParDomaine);
   return diffusionListeUtilisateur(date, idUtil, idMessage, origin, idDomaineDestination, contenu, utilisateurParDomaine(idDomaineDestination));
 }
@@ -155,7 +157,7 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 // qu’il a gagné le cas échéant.
 
 export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
-  ajouterMessageParDomaine(origine,messagesRecusParDomaine);
+  //ajouterMessageParDomaine(origine,messagesRecusParDomaine);
   //recepteur du message
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
 

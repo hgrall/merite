@@ -153,6 +153,10 @@ serveurAppli.demarrer();
 let reseauConfig = false; 
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
+	console.log(l.estAdmin(), 'admin');
+	if (l.estAdmin()){
+
+	}
 	if (reseauConfig) {
 		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
 		try {

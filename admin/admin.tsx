@@ -69,7 +69,7 @@ export class Admin extends React.Component<any, any> {
 
         // Creation canal de communication 
         this.canal = creerCanalClient(this.adresseServeur);
-
+        //this.canal.envoyerAdmin(true);
         // Traitement des messages
         this.canal.enregistrerTraitementMessageRecu(() => {
         });

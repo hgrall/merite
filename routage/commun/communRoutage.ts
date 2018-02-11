@@ -35,10 +35,6 @@ import {
   Identifiant
 } from '../../bibliotheque/types/identifiant';
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 42a9dc13b24156d55a0cbff25306406b21f722f2
 import { jamais } from '../../bibliotheque/outils';
 
 import { Mot, creerMot } from '../../bibliotheque/binaire';

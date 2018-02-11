@@ -43,62 +43,8 @@ export function validerMessage(canal: CanalJeu1, emetteur: Identifiant<'utilisat
     canal.envoyerMessage(msg.aEssayer(contenu, emetteur))
 }
 
-<<<<<<< HEAD
-var idUtil : Identifiant<'utilisateur'>;
-var idDom : Identifiant<'domaine'>;
-var idDomDest : Identifiant<'domaine'>;
-var idMessage : Identifiant<'message'>;
-var contenu : Mot;
-const adresseServeur: string = hote + ":" + port2;
-
-/*L’utilisateur demande au serveur d’initier la transmission 
-du message qu’il doit envoyer // 
-(a priori un unique message), 
-après avoir indiqué le domaine voisin // 
-destinataire et le contenu.
-*/
-export function initier(idUtil :Identifiant<'utilisateur'>,
-idDom : Identifiant<'domaine'>,
-idDomDest : Identifiant<'domaine'>,
-contenu : Mot,
- ):void{
-    console.log("* Initialisation après chargement du DOM");
-
-    console.log("- du canal de communication avec le serveur d'adresse " + adresseServeur);
-    var canal = creerCanalClient(adresseServeur);
-
-    console.log("- du traitement des messages");
-    canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
-        let msg = new MessageJeu1(m);
-        console.log("- du message brut : " + msg.brut());
-        //console.log("- du message net : " + representerMessage(msg));
-        //posterNL('logChats', representerMessage(msg));
-})};
-
-/*L’utilisateur reçoit un message du serveur et le place en transit. 
-Les autres // utilisateurs du domaine ont reçu le même message.
- */
-export function transit(idUtil :Identifiant<'utilisateur'>,
-idDom : Identifiant<'sommet'>,
-idDomDest : Identifiant<'sommet'>,
-idMessage : Identifiant<'message'>,
-contenu : Mot,
-):void{
-};
-
-/*L’utilisateur demande au serveur de verrouiller le message 
-en transit.
- */
-export function verouiller(idUtil :Identifiant<'utilisateur'>,
-idDom : Identifiant<'sommet'>,
-idDomDest : Identifiant<'sommet'>,
-idMessage : Identifiant<'message'>,
-contenu : Mot,
- ):void{
-=======
 /* Demande de verrou d'un message */
 export function verrou(canal: CanalJeu1, idMessage: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, dom: Identifiant<'sommet'>, contenu: Mot) {
->>>>>>> 42a9dc13b24156d55a0cbff25306406b21f722f2
     let msg = new MessageJeu1({
         ID: idMessage,
         ID_emetteur: emetteur,

@@ -40,6 +40,7 @@ export class Admin extends React.Component<any, any> {
         super(props);
         this.adresseServeur = hote + ':' + port2;
         this.messageErreur = 'Aucune erreur';
+        this.config = true; 
     }
 
     componentWillMount(): void {
@@ -54,10 +55,10 @@ export class Admin extends React.Component<any, any> {
         
             switch (m.type) {
                 case TypeMessageJeu1.NONCONF:
-                    this.config = true; 
+                    this.config = false; 
                     break;
-                //case TypeMessageJeu1.STATISTIQUE: 
-                //    this.config = true; 
+                case TypeMessageJeu1.STATISTIQUES: 
+                    this.config = true; 
                     // set the state statistiques
             }
         });

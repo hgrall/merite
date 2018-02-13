@@ -64,7 +64,7 @@ class ServeurJeu1 extends ServeurLiensWebSocket<
 	EtiquetteMessageJeu1
 > {}
 
-class LienJeu1 extends LienWebSocket<
+export class LienJeu1 extends LienWebSocket<
 	FormatErreurJeu1,
 	FormatErreurJeu1,
 	EtiquetteErreurJeu1,
@@ -262,11 +262,11 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   let lien = l; 
   switch (m.type) {
 	case TypeMessageJeu1.ADMIN:
-
 		if (reseauConfig) {
 			// send message avec statistique 
 			console.log("envoi des stats");
 			serveur.statistiques(
+				lien,
 				msg.val().date,
 				msg.val().ID,
 				msg.val().ID_emetteur,

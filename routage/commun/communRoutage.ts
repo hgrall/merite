@@ -35,22 +35,12 @@ import {
   Identifiant
 } from '../../bibliotheque/types/identifiant';
 
-// import {
-//     FormatMessage, Message,
-//     FormatConfigurationInitiale, Configuration,
-//     FormatErreurRedhibitoire, ErreurRedhibitoire,
-//     Sommet, ReseauImmutable, AssemblageReseau,
-//     creerCentreSansVoisins,
-//     NoeudEnveloppeMutable, NoeudEnveloppeImmutable, NoeudMutable, NoeudImmutable, FormatNoeudImmutable, FormatNoeudMutable, EtiquetteNoeud,
-//     creerAssemblageReseauEnAnneau
-// } from "../../bibliotheque/communication";
-
 import { jamais } from '../../bibliotheque/outils';
 
 import { Mot, creerMot } from '../../bibliotheque/binaire';
 
 export const hote: string = 'merite'; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3002; // port de la essource 1 (serveur d'applications)
+export const port1 = 3002; // port de la ressource 1 (serveur d'applications)
 export const port2: number = 1112; // port de la ressouce 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
@@ -172,8 +162,11 @@ export enum TypeMessageJeu1 {
   ERREUR_EMET,
   ERREUR_DEST,
   ERREUR_TYPE,
-  INTERDICTION
+  INTERDICTION,
+  STATISTIQUES
 }
+
+export type Stats = Array<[string,number]>;
 
 export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmutable<'message'> {
   readonly ID_emetteur: Identifiant<'utilisateur'>;
@@ -182,9 +175,10 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly type: TypeMessageJeu1;
   readonly contenu: Mot;
   readonly date: FormatDateFr; // Emission
+  readonly stats?: Stats;
 }
 
-export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu';
+export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
 
 // Structure immutable
 export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> {
@@ -207,6 +201,8 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
         return msg.ID_destination.val;
       case 'contenu':
         return msg.contenu.representation();
+      case 'utilisateur':
+        return msg.ID_emetteur.val;
     }
     return jamais(e);
   }
@@ -386,6 +382,22 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
       date: msg.date
     });
   }
+
+  //Client demande les stats
+  aStatistiques(contenu: Mot, emetteur: Identifiant<'utilisateur'>): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: emetteur,
+      ID_origine: msg.ID_destination,
+      ID_destination: sommetInconnu,
+      type: TypeMessageJeu1.STATISTIQUES,
+      contenu: contenu,
+      date: msg.date
+    });
+  
+  }
+
 }
 
 // Client : Produire un message INIT.
@@ -416,40 +428,6 @@ export function messageAdmin() {
 export function creerMessageEnveloppe(msg: FormatMessageJeu1) {
   return new MessageJeu1(msg);
 }
-
-/* TODO gestion des erreurs
-
-
-export function creerMessageErreurConnexion(emetteur: string, messageErreur: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": emetteur,
-        "destinataire": emetteur,
-        "type": TypeMessageJeu1.ERREUR_CONNEXION,
-        "contenu": messageErreur,
-        "date": new Date()
-    });
-}
-
-export function creerMessageCommunication(emetteur: string, destinataire: string, texte: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": emetteur,
-        "destinataire": destinataire,
-        "type": TypeMessageJeu1.COM,
-        "contenu": texte,
-        "date": new Date()
-    });
-}
-
-export function creerMessageRetourErreur(original: MessageJeu1, codeErreur: TypeMessageJeu1, messageErreur: string): MessageJeu1 {
-    return new MessageJeu1({
-        "emetteur": original.enJSON().emetteur,
-        "destinataire": original.enJSON().destinataire,
-        "type": codeErreur,
-        "contenu": messageErreur,
-        "date": original.enJSON().date
-    });
-}
-*/
 
 /*
 Exemple de description d'une configuration - TODO à actualiser
@@ -513,11 +491,14 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
   return pop;
 }
 
-export type Consigne = {
+/*export type Consigne = {
   ID_dom_cible : FormatSommetJeu1,
-  ID_util_cible: FormatUtilisateur;
+  ID_util_cible: FormatUtilisateur,
   mot_cible: Mot
-}
+}*/
+
+export type Consigne = [FormatSommetJeu1,FormatUtilisateur,Mot];
+
 
 export interface FormatConfigurationJeu1 extends FormatConfigurationInitiale {
   readonly centre: FormatSommetJeu1;
@@ -549,7 +530,8 @@ export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, Fo
       case 'date':
         return creerDateEnveloppe(config.date).representation();
       case 'consigne': 
-        return config.consigne.mot_cible.representation();
+        //return config.consigne.mot_cible.representation();
+        return config.consigne[2].representation();
     }
     return jamais(e);
   }
@@ -722,6 +704,7 @@ export type TableMutableMessagesParUtilisateurParDomaine = TableIdentificationMu
   TableIdentificationMutable<'utilisateur', Mot, Mot>,
   TableIdentificationMutable<'utilisateur', Mot, Mot>
   >;
+
 
 export function creerTableMutableMessageParUtilisateurParDomaine(): TableMutableMessagesParUtilisateurParDomaine {
   return creerTableIdentificationMutableVide('sommet', x => x);

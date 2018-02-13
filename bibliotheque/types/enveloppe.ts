@@ -34,10 +34,12 @@ export abstract class Enveloppe<TIN, TEX, E extends string> {
         this.etatEnVal = etatEnVal;
     }
     protected etat(): TIN {
-        return this.structure;
+        var self = this;
+        return self.structure;
     }
     val(): TEX {
-        return this.etatEnVal(this.structure);
+        var self = this;
+        return self.etatEnVal(self.structure);
     }
     // transformation brute du json de type TIN en string
     brut(): string {

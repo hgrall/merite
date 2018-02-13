@@ -4,23 +4,23 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Consigne } from '../commun/communRoutage'; 
+import { Consigne,MessageJeu1 } from '../commun/communRoutage'; 
 import { ConsigneDom } from './Consigne';
 import { IdentifiantCases } from './IdentifiantCases';
 
 
 
-interface ReglesProps {
+interface StatsProps {
   consigne: Consigne
 }
 
 const styles = {
-  boutonRegles: {
+  boutonStats: {
     margin: '10px'
   }
 };
 
-export class Regles extends React.Component<ReglesProps, any> {
+export class Stats extends React.Component<StatsProps, any> {
   state = {
     open: true,
   };
@@ -46,19 +46,19 @@ export class Regles extends React.Component<ReglesProps, any> {
     return (
       <div>
         <RaisedButton 
-          label="Regles du jeu" 
+          label="Statistiques" 
           secondary={true}
-          style={styles.boutonRegles}
+          style={styles.boutonStats}
           icon={<Announcement/>}
           onClick={this.handleOpen} />
         <Dialog
-          title="Regles du jeu"
+          title="Statistiques"
           actions={actions}
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
-          Les regles du jeu sont les suivantes ...
+          Les statistiques du jeu sont les suivants ...
           <br/>
           <ConsigneDom consigne={this.props.consigne}/>
         </Dialog>

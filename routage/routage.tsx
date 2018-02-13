@@ -1,26 +1,35 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Dialog from 'material-ui/Dialog';
-import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-import FlatButton from 'material-ui/FlatButton';
-import { MuiThemeProvider } from 'material-ui/styles';
-import { Regles } from './composants/Regles';
-import { NewMessage } from './composants/NewMessage';
-import { BarreEnvoi } from './composants/BarreEnvoi';
-import {Identifiant, creerIdentifiant} from '../bibliotheque/types/identifiant'
-import {FormatTableImmutable, FABRIQUE_TABLE} from '../bibliotheque/types/table'
-import { creerDateMaintenant, conversionDate } from '../bibliotheque/types/date'
+// Bibliotheque
+import { Identifiant, creerIdentifiant } from '../bibliotheque/types/identifiant'
 import { creerMot, Mot } from '../bibliotheque/binaire'
-import { MessageBox } from './composants/MessageBox';
-import { IdentifiantCases } from './composants/IdentifiantCases';
+import { CanalClient, creerCanalClient } from '../bibliotheque/client';
+import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
+import { Deux } from '../bibliotheque/types/mutable';
+import { Link } from 'react-router-dom';
+// Material-UI
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1,creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
-import { Deux } from '../bibliotheque/types/mutable';
-import { verouiller } from './client/clientRoutage';
-import { Link } from 'react-router-dom';
 import { RaisedButton } from 'material-ui/RaisedButton';
+
+//Composants
+import { Regles } from './composants/Regles';
+import { NewMessage } from './composants/NewMessage';
+import { MessageBox } from './composants/MessageBox';
+import { IdentifiantCases } from './composants/IdentifiantCases';
+
+// Fonctions clientes 
+import {
+	envoiMessage,
+	envoiMessageInit,
+	validerMessage,
+	verrou, 
+	deverrouiller
+} from './client/clientRoutage'
+
 
 const styles = {
 	container: {
@@ -77,6 +86,7 @@ interface FormState {
 	openDialog: boolean,
 	textDialog: string,
 	consigne: Consigne
+
   }
 // Etat initial - Le client ne connait pas sa configuration 
 let configReceived = false; 
@@ -95,11 +105,11 @@ export class Routage extends React.Component<any, FormState> {
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
 		textDialog: '',
-		consigne: {
-			ID_dom_cible: { ID: creerIdentifiant('sommet', ''), domaine: [] },
-			ID_util_cible: { ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
-			mot_cible: creerMot([])
-		}
+		consigne:[
+			{ ID: creerIdentifiant('sommet', ''), domaine: [] },
+			{ ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
+			creerMot([])
+		]
 	}
 
 	constructor(props: any) {
@@ -109,72 +119,40 @@ export class Routage extends React.Component<any, FormState> {
 	}
 
 	envoiMessageInit = (dest: Identifiant<'sommet'>, contenu: Mot) => {
-		this.canal.envoyerMessage(new MessageJeu1({
-			ID: creerIdentifiant('message',''),
-			ID_emetteur: this.state.util.ID,
-			ID_origine: this.state.dom.ID,
-			ID_destination: dest,
-			type: TypeMessageJeu1.INIT,
-			contenu: contenu,
-			date: conversionDate(new Date())
-		  }))
+		envoiMessageInit(this.canal, this.state.util.ID, this.state.dom.ID, dest, contenu);
 	}
 
-	envoiMessage = (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => {
-		this.canal.envoyerMessage(new MessageJeu1({
-			ID: id,
-			ID_emetteur: this.state.util.ID,
-			ID_origine: this.state.dom.ID,
-			ID_destination: dest,
-			type: TypeMessageJeu1.SUIVANT,
-			contenu: contenu,
-			date: conversionDate(new Date())
-		}))
+	envoiMessage = (dest: Identifiant<'sommet'>, idMessage: Identifiant<'message'>, contenu: Mot) => {
+		envoiMessage(this.canal, this.state.util.ID, this.state.dom.ID, dest, idMessage, contenu);
 	}
 
 	detruireMessage = (msg: MessageJeu1) => {
+		// Suppression du message concerné
 		this.state.messages.splice(this.state.messages.findIndex(function (m) {
 			if (m.val().ID.val === msg.val().ID.val) {
 				return true;
 			}
 			return false;
 		}), 1);
+		// Mise a jour des messages
 		this.setState({
 			messages: this.state.messages
 		})
-		this.canal.envoyerMessage(msg.aIgnorer(this.state.util.ID))
+		// Deverrouillage du message aupres du serveur 
+		deverrouiller(this.canal, this.state.util.ID, this.state.dom.ID, msg.val().ID, msg.val().contenu);
+		//this.canal.envoyerMessage(msg.aIgnorer(this.state.util.ID))
 	}
 
 	validerMessage = (contenu: Mot, msg: MessageJeu1) => {
-		this.canal.envoyerMessage(msg.aEssayer(contenu, this.state.util.ID))
+		validerMessage(this.canal, this.state.util.ID, contenu, msg)
 	}
 
-	verrou = (idMessage : Identifiant<'message'>,
-	contenu : Mot) => {
-		let msg = new MessageJeu1({
-			ID: idMessage,
-			ID_emetteur: this.state.util.ID,
-			ID_origine: this.state.dom.ID,
-			ID_destination: sommetInconnu,
-			type: TypeMessageJeu1.VERROU,
-			contenu: contenu,
-			date: conversionDate(new Date())
-		  })
-		this.canal.envoyerMessage(msg);
+	verrou = (idMessage : Identifiant<'message'>, contenu : Mot) => {
+		verrou(this.canal, idMessage, this.state.util.ID, this.state.dom.ID, contenu );
 	}
 
-	deverrouiller = (idMessage: Identifiant<'message'>,
-		contenu: Mot) => {
-		let msg = new MessageJeu1({
-			ID: idMessage,
-			ID_emetteur: this.state.util.ID,
-			ID_origine: this.state.dom.ID,
-			ID_destination: this.state.dom.ID,
-			type: TypeMessageJeu1.IGNOR,
-			contenu: contenu,
-			date: conversionDate(new Date())
-		})
-		this.canal.envoyerMessage(msg);
+	deverrouiller = (idMessage: Identifiant<'message'>, contenu: Mot) => {
+		deverrouiller(this.canal, this.state.util.ID, this.state.dom.ID, idMessage, contenu);
 	}
 
 	componentWillMount(): void {
@@ -184,6 +162,8 @@ export class Routage extends React.Component<any, FormState> {
 		this.canal = creerCanalClient(this.adresseServeur);
 
 		console.log('- du traitement des messages');
+
+		// Traitement des messages
 		this.canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
 			let msg = new MessageJeu1(m);
 			console.log('* Réception');
@@ -191,15 +171,11 @@ export class Routage extends React.Component<any, FormState> {
 
 			switch (m.type) {
 				case TypeMessageJeu1.TRANSIT:
+					// l'utilisateur recoit un message du serveur et le place en transit 
 					this.state.messages.push(msg);
 					this.setState({
 						messages: this.state.messages,
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
 					})
-					// l'utilisateur recoit un message du serveur et le place en transit 
 					break;
 				case TypeMessageJeu1.ACTIF:
 					// l'utilisateur active un message apres une demande de verouillage réussi coté serveur
@@ -228,6 +204,7 @@ export class Routage extends React.Component<any, FormState> {
 					})
 					break;
 				case TypeMessageJeu1.INACTIF:
+					// Le message ne peut pas etre verrouiller car déja verrouiller par un autre utilisateur
 					this.setState({
 						messages: this.state.messages.map(function (msg) {
 							if (msg.val().ID.val === m.ID.val) {
@@ -236,11 +213,7 @@ export class Routage extends React.Component<any, FormState> {
 							else {
 								return msg;
 							}
-						}),
-						dom: this.state.dom,
-						util: this.state.util,
-						voisinFst: this.state.voisinFst,
-						voisinSnd: this.state.voisinSnd,
+						})
 					})
 					break;
 				case TypeMessageJeu1.SUCCES_INIT:
@@ -264,6 +237,7 @@ export class Routage extends React.Component<any, FormState> {
 					this.handleOpen();
 					break;
 				case TypeMessageJeu1.IGNOR:
+					// Le message est détruit à la demande du serveur
 					this.state.messages.splice(this.state.messages.findIndex(function (msg) {
 						if (msg.val().ID.val === m.ID.val) {
 							return true;
@@ -273,7 +247,6 @@ export class Routage extends React.Component<any, FormState> {
 					this.setState({
 						messages: this.state.messages
 					})
-					// l'utilisateur détruit le message à la demande du serveur 
 					break;
 				default:
 				console.log('no match');
@@ -309,7 +282,7 @@ export class Routage extends React.Component<any, FormState> {
 				voisinSnd: voisinSnd,
 				consigne: this.config.val().consigne
 			});
-			this.config.val().utilisateur.ID
+
 			console.log(this.config.net("centre"));
 			console.log('* Réception');
 			console.log('- de la configuration brute : ' + this.config.brut());
@@ -338,21 +311,21 @@ export class Routage extends React.Component<any, FormState> {
 			return (
 				<div style={styles.container}>
 					<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-					<Regles consigne={this.state.consigne }/>
+					<Regles consigne={this.state.consigne} />
 					<div style={styles.dom}>
-					Domaine : <IdentifiantCases int={this.state.dom.domaine} />
+						Domaine : <IdentifiantCases int={this.state.dom.domaine} />
 					</div>
 					<div style={styles.dom}>
-					Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+						Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
 					</div>
 					<Paper zDepth={2} style={styles.paper}>
 						<h3 style={styles.title}>Messages à traiter</h3>
-						<NewMessage 
-							envoyerMessage={this.envoiMessageInit} 
-							voisinFst={this.state.voisinFst} 
+						<NewMessage
+							envoyerMessage={this.envoiMessageInit}
+							voisinFst={this.state.voisinFst}
 							voisinSnd={this.state.voisinSnd}
-							consigne={this.state.consigne}/>
-						<MessageBox 
+							consigne={this.state.consigne} />
+						<MessageBox
 							envoyerMessage={this.envoiMessage}
 							verrou={this.verrou}
 							deverrouiller={this.deverrouiller}
@@ -360,10 +333,8 @@ export class Routage extends React.Component<any, FormState> {
 							messages={this.state.messages}
 							voisinFst={this.state.voisinFst}
 							validation={this.validerMessage}
-							voisinSnd={this.state.voisinSnd}/>
+							voisinSnd={this.state.voisinSnd} />
 					</Paper>
-					
-
 					<Dialog
 						actions={actions}
 						modal={false}
@@ -372,7 +343,8 @@ export class Routage extends React.Component<any, FormState> {
 					>
 						{this.state.textDialog}
 					</Dialog>
-					</div>
+
+				</div>
 			);
 		}
 		else {
@@ -381,10 +353,9 @@ export class Routage extends React.Component<any, FormState> {
 					<p> Le jeu n'est pas encore pret ! </p>
 					<br/>
 					<Link to='/' >Retour</Link>
-					
-
 				</div>
-			);
+			)
+		
 		}
   	}
 }

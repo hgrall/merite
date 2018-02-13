@@ -15,9 +15,7 @@ interface messageProps {
   voisinSnd: FormatSommetJeu1,
   envoyerMessage: (dest: Identifiant<'sommet'>, id: Identifiant<'message'>, contenu: Mot) => void,
   }
-/**
- * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
- */
+
 export class DialogTransmettreMessage extends React.Component<messageProps, any> {
   state = {
     open: false,

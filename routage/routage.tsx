@@ -95,11 +95,16 @@ export class Routage extends React.Component<any, FormState> {
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
 		textDialog: '',
-		consigne: {
+		/*consigne: {
 			ID_dom_cible: { ID: creerIdentifiant('sommet', ''), domaine: [] },
 			ID_util_cible: { ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
 			mot_cible: creerMot([])
-		}
+		}*/
+		consigne:[
+			{ ID: creerIdentifiant('sommet', ''), domaine: [] },
+			{ ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
+			creerMot([])
+		]
 	}
 
 	constructor(props: any) {

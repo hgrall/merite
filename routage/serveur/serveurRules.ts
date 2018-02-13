@@ -1,31 +1,59 @@
 import {Identification, Identifiant, creerIdentifiant, egaliteIdentifiant, creerIdentificationParCompteur, FormatIdentifiableMutable, FormatIdentifiableImmutable} from '../../bibliotheque/types/identifiant';
-import {TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine, MessageJeu1, FormatMessageJeu1, TypeMessageJeu1 } from '../commun/communRoutage'
-import { Mot } from '../../bibliotheque/binaire';
+import {TableMutableUtilisateursParMessageParDomaine, creerTableMutableUtilisateurParMessageParDomaine, MessageJeu1, FormatMessageJeu1, TypeMessageJeu1, TableMutableMessagesParUtilisateurParDomaine, FormatSommetJeu1 } from '../commun/communRoutage'
+import { Mot,binaire } from '../../bibliotheque/binaire';
 import { TableIdentificationMutable, creerTableIdentificationImmutable } from '../../bibliotheque/types/tableIdentification'
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
-import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial} from '../commun/communRoutage';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, tableConsigneUtilisateurParDomaine} from './serveurRoutage'
+import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial,ReseauJeu1} from '../commun/communRoutage';
+import {
+  connexions, 
+  utilisateursConnectesParDomaine, 
+  identificationMessages, 
+  tableVerrouillageMessagesParDomaine, 
+  PERSONNE, 
+  tableConsigneUtilisateurParDomaine,
+  pointsEnvoyesParDomaine,
+  pointsRecusParDomaine,
+  messagesEnvoyesParDomaine,
+  messagesRecusParDomaine
+} from './serveurRoutage';
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
+import {
+	creerCompteurParDomaine, 
+	ajouterPointsParDomaine,
+	ajouterMessageParDomaine,
+	calculEcartMessageEnvoyesRecus,
+	calculEcartPointsMessage,
+	compteurMessageEnvoyes,
+	compteurPointsParDomaine
+} from '../serveur/statistiques';
+import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
+
 
 /*
-* Traitement des messages
+* TRAITEMENT DES MESSAGES
 */
 
 export function initier(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>, idDomOrigine: Identifiant<'sommet'>, idDomDest: Identifiant<'sommet'>, contenu: Mot): void {
     let id: Identifiant<'message'> = identificationMessages.identifier('message')// incrementation du compteur
     verrou(idDomDest, id, PERSONNE); // creation du message dans la table de verouillage
     diffusion(date, idUtil,id, idDomOrigine, idDomDest, contenu); // diffusion vers destinataire
-}
+    //si msg correctement envoye
+    console.log("INITIER")
+    ajouterMessageParDomaine(idDomOrigine,messagesEnvoyesParDomaine);
+    //consigneEnvoi(idDomOrigine,idUtil,contenu);
+  }
 
 // verouille dans un domaine le message pour un utilisateur 
 function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>, utilisateur: Identifiant<'utilisateur'>) : void {
   tableVerrouillageMessagesParDomaine.valeur(domaine).ajouter(message, utilisateur);
 }
 
-// Diffusion d’un message à tous les utilisateurs d’un domaine
+// Diffusion d’un message à tous les utilisateurs d’un domaine (reception)
 function diffusion(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>,idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot) : void {
+  console.log("DIFFUSION")
+  ajouterMessageParDomaine(idDomaineDestination,messagesRecusParDomaine);
   return diffusionListeUtilisateur(date, idUtil, idMessage, origin, idDomaineDestination, contenu, utilisateurParDomaine(idDomaineDestination));
 }
 
@@ -94,6 +122,10 @@ function miseAJourAprèsVerrouillage(date :FormatDateFr  ,id : Identifiant<'mess
   });
 }
 
+export function detruireMessageDomaine(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
+  detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
+}
+
 function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine: Identifiant<'sommet'>, contenu: Mot, listeUtilisateurs: FormatTableImmutable<FormatUtilisateur>): void {
   tableVerrouillageMessagesParDomaine.valeur(origine).retirer(id);
   creerTableIdentificationImmutable('utilisateur', listeUtilisateurs).iterer((idU, u) => {
@@ -108,7 +140,6 @@ function detruire(date: FormatDateFr, id: Identifiant<'message'>, emetteur: Iden
     }));
   });
 }
-
 
 // Le serveur transmet le message reçu s’il est verrouillé par l’émetteur.
 
@@ -126,63 +157,108 @@ export function transmettre(date: FormatDateFr, id : Identifiant<'message'>, eme
 // qu’il a gagné le cas échéant.
 
 export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+  //ajouterMessageParDomaine(origine,messagesRecusParDomaine);
+  //recepteur du message
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  if (verrouilleur.val === emetteur.val){
-    if (consigne(origine, emetteur, contenu)){
-      connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
-        ID: id,
-        ID_emetteur: emetteur,
-        ID_origine: origine,
-        ID_destination: origine,
-        type: TypeMessageJeu1.SUCCES_FIN,
-        contenu: contenu,
-        date: date
-      }))
-    } else {
-      connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
-        ID: id,
-        ID_emetteur: emetteur,
-        ID_origine: origine,
-        ID_destination: origine,
-        type: TypeMessageJeu1.ECHEC_FIN,
-        contenu: contenu,
-        date: date
-      }))
+
+    if (verrouilleur.val === emetteur.val){
+      if (consigne(origine, emetteur, contenu)){
+        //envoi reponse
+        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.SUCCES_FIN,
+          contenu: contenu,
+          date: date
+        }))
+      } else {
+        connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.ECHEC_FIN,
+          contenu: contenu,
+          date: date
+        }))
+      }
+      
     }
     detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
   }
-}
 
-function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+
+
+//Verifie que le message cree correspond a la consigne (destinataire et contenu)
+function consigneEnvoi(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
   let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
   let tContenu = contenu['structure'];
+  console.log("ORIGINE  : "+origine.val);
+  console.log("EMETTEUR   :  "+emetteur.val);
+  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
+  console.log("CONTENU  :  "+tContenu.tableau.toString());
   if (tConsigne.taille != tContenu.taille) {
+    console.log("TAILLE DIFFERENTE  ");
     return false;
   }
   for (let i = 0; i < tConsigne.taille; i++) {
     if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      console.log("CARACTERE DIFFERENTE  ");
       return false;
     }
   }
+  console.log("LE MSG A BIEN ETE ENVOYE ");
+  ajouterPointsParDomaine(origine,pointsEnvoyesParDomaine);
+  return true;
+}  
+
+
+//Verifie que le message envoye par l'utilisateur est correct --> cad bien decode
+// NE TESTE PAS SI A ETE ENVOYE A LA BONNE PERSONNE
+
+function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  console.log("CONSIGNE DANS VERIFIER  "+tableConsigneUtilisateurParDomaine.representation());
+  console.log("CONSIGNE DANS VERIFIER  "+tConsigne.tableau);
+  
+  
+  let tContenu = contenu['structure'];
+  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
+  console.log("CONTENU  :  "+tContenu.tableau.toString());
+  if (tContenu.taille !=tConsigne.taille) {
+    console.log("TAILLE DIFFERENTE  ");
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      console.log("CARACTERE DIFFERENTE  ");
+      return false;
+    }
+  }
+  console.log("LE MSG A BIEN ETE DECODE ");
+  ajouterPointsParDomaine(origine,pointsRecusParDomaine);
   return true;
 }
 
 export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
-  if (verrouilleur.val === emetteur.val) { // verification que le serveur est bien verouille par l'emetteur concerne 
-    console.log('verrou enleve');  
-  verrou(dest, id, PERSONNE); 
-    creerTableIdentificationImmutable('utilisateur', utilisateurParDomaine(origine)).iterer((idU, u) => {
-      console.log(idU);
-      connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
-        ID: id,
-        ID_emetteur: emetteur,
-        ID_origine: origine,
-        ID_destination: origine,
-        type: TypeMessageJeu1.LIBE,
-        contenu: contenu,
-        date: date
-      }));
-    });
-  }
+  if (verrouilleur === emetteur) { // verification que le serveur est bien verouille par l'emetteur concerne 
+      verrou(dest, id, PERSONNE); 
+      creerTableIdentificationImmutable('utilisateur', utilisateurParDomaine(origine)).iterer((idU, u) => {
+        console.log(idU);
+        connexions.valeur(idU).envoyerAuClientDestinataire(new MessageJeu1({
+          ID: id,
+          ID_emetteur: emetteur,
+          ID_origine: origine,
+          ID_destination: origine,
+          type: TypeMessageJeu1.LIBE,
+          contenu: contenu,
+          date: date
+        }));
+      });
+  } 
 }
+
+

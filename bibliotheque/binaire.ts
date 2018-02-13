@@ -2,6 +2,7 @@ import { TableauImmutable, FormatTableauImmutable } from './types/tableau';
 import { Deux } from './types/mutable';
 
 import { jamais } from './outils';
+import { type } from 'os';
 
 export type FormatMot = FormatTableauImmutable<Deux>;
 
@@ -24,7 +25,8 @@ export class Mot extends TableauImmutable<Deux> {
   }
 
   tableauBinaire(): ReadonlyArray<Deux> {
-    return this.etat().tableau;
+    var self2 = this;
+    return self2.etat().tableau;
   }
 }
 
@@ -51,6 +53,13 @@ export function binaire(n: number): Mot {
   );
 }
 
+export function concatMot(mot1: Mot, mot2: Mot): Mot {
+  var tab1 = mot1.val().tableau;
+  var tab2 = mot2.val().tableau;
+  var total = tab1.concat(tab2);
+  return creerMot(total);
+}
+
 export function premiersBinaires(n: number): Mot[] {
   let r = [];
   for (let i = 0; i < n; i++) {
@@ -65,4 +74,38 @@ export function motAleatoire(length: number): Mot {
     r.push(Math.floor(Math.random() * Math.floor(2)));
   }
   return creerMot(r);
+}
+
+//Nombre aleatoire dans [0,max]  max inclus
+export function getRandomInt(max: number) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
+//nombre aleatoire different de actuel
+export function nombreAleatoire(max:number, actuel:number){
+  var nbAleat = getRandomInt(max);
+  while(nbAleat===actuel){
+    nbAleat = getRandomInt(max);
+  }
+  return nbAleat;
+}
+
+//genere un tableau aleatoire 
+//actuel : element actuel qu'on genere automatique (user ou domaine)
+export function tableauBinaireAleatoire(nbMax : number, actuel : number){
+  var nbAleat = nombreAleatoire(nbMax,actuel);
+  var tableauAleat = binaire(nbAleat).tableauBinaire();
+  var tableauMax = binaire(nbMax).tableauBinaire();
+  tableauAleat = completerTableauParZeros(nbMax,tableauAleat);
+  return tableauAleat;
+}
+
+//complete un tableau Aleatoire par des zeros pour qu'il soit de la taille du nombre max
+export function completerTableauParZeros(nb:number,tab:ReadonlyArray<Deux>){
+  var tableauMax = binaire(nb).tableauBinaire();
+  let zero = binaire(0).tableauBinaire();
+  while(tab.length!=tableauMax.length){
+    tab = zero.concat(tab);
+  }
+  return tab;
 }

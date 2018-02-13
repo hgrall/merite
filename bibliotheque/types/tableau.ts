@@ -137,7 +137,8 @@ export class TableauImmutable<TEX>
         return MODULE_TABLEAU.reduction(this.etat(), neutre, op);
     }
     valeur(index: number): TEX {
-        return MODULE_TABLEAU.valeur(this.etat(), index);
+        var self = this;
+        return MODULE_TABLEAU.valeur(self.etat(), index);
     }
     taille(): number {
         return MODULE_TABLEAU.taille(this.etat());

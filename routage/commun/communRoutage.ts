@@ -35,13 +35,12 @@ import {
   Identifiant
 } from '../../bibliotheque/types/identifiant';
 
-
 import { jamais } from '../../bibliotheque/outils';
 
 import { Mot, creerMot } from '../../bibliotheque/binaire';
 
 export const hote: string = 'merite'; // hôte local via TCP/IP - DNS : cf. /etc/hosts - IP : 127.0.0.1
-export const port1 = 3002; // port de la essource 1 (serveur d'applications)
+export const port1 = 3002; // port de la ressource 1 (serveur d'applications)
 export const port2: number = 1112; // port de la ressouce 2 (serveur de connexions)
 
 // Iditenfiants indéfinis utilisés dans des messages définis partiellement
@@ -173,7 +172,7 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly date: FormatDateFr; // Emission
 }
 
-export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu';
+export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
 
 // Structure immutable
 export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1> {
@@ -196,6 +195,8 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
         return msg.ID_destination.val;
       case 'contenu':
         return msg.contenu.representation();
+      case 'utilisateur':
+        return msg.ID_emetteur.val;
     }
     return jamais(e);
   }
@@ -442,11 +443,14 @@ export function peuplerPopulationLocale(prefixe: string, noms: Mot[]): Populatio
   return pop;
 }
 
-export type Consigne = {
+/*export type Consigne = {
   ID_dom_cible : FormatSommetJeu1,
-  ID_util_cible: FormatUtilisateur;
+  ID_util_cible: FormatUtilisateur,
   mot_cible: Mot
-}
+}*/
+
+export type Consigne = [FormatSommetJeu1,FormatUtilisateur,Mot];
+
 
 export interface FormatConfigurationJeu1 extends FormatConfigurationInitiale {
   readonly centre: FormatSommetJeu1;
@@ -478,7 +482,8 @@ export class ConfigurationJeu1 extends Configuration<FormatConfigurationJeu1, Fo
       case 'date':
         return creerDateEnveloppe(config.date).representation();
       case 'consigne': 
-        return config.consigne.mot_cible.representation();
+        //return config.consigne.mot_cible.representation();
+        return config.consigne[2].representation();
     }
     return jamais(e);
   }
@@ -651,6 +656,7 @@ export type TableMutableMessagesParUtilisateurParDomaine = TableIdentificationMu
   TableIdentificationMutable<'utilisateur', Mot, Mot>,
   TableIdentificationMutable<'utilisateur', Mot, Mot>
   >;
+
 
 export function creerTableMutableMessageParUtilisateurParDomaine(): TableMutableMessagesParUtilisateurParDomaine {
   return creerTableIdentificationMutableVide('sommet', x => x);

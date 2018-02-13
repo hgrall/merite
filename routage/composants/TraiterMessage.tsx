@@ -12,10 +12,6 @@ import {EnvoyePar} from './EnvoyePar';
 import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { Mot } from '../../bibliotheque/binaire'
 
-/**
- * A modal dialog can only be closed by selecting one of the actions.
- */
-
 const styles = {
   btn: {
     margin: '10px',
@@ -103,8 +99,8 @@ export class TraiterMessage extends React.Component<MessageProps, any> {
           <MessageCases message={this.props.message.val().contenu} locked={true}/>
 
           Si tu penses que le message est pour toi, decode le.
-          Sinon, transmet le a la personne concernee.
-          Si le message est erronee, mets le a la poubelle.
+          Sinon, transmets le a la personne concernee.
+          Si le message est errone, mets le a la poubelle.
         </Dialog>
       </div>
     );

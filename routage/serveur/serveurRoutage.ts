@@ -261,9 +261,15 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   console.log("* Traitement d'un message");
   console.log('- brut : ' + msg.brut());
 
+  let lien = l; 
   switch (m.type) {
 	case TypeMessageJeu1.ADMIN:
-		console.log('Hello je suis admin !')
+
+		if (reseauConfig) {
+			// send message avec statistique 
+		} else {
+			lien.envoyerAuClientDestinataire(msg.nonConf());
+		}
 		break;
     case TypeMessageJeu1.INIT:
 	  serveur.initier(
@@ -312,7 +318,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		  msg.val().ID_origine,
 		  msg.val().contenu);
       break;
-    default: console.log(msg)
+    default:
   }
 
 

@@ -151,6 +151,7 @@ Protocole : cf. structure.org
 
 export enum TypeMessageJeu1 {
   ADMIN,
+  NONCONF,
   INIT,
   SUCCES_INIT,
   VERROU,
@@ -272,6 +273,20 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
       ID_origine: id_origine,
       ID_destination: sommetInconnu,
       type: TypeMessageJeu1.VERROU,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  // Serveur : Accuser réception.
+  nonConf() {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.NONCONF,
       contenu: msg.contenu,
       date: msg.date
     });

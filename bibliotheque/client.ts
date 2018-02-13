@@ -51,11 +51,8 @@ export class CanalClient<
     // Effet: enregistrement comme écouteur
     enregistrerTraitementAdmin(): void {
         let lienServeur = this.lienServeur; 
-        console.log('enregistrement traitement cote client'); 
         this.lienServeur.addEventListener("open", function (e: MessageEvent) {
-            console.log('open');
             lienServeur.send(messageAdmin().brut());
-            console.log('done');
             console.log(messageAdmin().brut());
         });
     };

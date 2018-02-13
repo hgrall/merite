@@ -4,7 +4,7 @@ import { Mot,binaire } from '../../bibliotheque/binaire';
 import { TableIdentificationMutable, creerTableIdentificationImmutable } from '../../bibliotheque/types/tableIdentification'
 import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
-import {PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial,ReseauJeu1} from '../commun/communRoutage';
+import {Stats,PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial,ReseauJeu1} from '../commun/communRoutage';
 import {
   connexions, 
   utilisateursConnectesParDomaine, 
@@ -12,8 +12,7 @@ import {
   tableVerrouillageMessagesParDomaine, 
   PERSONNE, 
   tableConsigneUtilisateurParDomaine,
-  pointsEnvoyesParDomaine,
-  pointsRecusParDomaine,
+  pointsParDomaine,
   messagesEnvoyesParDomaine,
   messagesRecusParDomaine
 } from './serveurRoutage';
@@ -25,8 +24,7 @@ import {
 	ajouterMessageParDomaine,
 	calculEcartMessageEnvoyesRecus,
 	calculEcartPointsMessage,
-	compteurMessageEnvoyes,
-	compteurPointsParDomaine
+	compteurGlobal
 } from '../serveur/statistiques';
 import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
@@ -53,7 +51,7 @@ function verrou(domaine: Identifiant<'sommet'>, message: Identifiant<'message'>,
 // Diffusion d’un message à tous les utilisateurs d’un domaine (reception)
 function diffusion(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>,idMessage: Identifiant<'message'>, origin: Identifiant<'sommet'>, idDomaineDestination: Identifiant<'sommet'>, contenu: Mot) : void {
   console.log("DIFFUSION")
-  ajouterMessageParDomaine(idDomaineDestination,messagesRecusParDomaine);
+  
   return diffusionListeUtilisateur(date, idUtil, idMessage, origin, idDomaineDestination, contenu, utilisateurParDomaine(idDomaineDestination));
 }
 
@@ -163,6 +161,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
 
     if (verrouilleur.val === emetteur.val){
       if (consigne(origine, emetteur, contenu)){
+        ajouterPointsParDomaine(origine,pointsParDomaine); //rajoute un "point" car bien deco
         //envoi reponse
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
@@ -174,6 +173,7 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
           date: date
         }))
       } else {
+        ajouterMessageParDomaine(origine,messagesRecusParDomaine); //compatabilise msg mal deco
         connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
           ID: id,
           ID_emetteur: emetteur,
@@ -187,60 +187,8 @@ export function verifier(date: FormatDateFr, id : Identifiant<'message'>, emette
       
     }
     detruire(date, id, emetteur, origine, contenu, utilisateurParDomaine(origine));
-  }
-
-
-
-//Verifie que le message cree correspond a la consigne (destinataire et contenu)
-function consigneEnvoi(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
-  let tContenu = contenu['structure'];
-  console.log("ORIGINE  : "+origine.val);
-  console.log("EMETTEUR   :  "+emetteur.val);
-  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
-  console.log("CONTENU  :  "+tContenu.tableau.toString());
-  if (tConsigne.taille != tContenu.taille) {
-    console.log("TAILLE DIFFERENTE  ");
-    return false;
-  }
-  for (let i = 0; i < tConsigne.taille; i++) {
-    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
-      console.log("CARACTERE DIFFERENTE  ");
-      return false;
-    }
-  }
-  console.log("LE MSG A BIEN ETE ENVOYE ");
-  ajouterPointsParDomaine(origine,pointsEnvoyesParDomaine);
-  return true;
-}  
-
-
-//Verifie que le message envoye par l'utilisateur est correct --> cad bien decode
-// NE TESTE PAS SI A ETE ENVOYE A LA BONNE PERSONNE
-
-function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
-  console.log("CONSIGNE DANS VERIFIER  "+tableConsigneUtilisateurParDomaine.representation());
-  console.log("CONSIGNE DANS VERIFIER  "+tConsigne.tableau);
-  
-  
-  let tContenu = contenu['structure'];
-  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
-  console.log("CONTENU  :  "+tContenu.tableau.toString());
-  if (tContenu.taille !=tConsigne.taille) {
-    console.log("TAILLE DIFFERENTE  ");
-    return false;
-  }
-  for (let i = 0; i < tConsigne.taille; i++) {
-    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
-      console.log("CARACTERE DIFFERENTE  ");
-      return false;
-    }
-  }
-  console.log("LE MSG A BIEN ETE DECODE ");
-  ajouterPointsParDomaine(origine,pointsRecusParDomaine);
-  return true;
 }
+
 
 export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, dest: Identifiant<'sommet'>, contenu: Mot): void {
   let verrouilleur = tableVerrouillageMessagesParDomaine.valeur(origine).valeur(id);
@@ -262,3 +210,64 @@ export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, e
 }
 
 
+export function statistiques(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+  //Changer le contenu pour qu'il contienne les stats
+    var stats: Stats = [];
+    stats.push(["Messages envoyes : ",compteurGlobal(messagesEnvoyesParDomaine)]);
+    stats.push(["Messages decodes : ",compteurGlobal(pointsParDomaine)]);
+    stats.push(["Messages perdus : ",compteurGlobal(messagesRecusParDomaine)]);
+
+  //envoie du bon contenu a la meme personne
+  connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+    ID: id,
+    ID_emetteur: emetteur,
+    ID_origine: origine,
+    ID_destination: origine,
+    type: TypeMessageJeu1.STATISTIQUES,
+    contenu: contenu,
+    date: date,
+    stats: stats,
+  }));
+}
+
+
+//Verifie que le message cree correspond a la consigne (destinataire et contenu)
+/*function consigneEnvoi(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
+  let tContenu = contenu['structure'];
+  console.log("ORIGINE  : "+origine.val);
+  console.log("EMETTEUR   :  "+emetteur.val);
+  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
+  console.log("CONTENU  :  "+tContenu.tableau.toString());
+  if (tConsigne.taille != tContenu.taille) {
+    console.log("TAILLE DIFFERENTE  ");
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+      console.log("CARACTERE DIFFERENTE  ");
+      return false;
+    }
+  }
+  console.log("LE MSG A BIEN ETE ENVOYE ");
+  ajouterPointsParDomaine(origine,pointsEnvoyesParDomaine);
+  return true;
+}  */
+
+//Verifie que le message envoye par l'utilisateur est correct --> cad bien decode
+function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
+  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];  
+  let tContenu = contenu['structure'];
+  if (tContenu.taille !=tConsigne.taille) {
+   // console.log("TAILLE DIFFERENTE  ");
+    return false;
+  }
+  for (let i = 0; i < tConsigne.taille; i++) {
+    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
+     // console.log("CARACTERE DIFFERENTE  ");
+      return false;
+    }
+  }
+  //console.log("LE MSG A BIEN ETE DECODE ");
+  return true;
+}

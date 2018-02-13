@@ -1,10 +1,3 @@
-import {
-	port1,
-	port2,
-	hote,
-	TableMutableMessagesParUtilisateurParDomaine,
-	creerTableMutableMessageParUtilisateurParDomaine
-} from '../commun/communRoutage';
 import * as url from 'url';
 import * as shell from 'shelljs';
 import * as serveur from '../serveur/serveurRules';
@@ -26,6 +19,11 @@ import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_D
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
 import {
+	port1,
+	port2,
+	hote,
+	TableMutableMessagesParUtilisateurParDomaine,
+	creerTableMutableMessageParUtilisateurParDomaine,
 	FormatErreurJeu1,
 	EtiquetteErreurJeu1,
 	FormatConfigurationJeu1,
@@ -48,12 +46,6 @@ import { Deux } from '../../bibliotheque/types/mutable';
 
 import {
 	creerCompteurParDomaine, 
-	ajouterPointsParDomaine,
-	ajouterMessageParDomaine,
-	calculEcartMessageEnvoyesRecus,
-	calculEcartPointsMessage,
-	compteurMessageEnvoyes,
-	compteurPointsParDomaine
 } from '../serveur/statistiques';
 import { config } from 'shelljs';
 import { log } from 'util';
@@ -133,8 +125,7 @@ console.log('Anneau créé (anneau.representation) : ', anneau.representation())
 // console.log('Anneau créé (anneau)', anneau);
 
 //CREATION DE TOUTES LES VARIABLES DE COMPTEURS
-export var pointsEnvoyesParDomaine = creerCompteurParDomaine(tableauReseau);
-export var pointsRecusParDomaine = creerCompteurParDomaine(tableauReseau);
+export var pointsParDomaine = creerCompteurParDomaine(tableauReseau);
 export var messagesEnvoyesParDomaine = creerCompteurParDomaine(tableauReseau);
 export var messagesRecusParDomaine = creerCompteurParDomaine(tableauReseau);
 
@@ -314,6 +305,15 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		  msg.val().ID_emetteur, 
 		  msg.val().ID_origine, 
 		  msg.val().contenu);
+		break;
+	case TypeMessageJeu1.STATISTIQUES:
+		console.log("envoi des stats");
+		serveur.statistiques(
+			msg.val().date, 
+			msg.val().ID, 
+			msg.val().ID_emetteur, 
+			msg.val().ID_origine, 
+			msg.val().contenu);
     default:
   }
 

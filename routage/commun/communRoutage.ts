@@ -160,8 +160,11 @@ export enum TypeMessageJeu1 {
   ERREUR_EMET,
   ERREUR_DEST,
   ERREUR_TYPE,
-  INTERDICTION
+  INTERDICTION,
+  STATISTIQUES
 }
+
+export type Stats = Array<[string,number]>;
 
 export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmutable<'message'> {
   readonly ID_emetteur: Identifiant<'utilisateur'>;
@@ -170,6 +173,7 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly type: TypeMessageJeu1;
   readonly contenu: Mot;
   readonly date: FormatDateFr; // Emission
+  readonly stats?: Stats;
 }
 
 export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
@@ -362,6 +366,22 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
       date: msg.date
     });
   }
+
+  //Client demande les stats
+  aStatistiques(contenu: Mot, emetteur: Identifiant<'utilisateur'>): MessageJeu1 {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: emetteur,
+      ID_origine: msg.ID_destination,
+      ID_destination: sommetInconnu,
+      type: TypeMessageJeu1.STATISTIQUES,
+      contenu: contenu,
+      date: msg.date
+    });
+  
+  }
+
 }
 
 // Client : Produire un message INIT.

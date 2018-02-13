@@ -9,7 +9,6 @@ export function creerCompteurParDomaine(domaines:Mot[]) : Array<number>{
     for (let i in domaines){
         compteur[i]=0;
     }
-    console.log("COMPTEUR PAR DOMAINE "+compteur);
     return compteur;
 };
 
@@ -18,7 +17,7 @@ export function creerCompteurParDomaine(domaines:Mot[]) : Array<number>{
 export function ajouterPointsParDomaine(domaine: Identifiant<'sommet'>,points:Array<number>){
     var dom = parseInt(domaine.val.substring(4,domaine.val.length));
     points[dom]+=1;
-    console.log('POINTS PAR DOMAINE UPDATE  :  '+ points);
+    //console.log('POINTS PAR DOMAINE UPDATE  :  '+ points);
 };
 
 
@@ -26,10 +25,10 @@ export function ajouterPointsParDomaine(domaine: Identifiant<'sommet'>,points:Ar
 export function ajouterMessageParDomaine(domaine: Identifiant<'sommet'>,messageNombre:Array<number>){
     var dom = parseInt(domaine.val.substring(4,domaine.val.length));
     messageNombre[dom]+=1;
-    console.log('NOMBRE MESSAGE PAR DOMAINE UPDATE  :  '+ messageNombre);
+    //console.log('NOMBRE MESSAGE PAR DOMAINE UPDATE  :  '+ messageNombre);
 };
 
-//Nombre de messages bien receptionnes
+//Nombre de messages mal decodes
 export function calculEcartMessageEnvoyesRecus(messageEnvoyesNombre:Array<number>,messageRecusNombre:Array<number>){
     var ecart:Array<number> = [];
     let taille = messageEnvoyesNombre.length;
@@ -51,16 +50,10 @@ export function calculEcartPointsMessage(points:Array<number>,messageNombre:Arra
 
 
 
-export function compteurMessageEnvoyes(messageEnvoyesNombre:Array<number>){
-    return messageEnvoyesNombre.length;
-};
-
-//points si un msg a bien ete code et envoyé OU si msg a bien ete decode par la bonne personne
-//donne le nombre de points total par domaine
-export function compteurPointsParDomaine(pointsEnvoyes:Array<number>,pointsRecus:Array<number>){
-    var total:Array<number> = [];
-    for(var i=0; i<pointsEnvoyes.length;i++){
-        total.push(pointsEnvoyes[i]+pointsRecus[i]);
+export function compteurGlobal(messageEnvoyesNombre:Array<number>){
+    var compt = 0;
+    for(var i=0; i<messageEnvoyesNombre.length;i++){
+        compt+=messageEnvoyesNombre[i];
     }
-    return total;
+    return compt;
 };

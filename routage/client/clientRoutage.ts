@@ -7,7 +7,6 @@ import {
     FormatErreurJeu1,
     TypeMessageJeu1, sommetInconnu
 } from '../commun/communRoutage';
-
 import { conversionDate } from '../../bibliotheque/types/date'
 
 type CanalJeu1 = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
@@ -40,7 +39,7 @@ export function envoiMessage(canal: CanalJeu1, emetteur: Identifiant<'utilisateu
 
 /* Envoi du message décodé au serveur pour validation */
 export function validerMessage(canal: CanalJeu1, emetteur: Identifiant<'utilisateur'>, contenu: Mot, msg: MessageJeu1) {
-    canal.envoyerMessage(msg.aEssayer(contenu, emetteur))
+    canal.envoyerMessage(msg.aEssayer(contenu, emetteur));
 }
 
 /* Demande de verrou d'un message */
@@ -69,4 +68,9 @@ export function deverrouiller(canal: CanalJeu1, emetteur: Identifiant<'utilisate
         date: conversionDate(new Date())
     })
     canal.envoyerMessage(msg);
+}
+
+/* Demande de statistiques  */
+export function statistiques(canal: CanalJeu1, emetteur: Identifiant<'utilisateur'>, contenu: Mot, msg: MessageJeu1) {
+    canal.envoyerMessage(msg.aStatistiques(contenu, emetteur));
 }

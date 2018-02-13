@@ -150,6 +150,7 @@ Protocole : cf. structure.org
 */
 
 export enum TypeMessageJeu1 {
+  ADMIN,
   INIT,
   SUCCES_INIT,
   VERROU,
@@ -381,6 +382,18 @@ export function creerMessageInitial(id_emetteur: Identifiant<'utilisateur'>, id_
     ID_destination: sommetInconnu,
     type: TypeMessageJeu1.INIT,
     contenu: contenu,
+    date: creerDateMaintenant().val()
+  });
+}
+
+export function messageAdmin() {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.ADMIN,
+    contenu: creerMot([]),
     date: creerDateMaintenant().val()
   });
 }

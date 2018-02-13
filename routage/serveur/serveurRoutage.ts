@@ -153,10 +153,7 @@ serveurAppli.demarrer();
 let reseauConfig = false; 
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-	console.log(l.estAdmin(), 'admin');
-	if (l.estAdmin()){
-
-	}
+	
 	if (reseauConfig) {
 		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
 		try {
@@ -222,7 +219,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 		return true;
 	}
 	else {
-		return false; 
+		return true; 
 	}
 });
 
@@ -265,6 +262,9 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   console.log('- brut : ' + msg.brut());
 
   switch (m.type) {
+	case TypeMessageJeu1.ADMIN:
+		console.log('Hello je suis admin !')
+		break;
     case TypeMessageJeu1.INIT:
 	  serveur.initier(
 		msg.val().date,
@@ -312,7 +312,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		  msg.val().ID_origine,
 		  msg.val().contenu);
       break;
-    default:
+    default: console.log(msg)
   }
 
 

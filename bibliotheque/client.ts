@@ -3,6 +3,7 @@ import {
     FormatErreurRedhibitoire, ErreurRedhibitoire,
     FormatConfigurationInitiale, Configuration
 } from "./communication/communication";
+import { messageAdmin } from "../routage/commun/communRoutage";
 
 
 
@@ -46,6 +47,19 @@ export class CanalClient<
             traitement(<FC>contenuJSON);
         });
     };
+
+    // Effet: enregistrement comme écouteur
+    enregistrerTraitementAdmin(): void {
+        let lienServeur = this.lienServeur; 
+        console.log('enregistrement traitement cote client'); 
+        this.lienServeur.addEventListener("open", function (e: MessageEvent) {
+            console.log('open');
+            lienServeur.send(messageAdmin().brut());
+            console.log('done');
+            console.log(messageAdmin().brut());
+        });
+    };
+
     // Effet: enregistrement comme écouteur
     enregistrerTraitementErreurRecue(traitement: (e: FE) => void): void {
         this.lienServeur.addEventListener("message", function (e: MessageEvent) {

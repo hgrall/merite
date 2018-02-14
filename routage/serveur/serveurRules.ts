@@ -25,6 +25,7 @@ import {
 } from '../serveur/statistiques';
 import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
+import { LienJeu1 } from './serveurRoutage'
 
 /*
 * TRAITEMENT DES MESSAGES
@@ -207,7 +208,7 @@ export function deverrouiller(date : FormatDateFr,id : Identifiant<'message'>, e
 }
 
 
-export function statistiques(date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
+export function statistiques(lien: LienJeu1, date : FormatDateFr,id : Identifiant<'message'>, emetteur: Identifiant<'utilisateur'>, origine:  Identifiant<'sommet'>, contenu: Mot): void {
   //Changer le contenu pour qu'il contienne les stats
     var stats: Stats = [];
     stats.push(["Messages envoyes : ",compteurGlobal(messagesEnvoyesParDomaine)]);
@@ -215,7 +216,7 @@ export function statistiques(date : FormatDateFr,id : Identifiant<'message'>, em
     stats.push(["Messages perdus : ",compteurGlobal(messagesRecusParDomaine)]);
 
   //envoie du bon contenu a la meme personne
-  connexions.valeur(emetteur).envoyerAuClientDestinataire(new MessageJeu1({
+  lien.envoyerAuClientDestinataire(new MessageJeu1({
     ID: id,
     ID_emetteur: emetteur,
     ID_origine: origine,
@@ -226,30 +227,6 @@ export function statistiques(date : FormatDateFr,id : Identifiant<'message'>, em
     stats: stats,
   }));
 }
-
-
-//Verifie que le message cree correspond a la consigne (destinataire et contenu)
-/*function consigneEnvoi(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];
-  let tContenu = contenu['structure'];
-  console.log("ORIGINE  : "+origine.val);
-  console.log("EMETTEUR   :  "+emetteur.val);
-  console.log("CONSIGNE  :  "+tConsigne.tableau.toString());
-  console.log("CONTENU  :  "+tContenu.tableau.toString());
-  if (tConsigne.taille != tContenu.taille) {
-    console.log("TAILLE DIFFERENTE  ");
-    return false;
-  }
-  for (let i = 0; i < tConsigne.taille; i++) {
-    if (tConsigne.tableau[i] != tContenu.tableau[i]) {
-      console.log("CARACTERE DIFFERENTE  ");
-      return false;
-    }
-  }
-  console.log("LE MSG A BIEN ETE ENVOYE ");
-  ajouterPointsParDomaine(origine,pointsEnvoyesParDomaine);
-  return true;
-}  */
 
 //Verifie que le message envoye par l'utilisateur est correct --> cad bien decode
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {

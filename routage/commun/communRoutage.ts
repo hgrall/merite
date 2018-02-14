@@ -140,6 +140,8 @@ Protocole : cf. structure.org
 */
 
 export enum TypeMessageJeu1 {
+  ADMIN,
+  NONCONF,
   INIT,
   SUCCES_INIT,
   VERROU,
@@ -273,6 +275,20 @@ export class MessageJeu1 extends Message<FormatMessageJeu1, FormatMessageJeu1, E
   }
 
   // Serveur : Accuser réception.
+  nonConf() {
+    let msg = this.val();
+    return new MessageJeu1({
+      ID: msg.ID,
+      ID_emetteur: msg.ID_emetteur,
+      ID_origine: msg.ID_origine,
+      ID_destination: msg.ID_destination,
+      type: TypeMessageJeu1.NONCONF,
+      contenu: msg.contenu,
+      date: msg.date
+    });
+  }
+
+  // Serveur : Accuser réception.
   avecAccuseReception(type: TypeMessageJeu1) {
     let msg = this.val();
     return new MessageJeu1({
@@ -393,6 +409,18 @@ export function creerMessageInitial(id_emetteur: Identifiant<'utilisateur'>, id_
     ID_destination: sommetInconnu,
     type: TypeMessageJeu1.INIT,
     contenu: contenu,
+    date: creerDateMaintenant().val()
+  });
+}
+
+export function messageAdmin() {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.ADMIN,
+    contenu: creerMot([]),
     date: creerDateMaintenant().val()
   });
 }

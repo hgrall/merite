@@ -62,7 +62,7 @@ class ServeurJeu1 extends ServeurLiensWebSocket<
 	EtiquetteMessageJeu1
 > {}
 
-class LienJeu1 extends LienWebSocket<
+export class LienJeu1 extends LienWebSocket<
 	FormatErreurJeu1,
 	FormatErreurJeu1,
 	EtiquetteErreurJeu1,
@@ -156,59 +156,67 @@ serveurAppli.demarrer();
 /*
 * Config 1 - Traitement des connexions
 */
+let reseauConfig = true; 
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-	let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
-	try {
-		ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
-	} catch (e) {
-		let d = creerDateMaintenant();
-		console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
-		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
-		l.envoyerMessageErreur(
-			composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
-		);
-		return false;
-	}
-	let ID_dom = ids[0];
-	let ID_util = ids[1];
-	//tmp
-	console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
-	if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
-		let d = creerDateMaintenant();
-		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
-		l.envoyerMessageErreur(
-			composerErreurJeu1(
-				"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
-				d.val()
-			)
-		);
-		return false;
-	}
-	// Cas où la sélection d'un utilisateur est réussie
-	let d = creerDateMaintenant();
-	console.log(
-		'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
-	);
-	connexions.ajouter(ID_util, l);
-	let n = anneau.noeud(ID_dom);
-	let pop = utilisateursParDomaine.valeur(ID_dom);
-	let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
 	
-	//CONSIGNE : selection aleatoire d'un domaine et user destinataire
-	//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
-	var domNb = parseInt(ID_dom.val.substr(4));
-	var utilNb = creerMot(u.pseudo).base10();
-	
-	let config = composerConfigurationJeu1(n, pop, u, d.val(), tableCible[domNb][utilNb]);
+	if (reseauConfig) {
+		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+		try {
+			ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
+		} catch (e) {
+			let d = creerDateMaintenant();
+			console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
+			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
+			l.envoyerMessageErreur(
+				composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
+			);
+			return false;
+		}
 
-	console.log("- envoi au client d'adresse " + l.adresseClient());
-	console.log('  - de la configuration brute ' + config.brut());
-	console.log('  - de la configuration nette ' + config.representation());
-	l.envoyerConfiguration(config);
-	utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
-	utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
-	return true;
+		let ID_dom = ids[0];
+		let ID_util = ids[1];
+		//tmp
+		console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
+		if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
+			let d = creerDateMaintenant();
+			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
+			l.envoyerMessageErreur(
+				composerErreurJeu1(
+					"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
+					d.val()
+				)
+			);
+			return false;
+		}
+		// Cas où la sélection d'un utilisateur est réussie
+		let d = creerDateMaintenant();
+		console.log(
+			'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
+		);
+		connexions.ajouter(ID_util, l);
+		let n = anneau.noeud(ID_dom);
+		let pop = utilisateursParDomaine.valeur(ID_dom);
+		let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
+		
+		//CONSIGNE : selection aleatoire d'un domaine et user destinataire
+		//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
+		var domNb = parseInt(ID_dom.val.substr(4));
+		var utilNb = creerMot(u.pseudo).base10();
+		
+		let config = composerConfigurationJeu1(n, pop, u, d.val(), tableCible[domNb][utilNb]);
+
+		console.log("- envoi au client d'adresse " + l.adresseClient());
+		console.log('  - de la configuration brute ' + config.brut());
+		console.log('  - de la configuration nette ' + config.representation());
+		l.envoyerConfiguration(config);
+		utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
+		utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
+		return true;}
+
+		else {
+			return true; 
+		}
 });
 
 /*-
@@ -249,7 +257,23 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   console.log("* Traitement d'un message");
   console.log('- brut : ' + msg.brut());
 
+  let lien = l; 
   switch (m.type) {
+	case TypeMessageJeu1.ADMIN:
+		if (reseauConfig) {
+			// send message avec statistique 
+			console.log("envoi des stats");
+			serveur.statistiques(
+				lien,
+				msg.val().date,
+				msg.val().ID,
+				msg.val().ID_emetteur,
+				msg.val().ID_origine,
+				msg.val().contenu);
+		} else {
+			lien.envoyerAuClientDestinataire(msg.nonConf());
+		}
+		break;
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
 	  // TODO ajouter log;
@@ -304,14 +328,6 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		  msg.val().ID_origine, 
 		  msg.val().contenu);
 		break;
-	case TypeMessageJeu1.STATISTIQUES:
-		console.log("envoi des stats");
-		serveur.statistiques(
-			msg.val().date, 
-			msg.val().ID, 
-			msg.val().ID_emetteur, 
-			msg.val().ID_origine, 
-			msg.val().contenu);
     default:
   }
 

@@ -95,11 +95,6 @@ export class Routage extends React.Component<any, FormState> {
 		voisinSnd: {ID: creerIdentifiant('sommet',''), domaine:[]},
 		openDialog: false,
 		textDialog: '',
-		/*consigne: {
-			ID_dom_cible: { ID: creerIdentifiant('sommet', ''), domaine: [] },
-			ID_util_cible: { ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
-			mot_cible: creerMot([])
-		}*/
 		consigne:[
 			{ ID: creerIdentifiant('sommet', ''), domaine: [] },
 			{ ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
@@ -242,6 +237,9 @@ export class Routage extends React.Component<any, FormState> {
 					this.setState({
 						messages: this.state.messages
 					})
+					break;
+				case TypeMessageJeu1.STATISTIQUES:
+					//msg de statistiques reçus
 					break;
 				default:
 				console.log('no match');

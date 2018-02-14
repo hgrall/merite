@@ -28,28 +28,6 @@ export function ajouterMessageParDomaine(domaine: Identifiant<'sommet'>,messageN
     //console.log('NOMBRE MESSAGE PAR DOMAINE UPDATE  :  '+ messageNombre);
 };
 
-//Nombre de messages mal decodes
-export function calculEcartMessageEnvoyesRecus(messageEnvoyesNombre:Array<number>,messageRecusNombre:Array<number>){
-    var ecart:Array<number> = [];
-    let taille = messageEnvoyesNombre.length;
-    for(var i = 0; i<taille; i++){
-        ecart.push(messageEnvoyesNombre[i]-messageRecusNombre[i]);
-    }
-    return ecart;
-};
-
-//Nombre de msg bien decodes sur total recus OU Nombre de msg bien envoyes sur total a envoyer
-export function calculEcartPointsMessage(points:Array<number>,messageNombre:Array<number>){
-    var ecart:Array<number> = [];
-    let taille = points.length;
-    for(var i = 0; i<taille; i++){
-        ecart.push(messageNombre[i]-points[i]);
-    }
-    return ecart;
-};
-
-
-
 export function compteurGlobal(messageEnvoyesNombre:Array<number>){
     var compt = 0;
     for(var i=0; i<messageEnvoyesNombre.length;i++){

@@ -44,9 +44,7 @@ import {
 } from '../commun/communRoutage';
 import { Deux } from '../../bibliotheque/types/mutable';
 
-import {
-	creerCompteurParDomaine, 
-} from '../serveur/statistiques';
+import {creerCompteurParDomaine} from '../serveur/statistiques';
 import { config } from 'shelljs';
 import { log } from 'util';
 import{remplirTableConsigne,remplirTableCible, copieTableConsigne}from'../serveur/consigne';

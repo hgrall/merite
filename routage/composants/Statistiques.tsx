@@ -17,7 +17,7 @@ const styles = {
   }
 };
 
-export class Statistiques extends React.Component<StatsProps, any> {
+export default class Statistiques extends React.Component<StatsProps, any> {
   state = {
     open: true,
   };

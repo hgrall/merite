@@ -50,6 +50,7 @@ export class CanalClient<
 
     // Effet: enregistrement comme écouteur
     enregistrerTraitementAdmin(): void {
+        console.log("enregistre traitement admin ");
         let lienServeur = this.lienServeur; 
         this.lienServeur.addEventListener("open", function (e: MessageEvent) {
             lienServeur.send(messageAdmin().brut());

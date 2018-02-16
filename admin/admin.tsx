@@ -2,15 +2,19 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-import { FormatErreurJeu1, FormatConfigurationJeu1, messageAdmin, FormatMessageJeu1, EtiquetteMessageJeu1, MessageJeu1, TypeMessageJeu1 } from '../routage/commun/communRoutage'
+import { hote, port2, FormatErreurJeu1, FormatConfigurationJeu1, messageAdmin, FormatMessageJeu1, EtiquetteMessageJeu1, MessageJeu1, TypeMessageJeu1 } from '../routage/commun/communRoutage'
+import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 // Material-UI
+import Statistiques from '../routage/composants/Statistiques'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2 } from '../routage/commun/communRoutage';
-import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 import { RaisedButton } from 'material-ui/RaisedButton';
+
+//Fonction clientes '../routage/commun/communRoutage'
+import{statistiques}from '../routage/client/clientRoutage'
+
 
 const styles = {
     container: {
@@ -30,17 +34,28 @@ const styles = {
 
 type CanalAdmin = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
+interface AdminState{
+    message : Array<MessageJeu1>;
+}
+
+
 export class Admin extends React.Component<any, any> {
     private adresseServeur: string;
     private canal: CanalAdmin;
     private messageErreur: string;
     private config : boolean;
+    private messages : Array<MessageJeu1>;
+
+    state: AdminState = {
+        message: []
+    }
 
     constructor(props: any) {
         super(props);
         this.adresseServeur = hote + ':' + port2;
         this.messageErreur = 'Aucune erreur';
-        this.config = true; 
+        this.config = false; 
+        this.messages=[];
     }
 
     componentWillMount(): void {
@@ -58,22 +73,55 @@ export class Admin extends React.Component<any, any> {
                     this.config = false; 
                     break;
                 case TypeMessageJeu1.STATISTIQUES: 
+                console.log("TYPE STATISTIQUE");
                     this.config = true; 
+                    this.state.message.push(msg);
+                    this.setState({
+                        message: this.state.message,
+                    })
+                    //this.messages.push(msg);
                     // set the state statistiques
             }
+            //console.log("MESSAGES  traitement  : "+this.messages[0])
+            /*if(this.messages[this.messages.length-1].val().stats!= undefined){
+                console.log("Stats : "+ this.messages[this.messages.length-1].val().stats);
+            }else{
+                console.log("No stats");
+            }*/
+
+            if(this.state.message[this.state.message.length-1].val().stats!= undefined){
+                console.log("Stats : "+ this.state.message[this.state.message.length-1].val().stats);
+            }else{
+                console.log("No stats");
+            }
+            
         });
 
         this.canal.enregistrerTraitementAdmin();
+        console.log("MESSAGES  traitement admin  : "+this.state.message[0])
 
-        console.log('- du traitement de la configuration');    
+        console.log('- du traitement de la configuration');  
+        
+        //demande stats
+        //statistiques(this.canal, this.)
     }
 
     public render() {
         if (this.config) {
+            console.log("DANS LE IF");
             return (
                 <div style={styles.container}>
+                {console.log("APRES LE RETURN")}
                     <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />
-                    Statistique Component 
+                    Statistique Component  <br/>
+                    { 
+                        //this.messages.length
+                        this.state.message.length
+                        }
+                   {
+                       // <Statistiques message= {this.messages[this.messages.length-1]} />
+                   } 
+                   <Statistiques message = {this.state.message[0]} />
                 </div>
             );
         }

@@ -276,6 +276,13 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		break;
 	case TypeMessageJeu1.CONF:
 		console.log('conf received');
+		serveur.statistiques(
+			lien,
+			msg.val().date,
+			msg.val().ID,
+			msg.val().ID_emetteur,
+			msg.val().ID_origine,
+			msg.val().contenu);
 		break;
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs

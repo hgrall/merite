@@ -108,19 +108,10 @@ export class Admin extends React.Component<any, any> {
 
     public render() {
         if (this.config) {
-            console.log("DANS LE IF");
             return (
                 <div style={styles.container}>
-                {console.log("APRES LE RETURN")}
                     <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />
                     Statistique Component  <br/>
-                    { 
-                        //this.messages.length
-                        this.state.message.length
-                        }
-                   {
-                       // <Statistiques message= {this.messages[this.messages.length-1]} />
-                   } 
                    <Statistiques message = {this.state.message[0]} />
                 </div>
             );

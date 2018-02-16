@@ -163,10 +163,13 @@ export enum TypeMessageJeu1 {
   ERREUR_DEST,
   ERREUR_TYPE,
   INTERDICTION,
-  STATISTIQUES
+  STATISTIQUES,
+  CONF
 }
 
 export type Stats = Array<[string,number]>;
+
+export type Conf = Array<number>
 
 export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmutable<'message'> {
   readonly ID_emetteur: Identifiant<'utilisateur'>;
@@ -176,6 +179,7 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly contenu: Mot;
   readonly date: FormatDateFr; // Emission
   readonly stats?: Stats;
+  readonly conf?: Conf
 }
 
 export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
@@ -422,6 +426,19 @@ export function messageAdmin() {
     type: TypeMessageJeu1.ADMIN,
     contenu: creerMot([]),
     date: creerDateMaintenant().val()
+  });
+}
+
+export function messageConfiguration(config: Array<number>) {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.CONF,
+    contenu: creerMot([]),
+    date: creerDateMaintenant().val(),
+    conf: config
   });
 }
 

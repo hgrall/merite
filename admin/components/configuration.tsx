@@ -3,6 +3,10 @@ import * as ReactDOM from 'react-dom';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
+interface ConfigurationProps {
+    envoiConfiguration: (nDom: number, nUtilDom: Array<number>) => void
+}
+
 interface ConfigurationState {
     nDom: number, 
     domConfig: boolean,
@@ -10,7 +14,7 @@ interface ConfigurationState {
     nUtilDom: Array<number>
 }
 
-export class Configuration extends React.Component<any, ConfigurationState> {
+export class Configuration extends React.Component<ConfigurationProps, ConfigurationState> {
    
     state: ConfigurationState = {
         nDom: 3, 
@@ -60,7 +64,7 @@ export class Configuration extends React.Component<any, ConfigurationState> {
                 }
             }
             if (valide) {
-                // envoi Conf serveur 
+                this.props.envoiConfiguration(this.state.nDom, this.state.nUtilDom);
                 console.log('envoie Conf au serveur');
             } else {
                 // message d'erreur

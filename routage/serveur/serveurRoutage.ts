@@ -274,6 +274,9 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 			lien.envoyerAuClientDestinataire(msg.nonConf());
 		}
 		break;
+	case TypeMessageJeu1.CONF:
+		console.log('conf received');
+		break;
     case TypeMessageJeu1.INIT:
       // TODO tester erreurs
 	  // TODO ajouter log;

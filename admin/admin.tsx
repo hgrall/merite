@@ -8,7 +8,7 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { hote, port2 } from '../routage/commun/communRoutage';
+import { hote, port2, messageConfiguration } from '../routage/commun/communRoutage';
 import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 import { RaisedButton } from 'material-ui/RaisedButton';
 
@@ -80,13 +80,18 @@ export class Admin extends React.Component<any, AdminState> {
         console.log('- du traitement de la configuration');    
     }
 
+    envoiConfiguration = (nDom: number, nUtilDom: Array<number>) => {
+        let config = [nDom].concat(nUtilDom);
+        this.canal.envoyerMessage(messageConfiguration(config));
+    };
+
     public render() {
         var component;
         if (this.state.config) {
             component = <div> Statistiques
                 </div>;
         } else {
-            component = <Configuration/>;
+            component = <Configuration envoiConfiguration={this.envoiConfiguration}/>;
         }
         return (
             <div style={styles.container}>

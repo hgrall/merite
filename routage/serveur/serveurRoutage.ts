@@ -158,7 +158,7 @@ serveurAppli.demarrer();
 /*
 * Config 1 - Traitement des connexions
 */
-let reseauConfig = true; 
+let reseauConfig = false; 	
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	
@@ -263,8 +263,6 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   switch (m.type) {
 	case TypeMessageJeu1.ADMIN:
 		if (reseauConfig) {
-			// send message avec statistique 
-			console.log("envoi des stats");
 			serveur.statistiques(
 				lien,
 				msg.val().date,

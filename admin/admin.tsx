@@ -12,6 +12,8 @@ import { hote, port2 } from '../routage/commun/communRoutage';
 import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 import { RaisedButton } from 'material-ui/RaisedButton';
 
+import { Configuration } from './components/configuration'
+
 const styles = {
     container: {
         display: 'flex' as 'flex',
@@ -30,17 +32,23 @@ const styles = {
 
 type CanalAdmin = CanalClient<FormatErreurJeu1, FormatConfigurationJeu1, FormatMessageJeu1, FormatMessageJeu1, EtiquetteMessageJeu1>;
 
-export class Admin extends React.Component<any, any> {
+interface AdminState {
+   config: boolean
+}
+
+export class Admin extends React.Component<any, AdminState> {
     private adresseServeur: string;
     private canal: CanalAdmin;
     private messageErreur: string;
-    private config : boolean;
+
+    state: AdminState = {
+       config: false
+    }
 
     constructor(props: any) {
         super(props);
         this.adresseServeur = hote + ':' + port2;
         this.messageErreur = 'Aucune erreur';
-        this.config = true; 
     }
 
     componentWillMount(): void {
@@ -55,10 +63,14 @@ export class Admin extends React.Component<any, any> {
         
             switch (m.type) {
                 case TypeMessageJeu1.NONCONF:
-                    this.config = false; 
+                    this.setState({
+                        config: false
+                    })
                     break;
                 case TypeMessageJeu1.STATISTIQUES: 
-                    this.config = true; 
+                    this.setState({
+                        config: true
+                    })
                     // set the state statistiques
             }
         });
@@ -69,21 +81,18 @@ export class Admin extends React.Component<any, any> {
     }
 
     public render() {
-        if (this.config) {
-            return (
-                <div style={styles.container}>
-                    <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />
-                    Statistique Component 
-                </div>
-            );
+        var component;
+        if (this.state.config) {
+            component = <div> Statistiques
+                </div>;
+        } else {
+            component = <Configuration/>;
         }
-        else {
-            return (
-                <div style={styles.container}>
-                    <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />
-                    Change configuration Component 
-                </div>
-            );
-        }
+        return (
+            <div style={styles.container}>
+                <AppBar title="Admin" titleStyle={styles.appTitle} showMenuIconButton={false} />
+                {component}
+            </div>
+        );
     }
 }

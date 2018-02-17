@@ -178,13 +178,10 @@ export class Routage extends React.Component<any, FormState> {
 				case TypeMessageJeu1.CONF:
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					let conf: Array<number> = msg.val().conf as Array<number>;
-					console.log('conf', conf);
 					this.setState({
 						nDom: conf[0],
 						nMaxUtil: conf[1]
 					})
-					console.log(this.state.nDom);
-					console.log(this.state.nMaxUtil);
 					break;
 				case TypeMessageJeu1.TRANSIT:
 					// l'utilisateur recoit un message du serveur et le place en transit 
@@ -265,7 +262,6 @@ export class Routage extends React.Component<any, FormState> {
 					})
 					break;
 				default:
-				console.log('no match');
 				break;
 			}
 			
@@ -279,15 +275,19 @@ export class Routage extends React.Component<any, FormState> {
 			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let voisinSnd : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let fst = true;
-			for (let i =0 ; i<4; i++) {
+			let snd = true; 
+			let i = 0
+			while (snd) {
 				if (this.config.val().voisins.table['DOM-'+i]) {
 					if (fst) {
 						voisinFst = this.config.val().voisins.table['DOM-'+i];
 						fst = false;
 					} else {
 						voisinSnd = this.config.val().voisins.table['DOM-'+i];
+						snd= false;
 					}
 				}
+				i++;
 			}
 
 			this.setState({

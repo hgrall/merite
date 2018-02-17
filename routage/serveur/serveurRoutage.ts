@@ -14,7 +14,6 @@ import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/type
 import {} from '../../bibliotheque/outils';
 import { binaire, Mot, motAleatoire, creerMot , tableauBinaireAleatoire,nombreAleatoire, getRandomInt} from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
-import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
@@ -40,10 +39,11 @@ import {
 	creerTableMutableUtilisateurParMessageParDomaine,
 	MessageJeu1,
 	TypeMessageJeu1,
-	creerMessageEnveloppe
+	creerMessageEnveloppe,
+	PopulationLocaleMutable
 } from '../commun/communRoutage';
 import { Deux } from '../../bibliotheque/types/mutable';
-
+import { Config } from './config';
 import {
 	creerCompteurParDomaine, 
 } from '../serveur/statistiques';
@@ -85,29 +85,9 @@ export class LienJeu1 extends LienWebSocket<
  * - serveur d'applications
  * - serveur de canaux  
  */
+export var configuration: Config = new Config();
 
-// Création du nombre de domaines défini dans le fichier config.ts à la racine du dossier routage
-let tableauReseau = [];
-for (let i = 0; i < NOMBRE_DE_DOMAINES; i++) {
-	tableauReseau.push(binaire(i));
-}
-
-const anneau: ReseauJeu1 = creerAnneauJeu1(tableauReseau);
-
-//const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
-
-// tmp - Création du nombre d'utilisateurs par domaine
-let tableauDomaine = [];
-for (let i = 0; i < UTILISATEURS_PAR_DOMAINE; i++) {
-	tableauDomaine.push(binaire(i));
-}
-
-export const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
-
-const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
-
-export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
-
+//*
 export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
 	'utilisateur',
 	LienJeu1,
@@ -120,15 +100,11 @@ const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 const serveurCanaux = new ServeurJeu1(port2, hote);
 
-//tmp
-console.log('Anneau créé (anneau.representation) : ', anneau.representation());
-// console.log('Anneau créé (anneau)', anneau);
-
+///////////////////////////////////////////////////////////
 //CREATION DE TOUTES LES VARIABLES DE COMPTEURS
-export var pointsParDomaine = creerCompteurParDomaine(tableauReseau);
-export var messagesEnvoyesParDomaine = creerCompteurParDomaine(tableauReseau);
-export var messagesRecusParDomaine = creerCompteurParDomaine(tableauReseau);
-
+export var pointsParDomaine: number[]; 
+export var messagesEnvoyesParDomaine: number[]; 
+export var messagesRecusParDomaine: number[]; 
 /*
 * Fin de l'état - Partie 1
 */
@@ -158,14 +134,16 @@ serveurAppli.demarrer();
 /*
 * Config 1 - Traitement des connexions
 */
-let reseauConfig = false; 	
+let reseauConfig = false; 
+
+
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 	
 	if (reseauConfig) {
 		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
 		try {
-			ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
+			ids = configuration.getUtilisateursAConnecterParDomaine().selectionnerUtilisateur();
 		} catch (e) {
 			let d = creerDateMaintenant();
 			console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
@@ -180,7 +158,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 		let ID_util = ids[1];
 		//tmp
 		console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
-		if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
+		if (connexions.contient(ID_util) || configuration.getUtilisateursConnectesParDomaine().contientUtilisateur(ID_dom, ID_util)) {
 			let d = creerDateMaintenant();
 			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
 			l.envoyerMessageErreur(
@@ -197,23 +175,23 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 			'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
 		);
 		connexions.ajouter(ID_util, l);
-		let n = anneau.noeud(ID_dom);
-		let pop = utilisateursParDomaine.valeur(ID_dom);
-		let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
+		let n = configuration.getAnneau().noeud(ID_dom);
+		let pop = configuration.getUtilisateursParDomaine().valeur(ID_dom);
+		let u = configuration.getUtilisateursParDomaine().utilisateur(ID_dom, ID_util);
 		
 		//CONSIGNE : selection aleatoire d'un domaine et user destinataire
 		//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
 		var domNb = parseInt(ID_dom.val.substr(4));
 		var utilNb = creerMot(u.pseudo).base10();
 		
-		let config = composerConfigurationJeu1(n, pop, u, d.val(), tableCible[domNb][utilNb]);
+		let config = composerConfigurationJeu1(n, pop, u, d.val(), configuration.getTableCible()[domNb][utilNb]);
 
 		console.log("- envoi au client d'adresse " + l.adresseClient());
 		console.log('  - de la configuration brute ' + config.brut());
 		console.log('  - de la configuration nette ' + config.representation());
 		l.envoyerConfiguration(config);
-		utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
-		utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
+		configuration.getUtilisateursConnectesParDomaine().ajouterUtilisateur(ID_dom, u);
+		configuration.getUtilisateursAConnecterParDomaine().retirerUtilisateur(ID_dom, ID_util);
 		return true;}
 
 		else {
@@ -228,24 +206,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 */
 export const identificationMessages: Identification<'message'> = creerIdentificationParCompteur('MSG-');
 export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine = creerTableMutableUtilisateurParMessageParDomaine();
-{
-	anneau.iterer((id, n) => {
-		tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
-	});
-}
 
-//CREATION DU TABLEAU DE CONSIGNES
-export var tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
-//tableConsigneUtilisateurParDomaine = remplirTableConsigne(utilisateursParDomaine,anneau,tableConsigneUtilisateurParDomaine);
-tableConsigneUtilisateurParDomaine = remplirTableConsigne(utilisateursParDomaine,anneau);
-
-//Copie de la tableConsigne pour pour enlever des elements en calculant la cible
-//Mais garder consigne initiale pour verifier le decodage
-var tableConsModif :TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
-tableConsModif = copieTableConsigne(utilisateursParDomaine,anneau,tableConsigneUtilisateurParDomaine);
-
-//CREATION DU TABLEAU DE CIBLES
-export const tableCible = remplirTableCible(utilisateursParDomaine,anneau,tableConsModif);
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
 
@@ -275,7 +236,14 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 		}
 		break;
 	case TypeMessageJeu1.CONF:
-		console.log('conf received');
+		let conf : Array<number> = msg.val().conf as Array<number>;
+		configuration.setConf(conf);
+		console.log('conf done');
+		reseauConfig = true; 
+		pointsParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		messagesEnvoyesParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		messagesRecusParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		
 		serveur.statistiques(
 			lien,
 			msg.val().date,

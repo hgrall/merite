@@ -694,14 +694,18 @@ export function creerVidePopulationParDomaine() {
   return new PopulationParDomaineMutable();
 }
 
-export function assemblerPopulationParDomaine(reseau: ReseauJeu1, noms: Mot[]): PopulationParDomaineMutable {
+export function assemblerPopulationParDomaine(reseau: ReseauJeu1, noms: Mot[][]): PopulationParDomaineMutable {
   let popDom = creerVidePopulationParDomaine();
+  let i=0;
   reseau.iterer((ID_dom, n) => {
     popDom.ajouterDomaine(ID_dom);
-    let popLoc = peuplerPopulationLocale('UTIL-' + ID_dom.val + '-', noms);
-    popLoc.iterer((ID_util, u) => {
-      popDom.ajouterUtilisateur(ID_dom, u);
-    });
+    if (noms[i] !== undefined) {
+      let popLoc = peuplerPopulationLocale('UTIL-' + ID_dom.val + '-', noms[i]);
+      popLoc.iterer((ID_util, u) => {
+        popDom.ajouterUtilisateur(ID_dom, u);
+      });
+    }
+    i++;
   });
   return popDom;
 }

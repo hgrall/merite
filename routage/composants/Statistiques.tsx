@@ -4,14 +4,12 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Consigne,MessageJeu1 } from '../commun/communRoutage'; 
-import { ConsigneDom } from './Consigne';
-import { IdentifiantCases } from './IdentifiantCases';
-
-
+import { Stats, MessageJeu1 } from '../commun/communRoutage'; 
+import { StatsDom } from './StatsAffichage';
 
 interface StatsProps {
-  consigne: Consigne
+  message: MessageJeu1,
+  MiseAJourStats: () => void
 }
 
 const styles = {
@@ -20,7 +18,7 @@ const styles = {
   }
 };
 
-export class Stats extends React.Component<StatsProps, any> {
+export default class Statistiques extends React.Component<StatsProps, any> {
   state = {
     open: true,
   };
@@ -32,6 +30,11 @@ export class Stats extends React.Component<StatsProps, any> {
   handleClose = () => {
     this.setState({open: false});
   };
+
+  miseAjourStatistique = () => {
+    this.props.MiseAJourStats();
+    this.handleOpen();
+  }
 
   render() {
     const actions = [
@@ -50,7 +53,7 @@ export class Stats extends React.Component<StatsProps, any> {
           secondary={true}
           style={styles.boutonStats}
           icon={<Announcement/>}
-          onClick={this.handleOpen} />
+          onClick={this.miseAjourStatistique} />
         <Dialog
           title="Statistiques"
           actions={actions}
@@ -58,9 +61,9 @@ export class Stats extends React.Component<StatsProps, any> {
           open={this.state.open}
           onRequestClose={this.handleClose}
         >
-          Les statistiques du jeu sont les suivants ...
+          Les statistiques du jeu sont les suivants : 
           <br/>
-          <ConsigneDom consigne={this.props.consigne}/>
+          <StatsDom stats={this.props.message.val().stats}/>
         </Dialog>
       </div>
     );

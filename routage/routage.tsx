@@ -4,16 +4,17 @@ import * as ReactDOM from 'react-dom';
 // Bibliotheque
 import { Identifiant, creerIdentifiant } from '../bibliotheque/types/identifiant'
 import { creerMot, Mot } from '../bibliotheque/binaire'
+import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1,
+	ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1,
+	FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur } from './commun/communRoutage';
 import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1, ConfigurationJeu1, creerSommetJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1, FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur, sommetInconnu } from './commun/communRoutage';
-import { Deux } from '../bibliotheque/types/mutable';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+
 // Material-UI
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import AppBar from 'material-ui/AppBar';
 import Paper from 'material-ui/Paper';
-import { RaisedButton } from 'material-ui/RaisedButton';
 
 //Composants
 import { Regles } from './composants/Regles';
@@ -30,7 +31,6 @@ import {
 	deverrouiller
 } from './client/clientRoutage'
 
-
 const styles = {
 	container: {
 		display: 'flex' as 'flex',
@@ -40,13 +40,6 @@ const styles = {
 		position: 'absolute' as 'absolute',
 		left: '0',
 		right: '0'
-	},
-	notReady: {
-		display: 'flex' as 'flex',
-		flexDirection: 'column' as 'column',
-		justifyContent: 'center' as 'center',
-		alignItems: 'center' as 'center',
-		margin: '30px'
 	},
 	paper: {
 		flexShrink: 1,
@@ -71,7 +64,10 @@ const styles = {
 	},
 	dom : {
 		display: "flex" as 'flex',
-		sflexWrap: "wrap" as 'wrap',
+		flexWrap: "wrap" as 'wrap',
+	},
+	notReady: {
+
 	}
 };
 
@@ -269,7 +265,7 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement de la configuration');
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
-			configReceived = true;
+			configReceived = true; 
 			this.config = creerConfigurationJeu1(c);
 
 			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
@@ -322,7 +318,6 @@ export class Routage extends React.Component<any, FormState> {
 				onClick={this.handleClose}
 			/>
 		];
-		
 		if (configReceived) {
 			return (
 				<div style={styles.container}>
@@ -363,17 +358,15 @@ export class Routage extends React.Component<any, FormState> {
 					</Dialog>
 
 				</div>
-			);
-		}
-		else {
-			return (
-				<div style={styles.notReady}>
-					<p> Le jeu n'est pas encore pret ! </p>
-					<br/>
-					<Link to='/' >Retour</Link>
+			)}
+ 		else {
+ 			return (
+ 				<div style={styles.notReady}>
+ 					<p> Le jeu n'est pas encore pret ! </p>
+ 					<br/>
+ 					<Link to='/' >Retour</Link>
 				</div>
-			)
-		
+			 )
 		}
-  	}
+	}
 }

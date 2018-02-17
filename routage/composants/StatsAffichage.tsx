@@ -5,7 +5,7 @@ import { IdentifiantCases } from './IdentifiantCases';
 import { binaire, Mot, motAleatoire, creerMot , tableauBinaireAleatoire} from '../../bibliotheque/binaire';
 
 interface StatsProps {
-  stats: Stats;
+  stats?: Stats;
 }
 
 const styles = {
@@ -13,22 +13,24 @@ const styles = {
 
 export class StatsDom extends React.Component<StatsProps, any> {
   render() {
-    return (
-      <div>
-       {
-      // Domaine destinataire: <IdentifiantCases int={this.props.consigne.ID_dom_cible.domaine} />
-       }
-       Nombre total de messages envoyes : {this.props.stats[0][1]};
-        <br/>
-        {//Utilisateur destinataire: <IdentifiantCases int={this.props.consigne.ID_util_cible.pseudo} />
-        }
-        
-        Nombre total de messages bien decodes : {this.props.stats[1][1]};
-        <br/>
-        {//Contenu du message à envoyer: {this.props.consigne.mot_cible['structure'].tableau.toString()}
-        }
-        Nombre total de messages non decodes : {this.props.stats[2][1]};
-      </div>
-    );
+    if(this.props.stats!= undefined){
+      return (      
+        <div>
+          Nombre total de messages envoyes : {this.props.stats[0][1]};
+          <br/>
+          Nombre total de messages bien decodes : {this.props.stats[1][1]};
+          <br/>
+          Nombre total de messages non decodes : {this.props.stats[2][1]};
+        </div>
+      );
+    }else{
+      return(
+        <div>
+          Il n'y a pas de statistiques.
+        </div>
+      );
+    }
+
+
   }
 }

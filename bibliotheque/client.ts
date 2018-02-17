@@ -49,7 +49,9 @@ export class CanalClient<
     };
 
     // Effet: enregistrement comme écouteur
+
     enregistrerTraitementAdmin(estAdmin : boolean): void {
+
         let lienServeur = this.lienServeur; 
         this.lienServeur.addEventListener("open", function (e: MessageEvent) {
             if (estAdmin) {

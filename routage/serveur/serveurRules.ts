@@ -18,11 +18,8 @@ import {
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 import {
-	creerCompteurParDomaine, 
 	ajouterPointsParDomaine,
 	ajouterMessageParDomaine,
-	calculEcartMessageEnvoyesRecus,
-	calculEcartPointsMessage,
 	compteurGlobal
 } from '../serveur/statistiques';
 

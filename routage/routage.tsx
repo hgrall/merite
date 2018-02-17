@@ -86,7 +86,8 @@ interface FormState {
 	openDialog: boolean,
 	textDialog: string,
 	consigne: Consigne
-
+	nDom: number,
+	nMaxUtil: number
   }
 // Etat initial - Le client ne connait pas sa configuration 
 let configReceived = false; 
@@ -109,7 +110,9 @@ export class Routage extends React.Component<any, FormState> {
 			{ ID: creerIdentifiant('sommet', ''), domaine: [] },
 			{ ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
 			creerMot([])
-		]
+		],
+		nDom: 0,
+		nMaxUtil: 0
 	}
 
 	constructor(props: any) {
@@ -172,6 +175,17 @@ export class Routage extends React.Component<any, FormState> {
 			console.log('- du message brut : ' + msg.brut());
 
 			switch (m.type) {
+				case TypeMessageJeu1.CONF:
+					// l'utilisateur recoit un message du serveur et le place en transit 
+					let conf: Array<number> = msg.val().conf as Array<number>;
+					console.log('conf', conf);
+					this.setState({
+						nDom: conf[0],
+						nMaxUtil: conf[1]
+					})
+					console.log(this.state.nDom);
+					console.log(this.state.nMaxUtil);
+					break;
 				case TypeMessageJeu1.TRANSIT:
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					this.state.messages.push(msg);
@@ -326,7 +340,9 @@ export class Routage extends React.Component<any, FormState> {
 							envoyerMessage={this.envoiMessageInit}
 							voisinFst={this.state.voisinFst}
 							voisinSnd={this.state.voisinSnd}
-							consigne={this.state.consigne} />
+							consigne={this.state.consigne}
+							nDom={this.state.nDom}
+							nMaxUtil={this.state.nMaxUtil}/>
 						<MessageBox
 							envoyerMessage={this.envoiMessage}
 							verrou={this.verrou}

@@ -111,4 +111,14 @@ export class Config {
     getNDomaine() : number {
         return this.NOMBRE_DE_DOMAINES;
     }
+
+    getNMaxUtilParDomaine(): number {
+        let max = 0 ; 
+        for (let i = 0; i< this.getNDomaine(); i++){
+            if (this.UTILISATEURS_PAR_DOMAINE[i]>max){
+                max =this.UTILISATEURS_PAR_DOMAINE[i];
+            }
+        }
+        return max;
+    }
 }

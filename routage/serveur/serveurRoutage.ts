@@ -40,7 +40,8 @@ import {
 	MessageJeu1,
 	TypeMessageJeu1,
 	creerMessageEnveloppe,
-	PopulationLocaleMutable
+	PopulationLocaleMutable,
+	messageConfiguration
 } from '../commun/communRoutage';
 import { Deux } from '../../bibliotheque/types/mutable';
 import { Config } from './config';
@@ -233,6 +234,11 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 	case TypeMessageJeu1.CONNEXION:
 		if (reseauConfig) {
 			connexionServeur(lien);
+			let conf = [];
+			conf.push(configuration.getNDomaine());
+			conf.push(configuration.getNMaxUtilParDomaine());
+			//on envoie au client le nombre de domaine et le nombre max d'utilisateur par domaine
+			lien.envoyerAuClientDestinataire(messageConfiguration(conf))
 		}
 		break;
 	case TypeMessageJeu1.CONF:
@@ -252,9 +258,6 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 			msg.val().contenu);
 		break;
     case TypeMessageJeu1.INIT:
-      // TODO tester erreurs
-	  // TODO ajouter log;
-	  console.log('message recu ----------------',)
 	  serveur.initier(
 		  msg.val().date, 
 		  msg.val().ID_emetteur, 

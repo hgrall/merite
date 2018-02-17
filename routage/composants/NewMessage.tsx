@@ -23,26 +23,28 @@ interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   voisinFst: FormatSommetJeu1,
   voisinSnd: FormatSommetJeu1, 
-  consigne: Consigne
+  consigne: Consigne,
+  nDom: number,
+  nMaxUtil: number
 }
 
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
 export class NewMessage extends React.Component<MessageProps, any> {
-  tailleMot = 12 
-  //+ binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length
-  //+ binaire(UTILISATEURS_PAR_DOMAINE).tableauBinaire().length;
 
   state = {
     open: false,
-    message: creerMot(Array.apply(null, Array(this.tailleMot)).map(Number.prototype.valueOf,0))
+    message: creerMot(Array.apply(null, Array(12).map(Number.prototype.valueOf,0)))
   };
 
   handleOpen = () => {
+    let tailleMot = 12
+      + binaire(this.props.nDom).tableauBinaire().length
+      + binaire(this.props.nMaxUtil).tableauBinaire().length;
     this.setState({
       open: true,
-      message: creerMot(Array.apply(null, Array(this.tailleMot)).map(Number.prototype.valueOf,0))
+      message: creerMot(Array.apply(null, Array(tailleMot)).map(Number.prototype.valueOf,0))
     });
   };
 

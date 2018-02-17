@@ -77,7 +77,6 @@ export class Admin extends React.Component<any, AdminState> {
                     })
                     break;
                 case TypeMessageJeu1.STATISTIQUES: 
-                console.log(msg);
                     this.state.message.push(msg);
                     this.setState({
                         message: this.state.message,
@@ -105,7 +104,7 @@ export class Admin extends React.Component<any, AdminState> {
         let config = [nDom].concat(nUtilDom);
         this.canal.envoyerMessage(messageConfiguration(config));
     };
-    
+
     miseAJourStats = () => {
         console.log('maj stats');
         this.canal.envoyerMessage(messageAdmin());

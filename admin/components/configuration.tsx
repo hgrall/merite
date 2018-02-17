@@ -14,6 +14,18 @@ interface ConfigurationState {
     nUtilDom: Array<number>
 }
 
+const styles = {
+    container: {
+        margin: '30px',
+        display: "flex" as 'flex',
+        alignItems: "flex-start" as 'flex-start',
+        flexDirection: 'column' as 'column'
+    },
+    errorMessage: {
+        color: 'red'
+    }
+};
+
 export class Configuration extends React.Component<ConfigurationProps, ConfigurationState> {
    
     state: ConfigurationState = {
@@ -81,7 +93,7 @@ export class Configuration extends React.Component<ConfigurationProps, Configura
         if (this.state.domConfig) {
             for (let i = 0; i < this.state.nDom; i++) {
                 userConfigList.push(
-                    <div> Nombre d'utilisateur du domaine {i} : 
+                    <div> Nombre d'utilisateurs du domaine {i} : 
                         <TextField
                             name={"nUtil"+i}
                             type="number"
@@ -93,22 +105,23 @@ export class Configuration extends React.Component<ConfigurationProps, Configura
         }
 
         return (
-            <div>
-                Configuration du domaine : 
-                Nombre de domaines : 
-                <TextField
-                name="nDom"
-                type="number"
-                value={this.state.nDom}
-                onChange={this.handleChangeNDom}
-                />
+            <div style={styles.container}>
+                <h3>Configuration du domaine : </h3>
+                <div>
+                    Nombre de domaines : 
+                    <TextField
+                    name="nDom"
+                    type="number"
+                    value={this.state.nDom}
+                    onChange={this.handleChangeNDom}
+                    />
+                </div>
                 {userConfigList}
-                {this.state.errorMessage}
+                <p style={styles.errorMessage}> {this.state.errorMessage} </p>
                 <RaisedButton 
                     label="Valider" 
                     onClick={this.validation}
                     primary={true} />
-                
             </div>
         );
     }

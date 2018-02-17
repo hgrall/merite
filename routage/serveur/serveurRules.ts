@@ -19,11 +19,8 @@ import {
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
 import { creerDateMaintenant, creerDateEnveloppe, FormatDateFr } from '../../bibliotheque/types/date';
 import {
-	creerCompteurParDomaine, 
 	ajouterPointsParDomaine,
 	ajouterMessageParDomaine,
-	calculEcartMessageEnvoyesRecus,
-	calculEcartPointsMessage,
 	compteurGlobal
 } from '../serveur/statistiques';
 import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';

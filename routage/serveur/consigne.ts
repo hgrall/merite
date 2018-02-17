@@ -68,7 +68,7 @@ export function copieTableConsigne(utilisateursParDomaine: PopulationParDomaineM
             });
             tableCopie.ajouter(id, tableDom);
     });
-    console.log("TABLE COPIEE");
+    //console.log("TABLE COPIEE");
     //console.log(tableCopie.representation());
     return tableCopie;
 }
@@ -173,7 +173,8 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
         }
     }
     cible.push(row);
-    console.log("CIBLE   ");
+    console.log("CIBLE CREEE  ");
+    //Pour afficher la cible, decommenter ci-dessous:
     /*for(var i = 0; i<NOMBRE_DE_DOMAINES; i++){
         for(var j=0; j<UTILISATEURS_PAR_DOMAINE; j++){
             console.log("Element : "+i+"-"+j);

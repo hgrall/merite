@@ -44,9 +44,7 @@ import {
 } from '../commun/communRoutage';
 import { Deux } from '../../bibliotheque/types/mutable';
 
-import {
-	creerCompteurParDomaine, 
-} from '../serveur/statistiques';
+import {creerCompteurParDomaine} from '../serveur/statistiques';
 import { config } from 'shelljs';
 import { log } from 'util';
 import{remplirTableConsigne,remplirTableCible, copieTableConsigne}from'../serveur/consigne';
@@ -264,7 +262,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 	case TypeMessageJeu1.ADMIN:
 		if (reseauConfig) {
 			// send message avec statistique 
-			console.log("envoi des stats");
+			console.log("envoi des stats dans serveur cas ADMIN");
 			serveur.statistiques(
 				lien,
 				msg.val().date,
@@ -272,6 +270,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 				msg.val().ID_emetteur,
 				msg.val().ID_origine,
 				msg.val().contenu);
+				//envoi au client dans la fct statistiques
 		} else {
 			lien.envoyerAuClientDestinataire(msg.nonConf());
 		}

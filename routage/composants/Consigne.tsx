@@ -16,18 +16,10 @@ export class ConsigneDom extends React.Component<ConsigneProps, any> {
   render() {
     return (
       <div>
-       {
-      // Domaine destinataire: <IdentifiantCases int={this.props.consigne.ID_dom_cible.domaine} />
-       }
-       Domaine destinataire: <IdentifiantCases int={this.props.consigne[0].domaine} />
+        Domaine destinataire: <IdentifiantCases int={this.props.consigne[0].domaine} />
         <br/>
-        {//Utilisateur destinataire: <IdentifiantCases int={this.props.consigne.ID_util_cible.pseudo} />
-        }
-        
         Utilisateur destinataire: <IdentifiantCases int={this.props.consigne[1].pseudo} />
         <br/>
-        {//Contenu du message à envoyer: {this.props.consigne.mot_cible['structure'].tableau.toString()}
-        }
         Contenu du message à envoyer: {this.props.consigne[2]['structure'].tableau.toString()}
       </div>
     );

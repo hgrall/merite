@@ -136,67 +136,62 @@ serveurAppli.demarrer();
 */
 let reseauConfig = false; 
 
+function connexionServeur(l : LienJeu1) : boolean {
+	let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+	try {
+		ids = configuration.getUtilisateursAConnecterParDomaine().selectionnerUtilisateur();
+	} catch (e) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
+		);
+		return false;
+	}
 
+	let ID_dom = ids[0];
+	let ID_util = ids[1];
+	//tmp
+	console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
+	if (connexions.contient(ID_util) || configuration.getUtilisateursConnectesParDomaine().contientUtilisateur(ID_dom, ID_util)) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1(
+				"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
+				d.val()
+			)
+		);
+	}
+	// Cas où la sélection d'un utilisateur est réussie
+	let d = creerDateMaintenant();
+	console.log(
+		'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
+	);
+	connexions.ajouter(ID_util, l);
+	let n = configuration.getAnneau().noeud(ID_dom);
+	let pop = configuration.getUtilisateursParDomaine().valeur(ID_dom);
+	let u = configuration.getUtilisateursParDomaine().utilisateur(ID_dom, ID_util);
+
+	//CONSIGNE : selection aleatoire d'un domaine et user destinataire
+	//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
+	var domNb = parseInt(ID_dom.val.substr(4));
+	var utilNb = creerMot(u.pseudo).base10();
+
+	let config = composerConfigurationJeu1(n, pop, u, d.val(), configuration.getTableCible()[domNb][utilNb]);
+
+	console.log("- envoi au client d'adresse " + l.adresseClient());
+	console.log('  - de la configuration brute ' + config.brut());
+	console.log('  - de la configuration nette ' + config.representation());
+	l.envoyerConfiguration(config);
+	configuration.getUtilisateursConnectesParDomaine().ajouterUtilisateur(ID_dom, u);
+	configuration.getUtilisateursAConnecterParDomaine().retirerUtilisateur(ID_dom, ID_util);
+	return true; 
+}
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-	
-	if (reseauConfig) {
-		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
-		try {
-			ids = configuration.getUtilisateursAConnecterParDomaine().selectionnerUtilisateur();
-		} catch (e) {
-			let d = creerDateMaintenant();
-			console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
-			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
-			l.envoyerMessageErreur(
-				composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
-			);
-			return false;
-		}
-
-		let ID_dom = ids[0];
-		let ID_util = ids[1];
-		//tmp
-		console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
-		if (connexions.contient(ID_util) || configuration.getUtilisateursConnectesParDomaine().contientUtilisateur(ID_dom, ID_util)) {
-			let d = creerDateMaintenant();
-			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
-			l.envoyerMessageErreur(
-				composerErreurJeu1(
-					"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
-					d.val()
-				)
-			);
-			return false;
-		}
-		// Cas où la sélection d'un utilisateur est réussie
-		let d = creerDateMaintenant();
-		console.log(
-			'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
-		);
-		connexions.ajouter(ID_util, l);
-		let n = configuration.getAnneau().noeud(ID_dom);
-		let pop = configuration.getUtilisateursParDomaine().valeur(ID_dom);
-		let u = configuration.getUtilisateursParDomaine().utilisateur(ID_dom, ID_util);
-		
-		//CONSIGNE : selection aleatoire d'un domaine et user destinataire
-		//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
-		var domNb = parseInt(ID_dom.val.substr(4));
-		var utilNb = creerMot(u.pseudo).base10();
-		
-		let config = composerConfigurationJeu1(n, pop, u, d.val(), configuration.getTableCible()[domNb][utilNb]);
-
-		console.log("- envoi au client d'adresse " + l.adresseClient());
-		console.log('  - de la configuration brute ' + config.brut());
-		console.log('  - de la configuration nette ' + config.representation());
-		l.envoyerConfiguration(config);
-		configuration.getUtilisateursConnectesParDomaine().ajouterUtilisateur(ID_dom, u);
-		configuration.getUtilisateursAConnecterParDomaine().retirerUtilisateur(ID_dom, ID_util);
-		return true;}
-
-		else {
-			return true; 
-		}
+	return true; 
 });
 
 /*-
@@ -235,10 +230,14 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 			lien.envoyerAuClientDestinataire(msg.nonConf());
 		}
 		break;
+	case TypeMessageJeu1.CONNEXION:
+		if (reseauConfig) {
+			connexionServeur(lien);
+		}
+		break;
 	case TypeMessageJeu1.CONF:
 		let conf : Array<number> = msg.val().conf as Array<number>;
 		configuration.setConf(conf);
-		console.log('conf done');
 		reseauConfig = true; 
 		pointsParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
 		messagesEnvoyesParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());

@@ -163,6 +163,8 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement des messages');
 
+		this.canal.enregistrerTraitementAdmin(false);
+
 		// Traitement des messages
 		this.canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
 			let msg = new MessageJeu1(m);

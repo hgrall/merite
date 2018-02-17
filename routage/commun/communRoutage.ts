@@ -164,7 +164,8 @@ export enum TypeMessageJeu1 {
   ERREUR_TYPE,
   INTERDICTION,
   STATISTIQUES,
-  CONF
+  CONF,
+  CONNEXION
 }
 
 export type Stats = Array<[string,number]>;
@@ -424,6 +425,19 @@ export function messageAdmin() {
     ID_origine: sommetInconnu,
     ID_destination: sommetInconnu,
     type: TypeMessageJeu1.ADMIN,
+    contenu: creerMot([]),
+    date: creerDateMaintenant().val()
+  });
+}
+
+// demande de connexion au réseau 
+export function messageConnexion() {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.CONNEXION,
     contenu: creerMot([]),
     date: creerDateMaintenant().val()
   });

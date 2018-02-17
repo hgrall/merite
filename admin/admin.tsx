@@ -13,6 +13,7 @@ import { FormatConfigurationChat } from '../chat/commun/configurationChat';
 import { RaisedButton } from 'material-ui/RaisedButton';
 
 import { Configuration } from './components/configuration'
+import { TEXTE_ERREUR } from '../chat/client/couleur';
 
 const styles = {
     container: {
@@ -75,7 +76,7 @@ export class Admin extends React.Component<any, AdminState> {
             }
         });
 
-        this.canal.enregistrerTraitementAdmin();
+        this.canal.enregistrerTraitementAdmin(true);
 
         console.log('- du traitement de la configuration');    
     }

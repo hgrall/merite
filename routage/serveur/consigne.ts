@@ -71,7 +71,6 @@ export function copieTableConsigne(utilisateursParDomaine: PopulationParDomaineM
     return tableCopie;
 }
 
-
 function shuffle(a:Array<[Identifiant<'sommet'>,Identifiant<'utilisateur'>,Mot]>) {
     var j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -79,12 +78,6 @@ function shuffle(a:Array<[Identifiant<'sommet'>,Identifiant<'utilisateur'>,Mot]>
         x = a[i];
         a[i] = a[j];
         a[j] = x;
-    }
-}
-
-function afficher(a:Array<Array<Number>>){
-    for(var i=0; i<a.length;i++){
-            console.log("Liste dom :  "+a[i]);
     }
 }
 
@@ -139,11 +132,7 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
         });
     });
     shuffle(reste); //comme attribution se fait ensuite dans l'ordre, pour mélanger un peu
-    //pour afficher le reste, decommenter ci-dessous
-    /*for(var i=0;i<reste.length;i++){ 
-        console.log("RESTE  DOM:  "+reste[i][0].val+" UTIL: "+reste[i][1].val+" MOT :"+reste[i][2].representation());
-    }*/
-
+    
     //creation de liste de cible deja permutees pr eviter la boucle infinie --> 0 si pas encore, 1 sinon
     var dejaPermutes : Array<Array<Number>> = [];
     for (var i=0; i<configuration.getNDomaine();i++){
@@ -154,17 +143,13 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
 
     for(var i=0;i<reste.length;i++){ //reste.length == nb util dans dernier dom sans consigne
         if(reste[i][0].val === domFinalID.val){
-            console.log("PERMUTATION  ");
             //dom a permuter : choix aleatoire jusqua different de dom actuel ET different d'un user qui a déjà été permuté
             nbAleatDom = nombreAleatoire(configuration.getNDomaine(),dom);
             nbAleatUtil = getRandomInt(configuration.getNbUtilisateursParDomaine()[nbAleatDom]);
             //Si cible avec laquelle on veut échanger a comme domaine celui du dernier, on doit de nouveau tirer aléatoirement
-            console.log("CIBLE ALEAT DANS PERMUTATION  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil+" cible : "+cible[nbAleatDom][nbAleatUtil][1].ID.val);
-            console.log("DOM FINAL DANS PERMUTATION  "+domFinalID.val);
             while( dejaPermutes[nbAleatDom][nbAleatUtil]===1 || cible[nbAleatDom][nbAleatUtil][0].ID.val===domFinalID.val){
                 nbAleatDom = nombreAleatoire(configuration.getNDomaine(),dom); //nbAleat different de dom
                 nbAleatUtil = getRandomInt(configuration.getNbUtilisateursParDomaine()[nbAleatDom]);
-                console.log("DOM ALEAT WHILE  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil+" cible : "+cible[nbAleatDom][nbAleatUtil][1].ID.val);
             };            
             dejaPermutes[nbAleatDom][nbAleatUtil]=1;
             row.push(cible[nbAleatDom][nbAleatUtil]);                                

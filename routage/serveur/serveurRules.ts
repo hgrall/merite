@@ -6,14 +6,13 @@ import { FormatTableImmutable } from '../../bibliotheque/types/table'
 import { Deux } from '../../bibliotheque/types/mutable'
 import {Stats,PopulationParDomaineMutable, FormatUtilisateur, creerPopulationLocale, creerMessageInitial,ReseauJeu1} from '../commun/communRoutage';
 import {
-  connexions, 
-  utilisateursConnectesParDomaine, 
+  connexions,
+  configuration,
   identificationMessages, 
   tableVerrouillageMessagesParDomaine, 
-  PERSONNE, 
-  tableConsigneUtilisateurParDomaine,
-  pointsParDomaine,
+  PERSONNE,
   messagesEnvoyesParDomaine,
+  pointsParDomaine,
   messagesRecusParDomaine
 } from './serveurRoutage';
 import { FormatTableauImmutable } from '../../bibliotheque/types/tableau';
@@ -23,7 +22,6 @@ import {
 	ajouterMessageParDomaine,
 	compteurGlobal
 } from '../serveur/statistiques';
-import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
 import { LienJeu1 } from './serveurRoutage'
 
@@ -54,7 +52,7 @@ function diffusion(date: FormatDateFr, idUtil: Identifiant<'utilisateur'>,idMess
 }
 
 function utilisateurParDomaine (idDomaine: Identifiant<'sommet'>) : FormatTableImmutable<FormatUtilisateur> {
-  return utilisateursConnectesParDomaine.valeur(idDomaine);
+  return configuration.getUtilisateursConnectesParDomaine().valeur(idDomaine);
 }
 ''
 // Récurrence sur les utilisateurs de la liste utilisateurs
@@ -76,7 +74,7 @@ function diffusionListeUtilisateur(date: FormatDateFr , idUtil: Identifiant<'uti
 }
 
 export function diffuser(msg: MessageJeu1): void {
-  let utilisateurs = utilisateursConnectesParDomaine.valeur(msg.val().ID_destination);
+  let utilisateurs = configuration.getUtilisateursConnectesParDomaine().valeur(msg.val().ID_destination);
   creerTableIdentificationImmutable('utilisateur', utilisateurs).iterer((idU, u) => {
     connexions.valeur(idU).envoyerAuClientDestinataire(msg);
   });
@@ -230,7 +228,7 @@ export function statistiques(lien: LienJeu1, date : FormatDateFr,id : Identifian
 
 //Verifie que le message envoye par l'utilisateur est correct --> cad bien decode
 function consigne(origine:  Identifiant<'sommet'>, emetteur: Identifiant<'utilisateur'>, contenu: Mot): boolean {
-  let tConsigne = tableConsigneUtilisateurParDomaine.valeur(origine).valeur(emetteur)['structure'];  
+  let tConsigne = configuration.getTableConsigneUtilisateurParDomaine().valeur(origine).valeur(emetteur)['structure'];  
   let tContenu = contenu['structure'];
   if (tContenu.taille !=tConsigne.taille) {
    // console.log("TAILLE DIFFERENTE  ");

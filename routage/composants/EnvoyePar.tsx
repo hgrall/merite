@@ -4,7 +4,8 @@ import { FormatSommetJeu1 } from '../commun/communRoutage';
 
 const styles = {
   margin: {
-    margin: '15px'
+    margin: '15px',
+    display: 'flex' as 'flex'
   }
 };
 interface MessageProps {

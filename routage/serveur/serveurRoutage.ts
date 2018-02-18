@@ -14,7 +14,6 @@ import { creerDateEnveloppe, creerDateMaintenant } from '../../bibliotheque/type
 import {} from '../../bibliotheque/outils';
 import { binaire, Mot, motAleatoire, creerMot , tableauBinaireAleatoire,nombreAleatoire, getRandomInt} from '../../bibliotheque/binaire';
 import {} from '../../bibliotheque/communication';
-import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 
 import { ServeurLiensWebSocket, LienWebSocket } from '../../bibliotheque/serveurConnexions';
 import { ServeurApplications, Interaction } from '../../bibliotheque/serveurApplications';
@@ -40,11 +39,17 @@ import {
 	creerTableMutableUtilisateurParMessageParDomaine,
 	MessageJeu1,
 	TypeMessageJeu1,
-	creerMessageEnveloppe
+	creerMessageEnveloppe,
+	PopulationLocaleMutable,
+	messageConfiguration
 } from '../commun/communRoutage';
 import { Deux } from '../../bibliotheque/types/mutable';
 
-import {creerCompteurParDomaine} from '../serveur/statistiques';
+import { Config } from './config';
+import {
+	creerCompteurParDomaine, 
+} from '../serveur/statistiques';
+
 import { config } from 'shelljs';
 import { log } from 'util';
 import{remplirTableConsigne,remplirTableCible, copieTableConsigne}from'../serveur/consigne';
@@ -83,29 +88,9 @@ export class LienJeu1 extends LienWebSocket<
  * - serveur d'applications
  * - serveur de canaux  
  */
+export var configuration: Config = new Config();
 
-// Création du nombre de domaines défini dans le fichier config.ts à la racine du dossier routage
-let tableauReseau = [];
-for (let i = 0; i < NOMBRE_DE_DOMAINES; i++) {
-	tableauReseau.push(binaire(i));
-}
-
-const anneau: ReseauJeu1 = creerAnneauJeu1(tableauReseau);
-
-//const reseauConnecte: TableNoeudsJeu1 = creerTableVideNoeuds();
-
-// tmp - Création du nombre d'utilisateurs par domaine
-let tableauDomaine = [];
-for (let i = 0; i < UTILISATEURS_PAR_DOMAINE; i++) {
-	tableauDomaine.push(binaire(i));
-}
-
-export const utilisateursParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
-
-const utilisateursAConnecterParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, tableauDomaine);
-
-export const utilisateursConnectesParDomaine: PopulationParDomaineMutable = assemblerPopulationParDomaine(anneau, []);
-
+//*
 export const connexions: TableIdentificationMutable<'utilisateur', LienJeu1, LienJeu1> = creerTableIdentificationMutableVide<
 	'utilisateur',
 	LienJeu1,
@@ -118,15 +103,11 @@ const serveurAppli: ServeurApplications = new ServeurApplications(hote, port1);
 
 const serveurCanaux = new ServeurJeu1(port2, hote);
 
-//tmp
-console.log('Anneau créé (anneau.representation) : ', anneau.representation());
-// console.log('Anneau créé (anneau)', anneau);
-
+///////////////////////////////////////////////////////////
 //CREATION DE TOUTES LES VARIABLES DE COMPTEURS
-export var pointsParDomaine = creerCompteurParDomaine(tableauReseau);
-export var messagesEnvoyesParDomaine = creerCompteurParDomaine(tableauReseau);
-export var messagesRecusParDomaine = creerCompteurParDomaine(tableauReseau);
-
+export var pointsParDomaine: number[]; 
+export var messagesEnvoyesParDomaine: number[]; 
+export var messagesRecusParDomaine: number[]; 
 /*
 * Fin de l'état - Partie 1
 */
@@ -156,67 +137,64 @@ serveurAppli.demarrer();
 /*
 * Config 1 - Traitement des connexions
 */
-let reseauConfig = true; 
+let reseauConfig = false; 
+
+function connexionServeur(l : LienJeu1) : boolean {
+	let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
+	try {
+		ids = configuration.getUtilisateursAConnecterParDomaine().selectionnerUtilisateur();
+	} catch (e) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
+		);
+		return false;
+	}
+
+	let ID_dom = ids[0];
+	let ID_util = ids[1];
+	//tmp
+	console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
+	if (connexions.contient(ID_util) || configuration.getUtilisateursConnectesParDomaine().contientUtilisateur(ID_dom, ID_util)) {
+		let d = creerDateMaintenant();
+		console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
+		l.envoyerMessageErreur(
+			composerErreurJeu1(
+				"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
+				d.val()
+			)
+		);
+	}
+	// Cas où la sélection d'un utilisateur est réussie
+	let d = creerDateMaintenant();
+	console.log(
+		'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
+	);
+	connexions.ajouter(ID_util, l);
+	let n = configuration.getAnneau().noeud(ID_dom);
+	let pop = configuration.getUtilisateursParDomaine().valeur(ID_dom);
+	let u = configuration.getUtilisateursParDomaine().utilisateur(ID_dom, ID_util);
+
+	//CONSIGNE : selection aleatoire d'un domaine et user destinataire
+	//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
+	var domNb = parseInt(ID_dom.val.substr(4));
+	var utilNb = creerMot(u.pseudo).base10();
+
+	let config = composerConfigurationJeu1(n, pop, u, d.val(), configuration.getTableCible()[domNb][utilNb]);
+
+	console.log("- envoi au client d'adresse " + l.adresseClient());
+	console.log('  - de la configuration brute ' + config.brut());
+	console.log('  - de la configuration nette ' + config.representation());
+	l.envoyerConfiguration(config);
+	configuration.getUtilisateursConnectesParDomaine().ajouterUtilisateur(ID_dom, u);
+	configuration.getUtilisateursAConnecterParDomaine().retirerUtilisateur(ID_dom, ID_util);
+	return true; 
+}
 
 serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
-	
-	if (reseauConfig) {
-		let ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>];
-		try {
-			ids = utilisateursAConnecterParDomaine.selectionnerUtilisateur();
-		} catch (e) {
-			let d = creerDateMaintenant();
-			console.log('* ' + d.representationLog() + ' - ' + (<Error>e).message);
-			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est complet.");
-			l.envoyerMessageErreur(
-				composerErreurJeu1('Jeu 1 (adressage - routage) - Il est impossible de se connecter : le réseau est déjà complet.', d.val())
-			);
-			return false;
-		}
-
-		let ID_dom = ids[0];
-		let ID_util = ids[1];
-		//tmp
-		console.log("ids: [Identifiant<'sommet'>, Identifiant<'utilisateur'>]", ids);
-		if (connexions.contient(ID_util) || utilisateursConnectesParDomaine.contientUtilisateur(ID_dom, ID_util)) {
-			let d = creerDateMaintenant();
-			console.log('* ' + d.representationLog() + " - Connexion impossible d'un client : le réseau est corrompu.");
-			l.envoyerMessageErreur(
-				composerErreurJeu1(
-					"Jeu 1 (adressage - routage) - Réseau corrompu ! Il est impossible de se connecter : le réseau est corrompu. Contacter l'administrateur.",
-					d.val()
-				)
-			);
-			return false;
-		}
-		// Cas où la sélection d'un utilisateur est réussie
-		let d = creerDateMaintenant();
-		console.log(
-			'* ' + d.representationLog() + " - Connexion de l'utilisateur " + ID_util.val + ' du domaine ' + ID_dom.val + ' par Web socket.'
-		);
-		connexions.ajouter(ID_util, l);
-		let n = anneau.noeud(ID_dom);
-		let pop = utilisateursParDomaine.valeur(ID_dom);
-		let u = utilisateursParDomaine.utilisateur(ID_dom, ID_util);
-		
-		//CONSIGNE : selection aleatoire d'un domaine et user destinataire
-		//utlisateur qui se connecte -> on cherche son domaine et son numero d'utilisateur
-		var domNb = parseInt(ID_dom.val.substr(4));
-		var utilNb = creerMot(u.pseudo).base10();
-		
-		let config = composerConfigurationJeu1(n, pop, u, d.val(), tableCible[domNb][utilNb]);
-
-		console.log("- envoi au client d'adresse " + l.adresseClient());
-		console.log('  - de la configuration brute ' + config.brut());
-		console.log('  - de la configuration nette ' + config.representation());
-		l.envoyerConfiguration(config);
-		utilisateursConnectesParDomaine.ajouterUtilisateur(ID_dom, u);
-		utilisateursAConnecterParDomaine.retirerUtilisateur(ID_dom, ID_util);
-		return true;}
-
-		else {
-			return true; 
-		}
+	return true; 
 });
 
 /*-
@@ -226,24 +204,7 @@ serveurCanaux.enregistrerTraitementConnexion((l: LienJeu1) => {
 */
 export const identificationMessages: Identification<'message'> = creerIdentificationParCompteur('MSG-');
 export const tableVerrouillageMessagesParDomaine: TableMutableUtilisateursParMessageParDomaine = creerTableMutableUtilisateurParMessageParDomaine();
-{
-	anneau.iterer((id, n) => {
-		tableVerrouillageMessagesParDomaine.ajouter(id, creerTableIdentificationMutableVide('message', x => x));
-	});
-}
 
-//CREATION DU TABLEAU DE CONSIGNES
-export var tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
-//tableConsigneUtilisateurParDomaine = remplirTableConsigne(utilisateursParDomaine,anneau,tableConsigneUtilisateurParDomaine);
-tableConsigneUtilisateurParDomaine = remplirTableConsigne(utilisateursParDomaine,anneau);
-
-//Copie de la tableConsigne pour pour enlever des elements en calculant la cible
-//Mais garder consigne initiale pour verifier le decodage
-var tableConsModif :TableMutableMessagesParUtilisateurParDomaine = creerTableMutableMessageParUtilisateurParDomaine();
-tableConsModif = copieTableConsigne(utilisateursParDomaine,anneau,tableConsigneUtilisateurParDomaine);
-
-//CREATION DU TABLEAU DE CIBLES
-export const tableCible = remplirTableCible(utilisateursParDomaine,anneau,tableConsModif);
 
 export const PERSONNE: Identifiant<'utilisateur'> = creerIdentifiant('utilisateur', 'LIBRE');
 
@@ -261,8 +222,7 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
   switch (m.type) {
 	case TypeMessageJeu1.ADMIN:
 		if (reseauConfig) {
-			// send message avec statistique 
-			console.log("envoi des stats dans serveur cas ADMIN");
+			console.log('envoie stats');
 			serveur.statistiques(
 				lien,
 				msg.val().date,
@@ -275,10 +235,33 @@ serveurCanaux.enregistrerTraitementMessages((l: LienJeu1, m: FormatMessageJeu1) 
 			lien.envoyerAuClientDestinataire(msg.nonConf());
 		}
 		break;
+	case TypeMessageJeu1.CONNEXION:
+		if (reseauConfig) {
+			connexionServeur(lien);
+			let conf = [];
+			conf.push(configuration.getNDomaine());
+			conf.push(configuration.getNMaxUtilParDomaine());
+			//on envoie au client le nombre de domaine et le nombre max d'utilisateur par domaine
+			lien.envoyerAuClientDestinataire(messageConfiguration(conf))
+		}
+		break;
+	case TypeMessageJeu1.CONF:
+		let conf : Array<number> = msg.val().conf as Array<number>;
+		configuration.setConf(conf);
+		reseauConfig = true; 
+		pointsParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		messagesEnvoyesParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		messagesRecusParDomaine = creerCompteurParDomaine(configuration.getTableauReseau());
+		
+		serveur.statistiques(
+			lien,
+			msg.val().date,
+			msg.val().ID,
+			msg.val().ID_emetteur,
+			msg.val().ID_origine,
+			msg.val().contenu);
+		break;
     case TypeMessageJeu1.INIT:
-      // TODO tester erreurs
-	  // TODO ajouter log;
-	  console.log('message recu ----------------',)
 	  serveur.initier(
 		  msg.val().date, 
 		  msg.val().ID_emetteur, 

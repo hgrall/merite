@@ -1,6 +1,6 @@
 import {Identifiant} from '../../bibliotheque/types/identifiant';
 import { Mot} from '../../bibliotheque/binaire';
-import {connexions, utilisateursConnectesParDomaine, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE, tableConsigneUtilisateurParDomaine} from './serveurRoutage';
+import {connexions, configuration, identificationMessages, tableVerrouillageMessagesParDomaine, PERSONNE} from './serveurRoutage';
 
 
 //Nombre de message par domaine --> pour comparer avec nombre de succes || besoin de faire deux listes: messages envoyes et messages recus

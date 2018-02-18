@@ -163,10 +163,14 @@ export enum TypeMessageJeu1 {
   ERREUR_DEST,
   ERREUR_TYPE,
   INTERDICTION,
-  STATISTIQUES
+  STATISTIQUES,
+  CONF,
+  CONNEXION
 }
 
 export type Stats = Array<[string,number]>;
+
+export type Conf = Array<number>
 
 export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmutable<'message'> {
   readonly ID_emetteur: Identifiant<'utilisateur'>;
@@ -176,6 +180,7 @@ export interface FormatMessageJeu1 extends FormatMessage, FormatIdentifiableImmu
   readonly contenu: Mot;
   readonly date: FormatDateFr; // Emission
   readonly stats?: Stats;
+  readonly conf?: Conf
 }
 
 export type EtiquetteMessageJeu1 = 'ID' | 'type' | 'date' | 'ID_de' | 'ID_à' | 'contenu' | 'utilisateur';
@@ -422,6 +427,32 @@ export function messageAdmin() {
     type: TypeMessageJeu1.ADMIN,
     contenu: creerMot([]),
     date: creerDateMaintenant().val()
+  });
+}
+
+// demande de connexion au réseau 
+export function messageConnexion() {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.CONNEXION,
+    contenu: creerMot([]),
+    date: creerDateMaintenant().val()
+  });
+}
+
+export function messageConfiguration(config: Array<number>) {
+  return new MessageJeu1({
+    ID: messageInconnu,
+    ID_emetteur: utilisateurInconnu,
+    ID_origine: sommetInconnu,
+    ID_destination: sommetInconnu,
+    type: TypeMessageJeu1.CONF,
+    contenu: creerMot([]),
+    date: creerDateMaintenant().val(),
+    conf: config
   });
 }
 
@@ -677,14 +708,18 @@ export function creerVidePopulationParDomaine() {
   return new PopulationParDomaineMutable();
 }
 
-export function assemblerPopulationParDomaine(reseau: ReseauJeu1, noms: Mot[]): PopulationParDomaineMutable {
+export function assemblerPopulationParDomaine(reseau: ReseauJeu1, noms: Mot[][]): PopulationParDomaineMutable {
   let popDom = creerVidePopulationParDomaine();
+  let i=0;
   reseau.iterer((ID_dom, n) => {
     popDom.ajouterDomaine(ID_dom);
-    let popLoc = peuplerPopulationLocale('UTIL-' + ID_dom.val + '-', noms);
-    popLoc.iterer((ID_util, u) => {
-      popDom.ajouterUtilisateur(ID_dom, u);
-    });
+    if (noms[i] !== undefined) {
+      let popLoc = peuplerPopulationLocale('UTIL-' + ID_dom.val + '-', noms[i]);
+      popLoc.iterer((ID_util, u) => {
+        popDom.ajouterUtilisateur(ID_dom, u);
+      });
+    }
+    i++;
   });
   return popDom;
 }

@@ -10,7 +10,6 @@ import { Identifiant } from '../../bibliotheque/types/identifiant';
 import { Deux } from '../../bibliotheque/types/mutable';
 import { FormatSommetJeu1, Consigne } from '../commun/communRoutage';
 import { ConsigneDom } from './Consigne';
-import { NOMBRE_DE_DOMAINES, UTILISATEURS_PAR_DOMAINE, NOMBRE_UTILISATEURS_PAR_DOMAINE } from '../config';
 import { binaire, Mot, motAleatoire, creerMot , tableauBinaireAleatoire} from '../../bibliotheque/binaire';
 
 const styles = {
@@ -24,28 +23,28 @@ interface MessageProps {
   envoyerMessage: (dest: Identifiant<'sommet'>, contenu: Mot) => void,
   voisinFst: FormatSommetJeu1,
   voisinSnd: FormatSommetJeu1, 
-  consigne: Consigne
+  consigne: Consigne,
+  nDom: number,
+  nMaxUtil: number
 }
 
 /**
  * Dialogs can be nested. This example opens a Date Picker from within a Dialog.
  */
 export class NewMessage extends React.Component<MessageProps, any> {
-  tailleMot = 12 
-  + binaire(NOMBRE_DE_DOMAINES).tableauBinaire().length
-  + binaire(UTILISATEURS_PAR_DOMAINE).tableauBinaire().length;
 
   state = {
     open: false,
-   // message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-    message: creerMot(Array.apply(null, Array(this.tailleMot)).map(Number.prototype.valueOf,0))
+    message: creerMot(Array.apply(null, Array(12).map(Number.prototype.valueOf,0)))
   };
 
   handleOpen = () => {
+    let tailleMot = 12
+      + binaire(this.props.nDom).tableauBinaire().length
+      + binaire(this.props.nMaxUtil).tableauBinaire().length;
     this.setState({
       open: true,
-     // message: creerMot([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-     message: creerMot(Array.apply(null, Array(this.tailleMot)).map(Number.prototype.valueOf,0))
+      message: creerMot(Array.apply(null, Array(tailleMot)).map(Number.prototype.valueOf,0))
     });
   };
 

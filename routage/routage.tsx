@@ -8,7 +8,7 @@ import { hote, port2, Consigne, FormatConfigurationJeu1, creerConfigurationJeu1,
 	ConfigurationJeu1, FormatMessageJeu1, MessageJeu1, FormatErreurJeu1, EtiquetteMessageJeu1,
 	FormatSommetJeu1, TypeMessageJeu1, FormatUtilisateur } from './commun/communRoutage';
 import { CanalClient, creerCanalClient } from '../bibliotheque/client';
-
+import { Link } from 'react-router-dom'
 
 // Material-UI
 import Dialog from 'material-ui/Dialog';
@@ -64,7 +64,10 @@ const styles = {
 	},
 	dom : {
 		display: "flex" as 'flex',
-		sflexWrap: "wrap" as 'wrap',
+		flexWrap: "wrap" as 'wrap',
+	},
+	notReady: {
+
 	}
 };
 
@@ -79,7 +82,11 @@ interface FormState {
 	openDialog: boolean,
 	textDialog: string,
 	consigne: Consigne
-}
+	nDom: number,
+	nMaxUtil: number
+  }
+// Etat initial - Le client ne connait pas sa configuration 
+let configReceived = false; 
 
 export class Routage extends React.Component<any, FormState> {
 	private adresseServeur: string;
@@ -99,7 +106,9 @@ export class Routage extends React.Component<any, FormState> {
 			{ ID: creerIdentifiant('sommet', ''), domaine: [] },
 			{ ID: creerIdentifiant('utilisateur', ''), pseudo: [] },
 			creerMot([])
-		]
+		],
+		nDom: 0,
+		nMaxUtil: 0
 	}
 
 	constructor(props: any) {
@@ -153,6 +162,8 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement des messages');
 
+		this.canal.enregistrerTraitementAdmin(false);
+
 		// Traitement des messages
 		this.canal.enregistrerTraitementMessageRecu((m: FormatMessageJeu1) => {
 			let msg = new MessageJeu1(m);
@@ -160,6 +171,14 @@ export class Routage extends React.Component<any, FormState> {
 			console.log('- du message brut : ' + msg.brut());
 
 			switch (m.type) {
+				case TypeMessageJeu1.CONF:
+					// l'utilisateur recoit un message du serveur et le place en transit 
+					let conf: Array<number> = msg.val().conf as Array<number>;
+					this.setState({
+						nDom: conf[0],
+						nMaxUtil: conf[1]
+					})
+					break;
 				case TypeMessageJeu1.TRANSIT:
 					// l'utilisateur recoit un message du serveur et le place en transit 
 					this.state.messages.push(msg);
@@ -239,7 +258,6 @@ export class Routage extends React.Component<any, FormState> {
 					})
 					break;
 				default:
-				console.log('no match');
 				break;
 			}
 			
@@ -247,20 +265,25 @@ export class Routage extends React.Component<any, FormState> {
 
 		console.log('- du traitement de la configuration');
 		this.canal.enregistrerTraitementConfigurationRecue((c: FormatConfigurationJeu1) => {
+			configReceived = true; 
 			this.config = creerConfigurationJeu1(c);
 
 			let voisinFst : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let voisinSnd : FormatSommetJeu1 = {ID: creerIdentifiant('sommet',''), domaine:[]};
 			let fst = true;
-			for (let i =0 ; i<4; i++) {
+			let snd = true; 
+			let i = 0
+			while (snd) {
 				if (this.config.val().voisins.table['DOM-'+i]) {
 					if (fst) {
 						voisinFst = this.config.val().voisins.table['DOM-'+i];
 						fst = false;
 					} else {
 						voisinSnd = this.config.val().voisins.table['DOM-'+i];
+						snd= false;
 					}
 				}
+				i++;
 			}
 
 			this.setState({
@@ -295,43 +318,55 @@ export class Routage extends React.Component<any, FormState> {
 				onClick={this.handleClose}
 			/>
 		];
+		if (configReceived) {
+			return (
+				<div style={styles.container}>
+					<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
+					<Regles consigne={this.state.consigne} />
+					<div style={styles.dom}>
+						Domaine : <IdentifiantCases int={this.state.dom.domaine} />
+					</div>
+					<div style={styles.dom}>
+						Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+					</div>
+					<Paper zDepth={2} style={styles.paper}>
+						<h3 style={styles.title}>Messages à traiter</h3>
+						<NewMessage
+							envoyerMessage={this.envoiMessageInit}
+							voisinFst={this.state.voisinFst}
+							voisinSnd={this.state.voisinSnd}
+							consigne={this.state.consigne}
+							nDom={this.state.nDom}
+							nMaxUtil={this.state.nMaxUtil}/>
+						<MessageBox
+							envoyerMessage={this.envoiMessage}
+							verrou={this.verrou}
+							deverrouiller={this.deverrouiller}
+							detruireMessage={this.detruireMessage}
+							messages={this.state.messages}
+							voisinFst={this.state.voisinFst}
+							validation={this.validerMessage}
+							voisinSnd={this.state.voisinSnd} />
+					</Paper>
+					<Dialog
+						actions={actions}
+						modal={false}
+						open={this.state.openDialog}
+						onRequestClose={this.handleClose}
+					>
+						{this.state.textDialog}
+					</Dialog>
 
-		return (
-			<div style={styles.container}>
-				<AppBar title="Merite" titleStyle={styles.appTitle} showMenuIconButton={false} />
-				<Regles consigne={this.state.consigne }/>
-				<div style={styles.dom}>
-				Domaine : <IdentifiantCases int={this.state.dom.domaine} />
 				</div>
-				<div style={styles.dom}>
-				Utilisateur : <IdentifiantCases int={this.state.util.pseudo} />
+			)}
+ 		else {
+ 			return (
+ 				<div style={styles.notReady}>
+ 					<p> Le jeu n'est pas encore pret ! </p>
+ 					<br/>
+ 					<Link to='/' >Retour</Link>
 				</div>
-				<Paper zDepth={2} style={styles.paper}>
-					<h3 style={styles.title}>Messages à traiter</h3>
-					<NewMessage 
-						envoyerMessage={this.envoiMessageInit} 
-						voisinFst={this.state.voisinFst} 
-						voisinSnd={this.state.voisinSnd}
-						consigne={this.state.consigne}/>
-					<MessageBox 
-						envoyerMessage={this.envoiMessage}
-						verrou={this.verrou}
-						deverrouiller={this.deverrouiller}
-						detruireMessage={this.detruireMessage}
-						messages={this.state.messages}
-						voisinFst={this.state.voisinFst}
-						validation={this.validerMessage}
-						voisinSnd={this.state.voisinSnd}/>
-				</Paper>
-				<Dialog
-					actions={actions}
-					modal={false}
-					open={this.state.openDialog}
-					onRequestClose={this.handleClose}
-				>
-					{this.state.textDialog}
-        		</Dialog>
-				</div>
-    );
-  }
+			 )
+		}
+	}
 }

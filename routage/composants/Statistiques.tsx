@@ -4,11 +4,12 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Announcement from 'material-ui/svg-icons/action/announcement';
 import RaisedButton from 'material-ui/RaisedButton';
-import { Stats, MessageJeu1, } from '../commun/communRoutage'; 
+import { Stats, MessageJeu1 } from '../commun/communRoutage'; 
 import { StatsDom } from './StatsAffichage';
 
 interface StatsProps {
-  message: MessageJeu1
+  message: MessageJeu1,
+  MiseAJourStats: () => void
 }
 
 const styles = {
@@ -30,6 +31,11 @@ export default class Statistiques extends React.Component<StatsProps, any> {
     this.setState({open: false});
   };
 
+  miseAjourStatistique = () => {
+    this.props.MiseAJourStats();
+    this.handleOpen();
+  }
+
   render() {
     const actions = [
       <FlatButton
@@ -47,7 +53,7 @@ export default class Statistiques extends React.Component<StatsProps, any> {
           secondary={true}
           style={styles.boutonStats}
           icon={<Announcement/>}
-          onClick={this.handleOpen} />
+          onClick={this.miseAjourStatistique} />
         <Dialog
           title="Statistiques"
           actions={actions}

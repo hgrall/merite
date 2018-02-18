@@ -84,6 +84,12 @@ function shuffle(a:Array<[Identifiant<'sommet'>,Identifiant<'utilisateur'>,Mot]>
     }
 }
 
+function afficher(a:Array<Array<Number>>){
+    for(var i=0; i<a.length;i++){
+            console.log("Liste dom :  "+a[i]);
+    }
+}
+
 export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMutable,anneau:ReseauJeu1,tableConsigneUtilisateurParDomaine: TableMutableMessagesParUtilisateurParDomaine):Consigne[][]{
     var cible = new Array<Array<Consigne>>();
     var tableConsigne = creerTableMutableMessageParUtilisateurParDomaine();
@@ -124,38 +130,44 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
         cible.push(row);
     }//FIN DE LA BOUCLE SUR DOM : CAS DE DOM N
     let row:Consigne[]  = new Array<Consigne>();  
-    //dom++;
     var domFinalID= creerIdentifiant('sommet',"DOM-"+dom);
     //itere sur table pr stocker id_util restant
     var reste :Array<[Identifiant<'sommet'>,Identifiant<'utilisateur'>,Mot]>=[];
     tableConsigne.iterer((idDom,tableUtil)=>{
-      //  console.log("RESTE  id  :"+idDom.val+"  util  :"+tableUtil.representation());
         tableUtil.iterer((idUtil,mot)=>{
-        //    console.log("RESTE id : "+idUtil.val+"  mot : "+mot.representation());
             reste.push([idDom,idUtil,mot]);
         });
     });
     shuffle(reste); //comme attribution se fait ensuite dans l'ordre, pour mélanger un peu
+    //pour afficher le reste, decommenter ci-dessous
     /*for(var i=0;i<reste.length;i++){ 
         console.log("RESTE  DOM:  "+reste[i][0].val+" UTIL: "+reste[i][1].val+" MOT :"+reste[i][2].representation());
     }*/
+
+    //creation de liste de cible deja permutees pr eviter la boucle infinie --> 0 si pas encore, 1 sinon
+    var dejaPermutes : Array<Array<Number>> = [];
+    for (var i=0; i<NOMBRE_DE_DOMAINES;i++){
+        var l = Array.apply(null, Array(UTILISATEURS_PAR_DOMAINE)).map(Number.prototype.valueOf,0);
+
+        dejaPermutes.push(l);
+    }
+
     for(var i=0;i<reste.length;i++){ //reste.length == nb util dans dernier dom sans consigne
         if(reste[i][0].val === domFinalID.val){
             console.log("PERMUTATION  ");
-            //Permutation avec un autre user
-            var nbUtilActuel = parseInt(reste[i][1].val.substring(reste[i][1].val.lastIndexOf("-")+1));
-            //dom a permuter : choix aleatoire jusqua diffrent de dom actuel
+            //dom a permuter : choix aleatoire jusqua different de dom actuel ET different d'un user qui a déjà été permuté
             nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom);
-            randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
             nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
-            randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-            while(cible[nbAleatDom][nbAleatUtil][0].ID.val===domFinalID.val){
+            //Si cible avec laquelle on veut échanger a comme domaine celui du dernier, on doit de nouveau tirer aléatoirement
+            console.log("CIBLE ALEAT DANS PERMUTATION  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil+" cible : "+cible[nbAleatDom][nbAleatUtil][1].ID.val);
+            console.log("DOM FINAL DANS PERMUTATION  "+domFinalID.val);
+            while( dejaPermutes[nbAleatDom][nbAleatUtil]===1 || cible[nbAleatDom][nbAleatUtil][0].ID.val===domFinalID.val){
                 nbAleatDom = nombreAleatoire(NOMBRE_DE_DOMAINES,dom); //nbAleat different de dom
-                randomDomId= creerIdentifiant('sommet',"DOM-"+nbAleatDom);
                 nbAleatUtil = getRandomInt(UTILISATEURS_PAR_DOMAINE);
-                randomUtilId = creerIdentifiant('utilisateur',"UTIL-DOM-"+nbAleatDom+"-"+nbAleatUtil);
-               // console.log("DOM ALEAT WHILE  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil);
+                console.log("DOM ALEAT WHILE  "+nbAleatDom+"  UTIL ALEAT  "+nbAleatUtil+" cible : "+cible[nbAleatDom][nbAleatUtil][1].ID.val);
             };            
+            dejaPermutes[nbAleatDom][nbAleatUtil]=1;
+            afficher(dejaPermutes);
             row.push(cible[nbAleatDom][nbAleatUtil]);                                
             cible[nbAleatDom][nbAleatUtil]=[anneau.noeud(reste[i][0]).centre,
                                             utilisateursParDomaine.utilisateur(reste[i][0],reste[i][1]),
@@ -175,10 +187,12 @@ export function remplirTableCible(utilisateursParDomaine: PopulationParDomaineMu
     cible.push(row);
     console.log("CIBLE CREEE  ");
     //Pour afficher la cible, decommenter ci-dessous:
-    /*for(var i = 0; i<NOMBRE_DE_DOMAINES; i++){
+     /*
+    for(var i = 0; i<NOMBRE_DE_DOMAINES; i++){
         for(var j=0; j<UTILISATEURS_PAR_DOMAINE; j++){
             console.log("Element : "+i+"-"+j);
             console.log("Sommet  : "+cible[i][j][0].ID.val+"Utilisateur  : "+cible[i][j][1].ID.val+"Mot  : "+cible[i][j][2].representation());
-        }}*/
+        }}
+        */
     return cible;
 }
